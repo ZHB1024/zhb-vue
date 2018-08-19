@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://struts.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+    <!-- layout start-->
+    <definition name="login.mainLayout" template="/layout/mainLayout.jsp">
+        <put-attribute name="header" value="/common/header.jsp" />
+        <put-attribute name="main" value="CHANGE-ME"/>
+        <put-attribute name="footer" value="/common/footer.jsp" />
+    </definition>
+    
+    <definition name="htgl.mainLayout" template="/layout/mainLayout.jsp">
+        <put-attribute name="header" value="/common/header.jsp" />
+        <put-attribute name="main" value="CHANGE-ME"/>
+        <put-attribute name="footer" value="/common/footer.jsp" />
+    </definition>
+    
+    <definition name="htgl.main.layout" template="/htgl/layout/mainLayout.jsp">
+        <put-attribute name="header" value="/htgl/common/header.jsp" />
+        <put-attribute name="title" value="/htgl/common/title.jsp" />
+        <put-attribute name="left" value="/htgl/common/left.jsp" />
+        <put-attribute name="main" value="CHANGE-ME"/>
+        <put-attribute name="footer" value="/htgl/common/footer.jsp" />
+    </definition>
+    
+    <definition name="test.main.layout" template="/test/layout/mainLayout.jsp">
+        <put-attribute name="header" value="/test/common/header.jsp" />
+        <put-attribute name="title" value="/test/common/title.jsp" />
+        <put-attribute name="left" value="/test/common/left.jsp" />
+        <put-attribute name="main" value="CHANGE-ME"/>
+        <put-attribute name="footer" value="/test/common/footer.jsp" />
+    </definition>
+
+    <!--layer-->
+    <definition name="layer.main.layout" template="/htgl/layout/main_layout_layer.jsp">
+        <put-attribute name="header" value="/layer/common/header.jsp" />
+        <put-attribute name="left" value="/layer/common/left.jsp" />
+        <put-attribute name="body-header" value="/layer/common/body-header.jsp" />
+        <put-attribute name="main" value="CHANGE-ME"/>
+        <put-attribute name="footer" value="/layer/common/footer.jsp" />
+    </definition>
+
+    <!-- layout end-->
+    
+    <!-- error -->
+    <definition name="error.index" extends="htgl.mainLayout">
+        <put-attribute name="main" value="/error/error.jsp" />
+    </definition>
+    
+    
+    <!-- login -->
+    <definition name="login.home" extends="login.mainLayout">
+        <put-attribute name="main" value="/login/login.jsp"/>
+    </definition>
+    <definition name="register.home" extends="login.mainLayout">
+        <put-attribute name="main" value="/login/register.jsp"/>
+    </definition>
+    
+<!-- htgl -->
+    <definition name="htgl.main.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/index.jsp"/>
+    </definition>
+    <!-- init -->
+    <!--<definition name="init.function.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/init/function/home.jsp"/>
+    </definition>-->
+
+    <definition name="init.role.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/init/role/home.jsp"/>
+    </definition>
+    <!-- account -->
+    <definition name="htgl.update.account" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/account/account.jsp"/>
+    </definition>
+    <definition name="htgl.update.password" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/account/password.jsp"/>
+    </definition>
+    <!-- beetl -->
+    <definition name="htgl.beetl.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/beetl/beetl.jsp" />
+    </definition>
+    <!-- mongodb -->
+    <definition name="htgl.mongodb.query" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/mongodb/query.jsp" />
+    </definition>
+    <definition name="htgl.mongodb.add" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/mongodb/query.jsp" />
+    </definition>
+    
+    <!-- redis -->
+    <definition name="htgl.redis.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/redis/index.jsp"/>
+    </definition>
+    <definition name="htgl.redis.result" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/redis/result.jsp"/>
+    </definition>
+    
+    <!-- user -->
+    <definition name="htgl.user.addUser" extends="htgl.mainLayout">
+        <put-attribute name="main" value="/htgl/user/addUser.jsp"/>
+    </definition>
+
+    <definition name="htgl.user.users" extends="htgl.mainLayout">
+        <put-attribute name="main" value="/htgl/user/users.jsp"/>
+    </definition>
+
+<!-- attachment -->
+
+    <!-- photo -->
+    <definition name="htgl.photoIndex" extends="htgl.mainLayout">
+        <put-attribute name="main" value="/htgl/photo/photo.jsp"/>
+    </definition>
+    
+    <!-- upload -->
+    <definition name="htgl.upload.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/upload/index.jsp"/>
+    </definition>
+    
+    <!-- download -->
+    <definition name="htgl.download.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/download/index.jsp"/>
+    </definition>
+    
+    <definition name="htgl.downloadVideo.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/attachment/video/downIndex.jsp"/>
+    </definition>
+    
+    <!-- excel -->
+    <definition name="htgl.excel.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/attachment/excel/index.jsp"/>
+    </definition>
+    
+    
+    
+    <!-- search -->
+    <definition name="htgl.search.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/search/index.jsp"/>
+    </definition>
+    
+    <definition name="htgl.lucene.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/lucene/index.jsp"/>
+    </definition>
+    
+    <definition name="htgl.elasticSearch.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/elasticSearch/index.jsp"/>
+    </definition>
+    
+    <!-- xss -->
+    <definition name="htgl.xss.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/xss/index.jsp"/>
+    </definition>
+    
+    <!-- jms-activeMQ -->
+    <definition name="htgl.jms.activemq.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/jms/activemq/index.jsp"/>
+    </definition>
+    <!-- queue -->
+    <definition name="htgl.jms.activemq.queue.producer" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/jms/activemq/queue/producer.jsp"/>
+    </definition>
+    <definition name="htgl.jms.activemq.queue.receiver" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/jms/activemq/queue/receiver.jsp"/>
+    </definition>
+    <!-- topic -->
+    <definition name="htgl.jms.activemq.topic.producer" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/jms/activemq/topic/producer.jsp"/>
+    </definition>
+    <definition name="htgl.jms.activemq.topic.receiver" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/jms/activemq/topic/receiver.jsp"/>
+    </definition>
+    
+    
+    <!-- mybatis -->
+    <definition name="htgl.mybatis.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/mybatis/index.jsp"/>
+    </definition>
+    
+    <!-- lambda -->
+    <definition name="htgl.lambda.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/lambda/index.jsp"/>
+    </definition>
+    
+    <!-- kafka -->
+    <definition name="htgl.kafka.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/kafka/index.jsp"/>
+    </definition>
+    
+    <!-- httpClient -->
+    <definition name="htgl.httpClient.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/httpClient/index.jsp"/>
+    </definition>
+    
+    <!-- ai -->
+    <definition name="htgl.ai.face.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/ai/face/index.jsp"/>
+    </definition>
+    
+    <!-- log -->
+    <definition name="htgl.log.login.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/log/login/index.jsp"/>
+    </definition>
+    
+    <!-- test -->
+    <definition name="test.body.index" extends="test.main.layout">
+        <put-attribute name="main" value="/test/index.jsp"/>
+    </definition>
+    
+    <!-- email -->
+    <definition name="htgl.mail.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/mail/index.jsp"/>
+    </definition>
+    <definition name="htgl.mail.sendMail" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/mail/sendMail.jsp"/>
+    </definition>
+    
+    <!-- spider -->
+    <definition name="htgl.spider.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/spider/index.jsp"/>
+    </definition>
+    
+    <!-- jfree -->
+    <definition name="htgl.jfree.index" extends="htgl.main.layout">
+        <put-attribute name="main" value="/htgl/jfree/index.jsp"/>
+    </definition>
+
+
+<!-- layer -->
+    <definition name="layer.welcome.index" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/index_layer.jsp"/>
+    </definition>
+
+    <definition name="layer.test.index" extends="layer.main.layout">
+        <put-attribute name="main" value="/layer/laymain.jsp"/>
+    </definition>
+
+    <definition name="init.function.index" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/menu/index.jsp"/>
+    </definition>
+
+    <!--user account-->
+    <definition name="htgl.query.users" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/user/users.jsp"/>
+    </definition>
+
+    <definition name="htgl.toAdd.user" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/user/addUser.jsp"/>
+    </definition>
+
+    <definition name="htgl.update.user" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/user/updateUser.jsp"/>
+    </definition>
+
+    <!--picture-->
+    <definition name="htgl.picture.toUpload" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/attachment/picture/toUpload.jsp"/>
+    </definition>
+    <definition name="htgl.picture.index" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/attachment/picture/index.jsp"/>
+    </definition>
+
+    <!--video-->
+    <definition name="htgl.video.toUpload" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/attachment/video/toUpload.jsp"/>
+    </definition>
+    <definition name="htgl.video.index" extends="layer.main.layout">
+        <put-attribute name="main" value="/htgl/attachment/video/index.jsp"/>
+    </definition>
+
+
+
+
+
+    
+</tiles-definitions>
