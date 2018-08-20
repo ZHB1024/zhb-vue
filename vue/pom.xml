@@ -17,6 +17,15 @@
   </properties>
   
   <dependencies>
+  
+  <!-- spring-hibernate -->
+  		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        
+        
   	<!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -40,6 +49,7 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql-connectort-java.version}</version>
 		</dependency>
+		
   	
   </dependencies>
 </project>
