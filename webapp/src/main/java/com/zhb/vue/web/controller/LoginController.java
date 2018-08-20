@@ -14,10 +14,10 @@ public class LoginController {
     
     private Logger logger = LoggerFactory.getLogger(LoginController.class);
     
-    @RequestMapping("/zhbController")
-    public String testController(HttpServletRequest request,HttpServletResponse response) {
+    @RequestMapping("/tologin")
+    public String toLogin(HttpServletRequest request,HttpServletResponse response) {
         logger.info("---------------zhb----------------------");
-        return "zhb.index";
+        return "login.index";
     }
 
 }
