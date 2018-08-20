@@ -1,4 +1,4 @@
-package com.zhb.vue.controller;
+package com.zhb.vue.web.controller;
 
 public class LoginController {
 

@@ -1,4 +1,4 @@
-package com.zhb.vue.util;
+package com.zhb.vue.web.util;
 
 public class WebAppUtil {
 
