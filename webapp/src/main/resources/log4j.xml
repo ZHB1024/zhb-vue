@@ -164,23 +164,11 @@
         <priority value="INFO" />
     </category>
 
-    <category name="com.chsi">
-        <priority value="INFO" />
-    </category>
-
-    <category name="com.chsi.framework">
-        <priority value="INFO" />
-    </category>
-
     <category name="com.chsi.framework.hibernate.HibernateSession">
         <priority value="INFO" />
     </category>
 
     <category name="org.springframework">
-        <priority value="INFO" />
-    </category>
-
-    <category name="com.chsi.cache.memcached">
         <priority value="INFO" />
     </category>
 
