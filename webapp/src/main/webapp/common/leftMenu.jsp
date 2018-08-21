@@ -1,21 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%
-  String ctxPath = request.getContextPath();
-%>
 
 <div id="app_menu" style="float:left;">
-  <Sider hide-trigger :style="{background: '#fff'}"> 
-    <Menu v-bind:active-name="childId" theme="light" width="auto" @on-select="selectMenu"  :open-names="[parentId]" >
+<Sider hide-trigger :style="{background: '#fff'}"> 
+    <i-menu v-bind:active-name="childId" theme="light" width="auto" @on-select="selectMenu"  :open-names="[parentId]" >
         <Submenu v-bind:name="index+1" v-for="parent,index in menu">
             <template slot="title"> 
                 <Icon v-bind:type="parent.icon"></Icon> {{ parent.name }}
             </template> 
-            <MenuItem v-for="child in parent.children" v-bind:to="child.url" v-bind:name="index+1+ '--' + child.id" >{{ child.name }}</MenuItem> 
+            <Menu-item v-for="child in parent.children" v-bind:to="child.url" v-bind:name="index+1+ '--' + child.id" >{{ child.name }}</Menu-item> 
             
         </Submenu>
-
-    </Menu>
-  </Sider>
+    </i-menu>
+   </Sider>
 </div>
 <script>
 var COOKIE_NAME = "MenuCookie";
