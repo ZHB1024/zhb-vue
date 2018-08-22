@@ -26,22 +26,6 @@
         <property name="defaultPropertyFileName" value="server.properties" />
         <property name="ignoreResourceNotFound" value="false" />
     </bean>
-    <!-- <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig">
-        <property name="selectIntoAllow" value="false"></property>
-        <property name="replaceAllow" value="false"></property>
-        <property name="mergeAllow" value="false"></property>
-        <property name="callAllow" value="false"></property>
-        <property name="setAllow" value="false"></property>
-        <property name="truncateAllow" value="false"></property>
-        <property name="createTableAllow" value="false"></property>
-        <property name="alterTableAllow" value="false"></property>
-        <property name="dropTableAllow" value="false"></property>
-        <property name="deleteWhereNoneCheck" value="true"></property>
-        <property name="updateWhereNoneCheck" value="true"></property>
-        <property name="conditionAndAlwayTrueAllow" value="false"></property>
-        <property name="conditionAndAlwayFalseAllow" value="false"></property>
-        <property name="mustParameterized" value="false"></property>
-    </bean> -->
     <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig">
         <property name="selectIntoAllow" value="false"></property>
         <property name="replaceAllow" value="false"></property>
