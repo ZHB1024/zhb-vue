@@ -9,10 +9,9 @@ String ctxPath = request.getContextPath();
 <meta charset="utf-8">
 <meta name="viewport" i-content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<%-- <title><tiles:insertAttribute name="title" /></title> --%>
+<title><tiles:insertAttribute name="title" /></title>
 
 <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview@3.0.0/dist/styles/iview.css">
-
 <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 <script type="text/javascript" src="https://unpkg.com/iview@3.0.0/dist/iview.js"></script>
@@ -20,12 +19,10 @@ String ctxPath = request.getContextPath();
 
 
 <!-- <link rel="stylesheet" type="text/css" href="/css/iview.css">
-
 <script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
 <script type="text/javascript" src="/js/vue.js"></script>
 <script type="text/javascript" src="/js/iview.js"></script>
 <script type="text/javascript" src="/js/axios.min.js"></script> -->
-
 
 <style>
 .layout {
@@ -59,22 +56,18 @@ html,body{height:100%}
 </style>
 
 </head>
+
+
 <body>
     <div id="app_header">
-        <i-header> 
-        <i-menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo">zhb</div>
-          <div class="layout-nav" style="text-align: right;">
-              <Menu-item name="3" :to="personalinfo"> <Icon type="ios-person"></Icon> 信息 </Menu-item>
-              <Menu-item name="4" :to="layouturl"> <Icon type="ios-log-out"></Icon> 退出 </Menu-item>
-          </div>
-        </i-menu> 
-        </i-header>
+        <tiles:insertAttribute name="header" />
     </div>
     <div style="height: 100%">
-        <jsp:include page="/common/leftMenu.jsp" flush="true" /> 
-        <tiles:insertAttribute name="main" />
+        <tiles:insertAttribute name="left" />
+        <tiles:insertAttribute name="body" />
     </div>
+</body>
+
 <script>
 new Vue({
     el: '#app_header',
@@ -88,5 +81,5 @@ new Vue({
     }
 });
 </script>
-</body>
+
 </html>

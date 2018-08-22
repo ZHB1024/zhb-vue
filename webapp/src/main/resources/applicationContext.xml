@@ -13,19 +13,22 @@
         http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        
     <context:annotation-config />
 
+<!-- 自动扫描service dao 排除controller -->
     <context:component-scan base-package="com.zhb.vue.service,com.zhb.vue.dao">
         <context:exclude-filter type="annotation"
                                 expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
     
-    <!-- 引入属性文件 -->
+    <!-- 引入server.properties文件 -->
     <bean class="com.zhb.forever.framework.config.spring.ConfigurablePropertyPlaceholder">
         <property name="propertyLocationSystemProperty" value="propertyPath" />
         <property name="defaultPropertyFileName" value="server.properties" />
         <property name="ignoreResourceNotFound" value="false" />
     </bean>
+    
     <bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig">
         <property name="selectIntoAllow" value="false"></property>
         <property name="replaceAllow" value="false"></property>
@@ -77,6 +80,7 @@
         <property name="filters" value="slf4j" />
         <property name="connectionProperties" value="druid.stat.slowSqlMillis=100" />
     </bean>
+    
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close" parent="parentDataSource">
         <property name="driverClassName" value="${sys.jdbc.datasourse.vue.driverClassName}"/>
         <property name="url" value="${sys.jdbc.datasourse.vue.url}" />

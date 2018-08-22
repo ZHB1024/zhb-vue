@@ -27,7 +27,7 @@ public class LoginController {
     @RequestMapping("/tologin")
     @Transactional
     public String toLogin(HttpServletRequest request,HttpServletResponse response) {
-        logger.info("---------------zhb----------------------");
+        logger.info("---------------login----------------------");
         List<ParamsData> datas = paramsService.getParams();
         if (null != datas) {
             for (ParamsData paramsData : datas) {
@@ -35,6 +35,19 @@ public class LoginController {
             }
         }
         return "login.index";
+    }
+    
+    @RequestMapping("/tohtgl")
+    @Transactional
+    public String toHtgl(HttpServletRequest request,HttpServletResponse response) {
+        logger.info("---------------htgl----------------------");
+        List<ParamsData> datas = paramsService.getParams();
+        if (null != datas) {
+            for (ParamsData paramsData : datas) {
+                logger.info(paramsData.getName());
+            }
+        }
+        return "htgl.index";
     }
 
 }
