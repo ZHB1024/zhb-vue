@@ -1,0 +1,66 @@
+
+
+/*用户表 */
+create table user_info
+(
+  id                 VARCHAR(16) not null,
+  user_name			 VARCHAR(15) not null,
+  password           VARCHAR(100) not null,
+  salt				 VARCHAR(8) not null,
+  real_name          VARCHAR(20) ,
+  sex				 VARCHAR(2) ,	
+  
+  identity_card		 VARCHAR(18) ,
+  country			 VARCHAR(50) ,
+  nation			 VARCHAR(50) ,
+  
+  byyx				 VARCHAR(50) ,
+  
+  mobile_phone       VARCHAR(11),
+  email              VARCHAR(30) ,
+  
+  lob_id			 VARCHAR(16) ,
+  
+  create_time         DATETIME not null,
+  update_time         DATETIME,
+  delete_flag             int(1) not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/*功能表 */
+create table function_info
+(
+  id                 VARCHAR(16) not null,
+  name			     VARCHAR(20) not null,
+  type				 smallint(1) not null,	
+  path				 VARCHAR(100) not null,
+  order_index 			 int(2) not null,	
+  icon_id			 VARCHAR(16) ,
+  parent_id			 VARCHAR(16) ,
+  delete_flag             int(1) not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/*用户-功能表 */
+create table user_function_info
+(
+  id                 VARCHAR(16) not null,
+  user_id			 VARCHAR(16) not null,
+  function_id	     VARCHAR(16) not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+/*图标表 */
+create table icon_info
+(
+  id                 VARCHAR(16) not null,
+  name			     VARCHAR(20) not null,
+  value              VARCHAR(50) not null,
+  delete_flag             int(1) not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
