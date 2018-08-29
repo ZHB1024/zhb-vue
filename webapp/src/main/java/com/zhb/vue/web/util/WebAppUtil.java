@@ -1,24 +1,47 @@
 package com.zhb.vue.web.util;
 
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.util.WebUtils;
 
 import com.zhb.vue.web.Constant;
-import com.zhb.vue.web.vo.LoginUserVO;
+import com.zhb.vue.web.vo.LoginInfoVO;
 
 public class WebAppUtil {
     
-    
-    public static LoginUserVO getLoginUserVO(HttpServletRequest request) {
-        return (LoginUserVO) WebUtils.getSessionAttribute(request, Constant.SESSION_ZHB_VUE);
+    /**
+     * 获取登录对象信息
+     * @return
+     */
+    public static LoginInfoVO getLoginUserVO(HttpServletRequest request) {
+        return (LoginInfoVO) WebUtils.getSessionAttribute(request, Constant.SESSION_LOGIN_USER_VO);
     }
 
-    public static void setLoginUserVO(HttpServletRequest request, LoginUserVO data) {
-        WebUtils.setSessionAttribute(request, Constant.SESSION_ZHB_VUE, data);
+    /**
+     * 设置登录对象信息
+     * @return
+     */
+    public static void setLoginUserVO(HttpServletRequest request, LoginInfoVO data) {
+        WebUtils.setSessionAttribute(request, Constant.SESSION_LOGIN_USER_VO, data);
     }
+    
+    /**
+     * 获取用户UserId
+     * @return
+     */
+    public static String getUserId(HttpServletRequest request) {
+        return (String) request.getSession().getAttribute(Constant.SESSION_USER_ID);
+    }
+    
+    /**
+     * 设置用户UserId
+     * @return
+     */
+    public static void setUserId(HttpServletRequest request,String userId) {
+         WebUtils.setSessionAttribute(request, Constant.SESSION_USER_ID, userId);
+    }
+
 
     public static String getIp(HttpServletRequest request) {
         if (request.getHeader("x-forwarded-for") == null) {
