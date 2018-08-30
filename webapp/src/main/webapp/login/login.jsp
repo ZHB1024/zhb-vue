@@ -152,3 +152,17 @@
 	</div>
 	<div style="text-align:center;">
 </div>
+
+<script>
+var myVue= new Vue({
+    el: '#login',
+    data:{
+    	personalinfo:'<%=ctxPath%>/common/personal/index',
+    	layouturl:'<%=ctxPath%>/logout'
+    },
+    created: function () {
+      console.log("header初始化--加载中...TODO")
+    }
+});
+
+</script>

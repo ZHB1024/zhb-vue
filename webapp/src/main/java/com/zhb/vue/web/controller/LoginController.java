@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.vue.params.UserInfoParam;
@@ -41,7 +42,8 @@ public class LoginController {
         return "login.index";
     }
     
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @RequestMapping(value = "/login/api",method = RequestMethod.POST)
+    @ResponseBody
     @Transactional
     public AjaxData login(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
         AjaxData ajaxData = new AjaxData();
