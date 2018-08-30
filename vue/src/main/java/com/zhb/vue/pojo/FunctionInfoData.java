@@ -18,13 +18,15 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.zhb.forever.framework.dic.DeleteFlagEnum;
+
 @Entity
 @Table(name="function_info")
 public class FunctionInfoData {
     
     private String id;
     private String name;
-    private Short type;
+    private Integer type;
     private String path;
     private Integer order;
     private IconInfoData iconInfoData;
@@ -32,6 +34,10 @@ public class FunctionInfoData {
     private Integer deleteFlag;
     
     private List<FunctionInfoData> childFunctionInfos;
+    
+    public FunctionInfoData() {
+        this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
+    }
     
     @Id
     @GeneratedValue(generator = "app_seq")
@@ -53,10 +59,10 @@ public class FunctionInfoData {
     }
     
     @Column(name = "type",nullable = false)
-    public Short getType() {
+    public Integer getType() {
         return type;
     }
-    public void setType(Short type) {
+    public void setType(Integer type) {
         this.type = type;
     }
     

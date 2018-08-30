@@ -9,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.UserInfoData;
@@ -25,7 +27,16 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
     
-    @RequestMapping(value="/searchuserinfo",method=RequestMethod.GET)
+    @RequestMapping(value="/touserinfo",method=RequestMethod.GET)
+    @Transactional
+    public String toUserInfo(HttpServletRequest request,HttpServletResponse response) {
+        
+        return "htgl.user.index";
+    }
+    
+    @RequestMapping(value="/searchuserinfo/api",method=RequestMethod.POST)
+    @ResponseBody
+    @Transactional
     public void searchUserInfo(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
         List<UserInfoData> userInfos = userInfoService.getUserInfos(param);
         if (null != userInfos) {

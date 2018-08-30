@@ -72,7 +72,7 @@ function login() {
   	    axios.post('/logincontroller/login/api', param)
   		  .then(function (response) {
   			  if(response.data.flag){
-  				  window.location.href='<%=ctxPath%>/jb/worktime/touprecord';
+  				  window.location.href='/htgl/userinfocontroller/touserinfo';
   			  }else{
   				  myVue.$Message.error({
                       content: response.data.errorMessages,

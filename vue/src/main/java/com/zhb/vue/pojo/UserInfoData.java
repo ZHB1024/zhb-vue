@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.zhb.forever.framework.dic.DeleteFlagEnum;
+
 @Entity
 @Table(name="user_info")
 public class UserInfoData {
@@ -30,6 +32,11 @@ public class UserInfoData {
     private Calendar createTime;
     private Calendar updateTime;
     private Integer deleteFlag;
+    
+    public UserInfoData() {
+        this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
+        this.createTime = Calendar.getInstance();
+    } 
     
     @Id
     @GeneratedValue(generator = "app_seq")

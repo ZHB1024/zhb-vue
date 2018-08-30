@@ -28,7 +28,7 @@ public class LoginFilter implements Filter {
     public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain arg2)
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)arg0;
-        LoginInfoVO loginUserVO = WebAppUtil.getLoginUserVO(request);
+        LoginInfoVO loginUserVO = WebAppUtil.getLoginInfoVO(request);
         if (null == loginUserVO || null == loginUserVO.getUserInfoData()) {
             String ctxPath = request.getContextPath();
             try {

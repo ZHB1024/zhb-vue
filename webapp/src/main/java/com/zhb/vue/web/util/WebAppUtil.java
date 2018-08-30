@@ -14,7 +14,7 @@ public class WebAppUtil {
      * 获取登录对象信息
      * @return
      */
-    public static LoginInfoVO getLoginUserVO(HttpServletRequest request) {
+    public static LoginInfoVO getLoginInfoVO(HttpServletRequest request) {
         return (LoginInfoVO) WebUtils.getSessionAttribute(request, Constant.SESSION_LOGIN_USER_VO);
     }
 
@@ -22,7 +22,7 @@ public class WebAppUtil {
      * 设置登录对象信息
      * @return
      */
-    public static void setLoginUserVO(HttpServletRequest request, LoginInfoVO data) {
+    public static void setLogInfoVO(HttpServletRequest request, LoginInfoVO data) {
         WebUtils.setSessionAttribute(request, Constant.SESSION_LOGIN_USER_VO, data);
     }
     

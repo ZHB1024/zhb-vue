@@ -19,7 +19,8 @@ var COOKIE_PATH = "/";
 new Vue({
       el: '#app_menu',
       data: {
-    	  menu:[{"children":[{"name":"时间管理","id":"jbjl_sjgl","url":"/jb/worktime/getselfworkrecordindex"},{"name":"预览提交","id":"jbjl_ylsb","url":"/jb/worktime/getselfworkdayndex"}],"name":"加班记录","id":"jbjl","url":null}],
+    	  //menu:[{"children":[{"name":"时间管理","id":"jbjl_sjgl","url":"/jb/worktime/getselfworkrecordindex"},{"name":"预览提交","id":"jbjl_ylsb","url":"/jb/worktime/getselfworkdayndex"}],"name":"加班记录","id":"jbjl","url":null}],
+    	  menu:[],
     	  parentId:null,
     	  childId:null
       },
@@ -33,11 +34,11 @@ new Vue({
     		  var cookieValue = parentId + "--" + childId;
     		  document.cookie=COOKIE_NAME+ "=" +escape(cookieValue)
     	  }
-      }/* ,
+      } ,
       beforeCreate: function(){
     	  axios({
     		  method:'get',
-    		  url:'/common/menu/api',
+    		  url:'/htgl/functioninfocontroller/getfunctions/api',
     		  responseType:'json'
     		}).then((response) => {
     			this.menu=response.data.data;
@@ -64,7 +65,7 @@ new Vue({
 			  console.log("没有找到cookie");
 		  } 
           console.log("菜单初始化--加载中...TODO")
-      } */
+      } 
 });
 
 </script>

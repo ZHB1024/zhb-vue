@@ -72,8 +72,8 @@ html,body{height:100%}
 new Vue({
     el: '#app_header',
     data:{
-    	personalinfo:'<%=ctxPath%>/common/personal/index',
-    	layouturl:'<%=ctxPath%>/logout'
+    	<%-- personalinfo:'<%=ctxPath%>/common/personal/index',
+    	layouturl:'<%=ctxPath%>/logout' --%>
     },
     created: function () {
     	

@@ -8,6 +8,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.zhb.forever.framework.dic.DeleteFlagEnum;
+
 @Entity
 @Table(name="icon_info")
 public class IconInfoData {
@@ -16,6 +18,10 @@ public class IconInfoData {
     private String name;
     private String value;
     private Integer deleteFlag;
+    
+    public IconInfoData() {
+        this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
+    }
     
     @Id
     @GeneratedValue(generator = "app_seq")

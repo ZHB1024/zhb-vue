@@ -37,6 +37,9 @@ public class UserInfoDaoImpl implements UserInfoDao {
         if (StringUtil.isNotBlank(param.getId())) {
             cq.where(cb.equal(root.get("id"), param.getId()));
         }
+        if (StringUtil.isNotBlank(param.getUserName())) {
+            cq.where(cb.equal(root.get("userName"), param.getUserName()));
+        }
         
         Query<UserInfoData> query = session.createQuery(cq);
         return query.list();
