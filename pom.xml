@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>webapp</module>
+		<module>vue</module>
     </modules>
     <version>0.0.1-SNAPSHOT</version>
     <url>http://maven.apache.org</url>
