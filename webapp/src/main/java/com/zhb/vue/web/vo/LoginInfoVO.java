@@ -1,17 +1,18 @@
 package com.zhb.vue.web.vo;
 
-import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.forever.framework.vo.UserInfoVO;
 
 public class LoginInfoVO {
     
-    private UserInfoData userInfoData;
+    private UserInfoVO userInfoVO;
 
-    public UserInfoData getUserInfoData() {
-        return userInfoData;
+    public UserInfoVO getUserInfoVO() {
+        return userInfoVO;
     }
 
-    public void setUserInfoData(UserInfoData userInfoData) {
-        this.userInfoData = userInfoData;
+    public void setUserInfoVO(UserInfoVO userInfoVO) {
+        this.userInfoVO = userInfoVO;
     }
+
     
 }

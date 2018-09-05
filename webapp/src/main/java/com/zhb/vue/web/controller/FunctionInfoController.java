@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.framework.vo.UserInfoVO;
+import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.FunctionInfoService;
+import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.util.FunctionUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -29,13 +32,18 @@ public class FunctionInfoController {
     @Autowired
     private FunctionInfoService functionInfoService;
     
+    @Autowired
+    private UserInfoService userInfoService;
+    
     @RequestMapping("/getfunctions/api")
     @ResponseBody
     @Transactional
     public AjaxData getFunctions(HttpServletRequest request) {
         AjaxData ajaxData = new AjaxData();
-        UserInfoData userInfo = WebAppUtil.getLoginInfoVO(request).getUserInfoData();
-        List<UserFunctionInfoData> datas = functionInfoService.getDataByUser(userInfo);
+        UserInfoParam userInfoParam = new UserInfoParam();
+        userInfoParam.setId(WebAppUtil.getUserId(request));
+        List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam);
+        List<UserFunctionInfoData> datas = functionInfoService.getDataByUser(userInfoData.get(0));
         JSONArray jsonArray = FunctionUtil.generateJSonArray(datas);
         
         ajaxData.setData(jsonArray);

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c" %>
 <%
   String ctxPath = request.getContextPath();
 %>
@@ -45,6 +45,7 @@
 						</section>
 					</div>
 					<div class="form-actions">
+					    <input type="hidden" name="redirectUrl" value="${redirectUrl}"/>
 						<a tabindex="4" class="btn pull-left btn-link text-muted" onClick="goto_forget()">忘记密码?</a>
 						<a tabindex="5" class="btn btn-link text-muted" onClick="goto_register()">注册</a>
 						<input class="btn btn-primary" type="button" tabindex="3" onClick="login()" value="登录" 

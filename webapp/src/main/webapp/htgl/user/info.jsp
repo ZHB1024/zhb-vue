@@ -7,15 +7,15 @@ String ctxPath = request.getContextPath();
 li {list-style-type:none;}
 </style>
 
-<div id="app_content" >
-    <Layout :style="{padding: '0 20px 20px'}"> 
+<div id="app_content" style="height: 100%">
+    <Layout :style="{padding: '0 24px 24px', height: '100%'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
             <breadcrumb-item>首页</breadcrumb-item> 
             <breadcrumb-item>加班记录</breadcrumb-item> 
             <breadcrumb-item>添加记录</breadcrumb-item> 
         </Breadcrumb> 
         
-        <i-content :style="{padding: '24px', background: '#fff'}">
+        <i-content :style="{padding: '24px', minHeight: '428px', background: '#fff'}">
           <div style="width:100%;">
             <div style="width: 600px;margin-left:  auto;margin-right:  auto;">
             	<i-form method="post" action="<%=ctxPath %>/jb/worktime/addrecord" ref="formValidate" :model="formParm" :rules="ruleValidate" :label-width="80">

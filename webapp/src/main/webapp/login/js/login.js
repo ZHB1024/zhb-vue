@@ -65,14 +65,19 @@ function login() {
 	if (flag) {
 		return false;
 	} else {//登录
-		//调用后台登录验证的方法
+		//调用后台登录验证
 		let param = new URLSearchParams(); 
   	    param.append("userName",username); 
   	    param.append("password",password); 
   	    axios.post('/logincontroller/login/api', param)
   		  .then(function (response) {
   			  if(response.data.flag){
-  				  window.location.href='/htgl/userinfocontroller/touserinfo';
+  				var redirectUrl = $("input[name='redirectUrl']").val().trim();
+  				if(null == redirectUrl || "" == redirectUrl){
+  					window.location.href='/htgl/userinfocontroller/touserinfo';
+  			    }else{
+  			    	window.location.href= redirectUrl;
+  			    }
   			  }else{
   				  myVue.$Message.error({
                       content: response.data.errorMessages,

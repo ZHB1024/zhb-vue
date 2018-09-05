@@ -21,11 +21,19 @@
 
 <!-- layout end-->
 
+
+<!-- error -->
+    <definition name="error.index" extends="login.main.layout">
+        <put-attribute name="main" value="/error/error.jsp" />
+    </definition>
+
     
-    <!-- test -->
+<!-- login -->
     <definition name="login.index" extends="login.main.layout">
         <put-attribute name="body" value="/login/login.jsp" />
     </definition>
+    
+<!-- htgl -->   
     <definition name="htgl.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/index.jsp" />
     </definition>
@@ -33,6 +41,9 @@
     <!-- user info -->
 	<definition name="htgl.user.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/user/index.jsp" />
+    </definition>
+	<definition name="htgl.user.info" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/user/info.jsp" />
     </definition>
     
 </tiles-definitions>

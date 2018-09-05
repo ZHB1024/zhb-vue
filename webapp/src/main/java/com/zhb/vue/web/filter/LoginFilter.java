@@ -20,8 +20,6 @@ public class LoginFilter implements Filter {
 
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -29,13 +27,14 @@ public class LoginFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)arg0;
         LoginInfoVO loginUserVO = WebAppUtil.getLoginInfoVO(request);
-        if (null == loginUserVO || null == loginUserVO.getUserInfoData()) {
+        if (null == loginUserVO || null == loginUserVO.getUserInfoVO()) {
             String ctxPath = request.getContextPath();
             try {
                 request.setAttribute(Constant.REQUEST_ERROR, "登陆后才能访问系统");
                 request.setAttribute("redirectUrl", request.getRequestURL());
                 HttpServletResponse response =(HttpServletResponse)arg1;
-                request.getRequestDispatcher(ctxPath + "/login/login.jsp").forward(request, response);
+                //request.getRequestDispatcher(ctxPath + "/login/login.jsp").forward(request, response);
+                request.getRequestDispatcher(ctxPath + "/logincontroller/tologin").forward(request, response);
             } catch (ServletException | IOException e) {
                 e.printStackTrace();
             }

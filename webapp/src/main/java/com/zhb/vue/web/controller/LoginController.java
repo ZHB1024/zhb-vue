@@ -27,6 +27,7 @@ import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.FunctionInfoService;
 import com.zhb.vue.service.IconInfoService;
 import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.WebAppUtil;
 import com.zhb.vue.web.util.WriteJSUtil;
 import com.zhb.vue.web.vo.LoginInfoVO;
@@ -49,6 +50,7 @@ public class LoginController {
     @RequestMapping(value = "/tologin",method = RequestMethod.GET)
     @Transactional
     public String toLogin(HttpServletRequest request,HttpServletResponse response) {
+        System.out.println(request.getAttribute("redirectUrl"));
         return "login.index";
     }
     
@@ -77,7 +79,8 @@ public class LoginController {
             return ajaxData;
         }
         LoginInfoVO loginInfoVO = new LoginInfoVO();
-        loginInfoVO.setUserInfoData(userInfoData);
+        
+        loginInfoVO.setUserInfoVO(Data2VO.userInfoDat2VO(userInfoData));
         WebAppUtil.setLogInfoVO(request, loginInfoVO);
         WebAppUtil.setUserId(request, userInfoData.getId());
         

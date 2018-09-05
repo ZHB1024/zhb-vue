@@ -17,6 +17,8 @@ String ctxPath = request.getContextPath();
 <script type="text/javascript" src="https://unpkg.com/iview@3.0.0/dist/iview.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+
 
 <!-- <link rel="stylesheet" type="text/css" href="/css/iview.css">
 <script type="text/javascript" src="/js/jquery-1.12.4.js"></script>
@@ -26,13 +28,13 @@ String ctxPath = request.getContextPath();
 
 
 <style>
-.layout {
+/* .layout {
 	border: 1px solid #d7dde4;
 	background: #f5f7f9;
 	position: relative;
 	border-radius: 4px;
 	overflow: hidden;
-}
+} */
 
 .layout-logo {
 	width: 100px;
@@ -43,43 +45,37 @@ String ctxPath = request.getContextPath();
 	position: relative;
 	top: 0px;
 	left: 20px;
-  color:white;
-  font-size:25px
+    color:white;
+    font-size:25px
 }
 
-
 .layout-nav {
-	width: 185px;
+	width: 250px;
 	margin: 0 auto;
 	margin-right: 20px;
 }
+
 html,body{height:100%}
+
 </style>
 
 </head>
 
 <body>
-    <div id="app_header">
+    <div id="header">
         <tiles:insertAttribute name="header" />
     </div>
-    <div style="height: 100%">
+    <div id="body">
         <tiles:insertAttribute name="left" />
         <tiles:insertAttribute name="body" />
     </div>
+    <div id="footer">
+        <tiles:insertAttribute name="footer" />
+    </div>
 </body>
 
-<script>
-new Vue({
-    el: '#app_header',
-    data:{
-    	<%-- personalinfo:'<%=ctxPath%>/common/personal/index',
-    	layouturl:'<%=ctxPath%>/logout' --%>
-    },
-    created: function () {
-    	
-      console.log("header初始化--加载中...TODO")
-    }
-});
+<script type="text/javascript" >
+    $("#body").css('minHeight',$(window).height()-$("#header").height()-$("#footer").height());
 </script>
 
 </html>
