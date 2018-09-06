@@ -10,6 +10,8 @@ public class UserInfoParam {
     private String password;
     private String salt;
     private String sex;
+    private Calendar birthday;
+    private String birthdayString;
     private String identityCard;
     private String country;
     private String nation;
@@ -57,6 +59,18 @@ public class UserInfoParam {
     }
     public void setSex(String sex) {
         this.sex = sex;
+    }
+    public Calendar getBirthday() {
+        return birthday;
+    }
+    public void setBirthday(Calendar birthday) {
+        this.birthday = birthday;
+    }
+    public String getBirthdayString() {
+        return birthdayString;
+    }
+    public void setBirthdayString(String birthdayString) {
+        this.birthdayString = birthdayString;
     }
     public String getIdentityCard() {
         return identityCard;

@@ -50,7 +50,7 @@ String ctxPath = request.getContextPath();
 }
 
 .layout-nav {
-	width: 250px;
+	width: 300px;
 	margin: 0 auto;
 	margin-right: 20px;
 }

@@ -45,5 +45,8 @@
 	<definition name="htgl.user.info" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/user/info.jsp" />
     </definition>
+	<definition name="htgl.user.update" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/user/update.jsp" />
+    </definition>
     
 </tiles-definitions>

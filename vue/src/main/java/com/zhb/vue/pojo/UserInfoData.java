@@ -22,6 +22,7 @@ public class UserInfoData {
     private String password;
     private String salt;
     private String sex;
+    private Calendar birthday;
     private String identityCard;
     private String country;
     private String nation;
@@ -89,6 +90,15 @@ public class UserInfoData {
         this.sex = sex;
     }
     
+    @Column(name = "birthday")
+    public Calendar getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Calendar birthday) {
+        this.birthday = birthday;
+    }
+
     @Column(name = "identity_card",length=18)
     public String getIdentityCard() {
         return identityCard;

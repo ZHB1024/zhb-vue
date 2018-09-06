@@ -14,6 +14,7 @@ public class Data2VO {
             vo.setUserName(data.getUserName());
             vo.setRealName(data.getRealName());
             vo.setSex(data.getSex());
+            vo.setBirthday(data.getBirthday());
             vo.setIdentityCard(data.getIdentityCard());
             vo.setLobId(data.getLobId());
             vo.setMobilePhone(data.getMobilePhone());

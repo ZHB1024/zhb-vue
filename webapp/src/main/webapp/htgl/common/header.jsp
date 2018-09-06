@@ -17,7 +17,7 @@
 new Vue({
 	el: '#app_header',
     data:{
-    	personalinfo:'<%=ctxPath%>/htgl/userinfocontroller/userinfo',
+    	personalinfo:'<%=ctxPath%>/htgl/userinfocontroller/toselfinfo',
     	loginout:'<%=ctxPath%>/htgl/userinfocontroller/exit',
     	realname:''
     },
