@@ -9,7 +9,7 @@ create table user_info
   salt				 VARCHAR(8) not null,
   real_name          VARCHAR(20) ,
   sex				 VARCHAR(2) ,	
-  
+  birthday           DATETIME not null,
   identity_card		 VARCHAR(18) ,
   country			 VARCHAR(50) ,
   nation			 VARCHAR(50) ,
@@ -60,6 +60,24 @@ create table icon_info
   id                 VARCHAR(16) not null,
   name			     VARCHAR(20) not null,
   value              VARCHAR(50) not null,
+  delete_flag             int(1) not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+/*字典表 */
+create table dic_info
+(
+  id                 VARCHAR(16) not null,
+  category           VARCHAR(10) not null,
+  code           VARCHAR(5) not null,
+  name           VARCHAR(50) not null,
+  name2           VARCHAR(50) ,
+  name3           VARCHAR(50) ,
+  type         VARCHAR(1) not null,  
+  order_index        int(5) not null,  
+  remark           VARCHAR(50),
   delete_flag             int(1) not null,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -23,15 +23,23 @@ li {list-style-type:none;}
                 	
                 	
                 	<form-item label="用户名" prop="detail">
-                  		<i-input type="text" disabled name="userName" v-model="userInfo.userName" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" disabled name="userName" v-model="userInfo.userName" :maxlength="15" placeholder="请输入用户名"></i-input>
                 	</form-item >
                 	
                 	<form-item label="姓名" prop="realName">
-                  		<i-input type="text" name="realName" v-model="userInfo.realName" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="realName" v-model="userInfo.realName" :maxlength="10" placeholder="请输入姓名"></i-input>
                 	</form-item >
                 	
+                	<form-item label="国家/地区" prop="country">
+                	  <i-select name="country" v-model="userInfo.country" placeholder="请选择加国家/地区">
+                        	<i-option v-bind:value="item.name" v-for="item in countryParm">
+                        		{{item.name}}
+                        	</i-option>
+                    	</i-select>
+                	</form-item>
+                	
                 	<form-item label="性别" prop="sex">
-                  		<i-input type="text" name="sex" v-model="userInfo.sex" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="sex" v-model="userInfo.sex" :maxlength="1" placeholder="请输入性别"></i-input>
                 	</form-item >
                 	
                 	<form-item label="出生日期" prop="birthday">
@@ -40,33 +48,25 @@ li {list-style-type:none;}
                 	</form-item >
                 	
                 	<form-item label="身份证号" prop="identityCard">
-                  		<i-input type="text" name="identityCard" v-model="userInfo.identityCard" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="identityCard" v-model="userInfo.identityCard" :maxlength="18" placeholder="请输入身份证号"></i-input>
                 	</form-item >
                 	
-                	<form-item label="国籍" prop="country">
-                  		<i-input type="text" name="country" v-model="userInfo.country" :maxlength="100" placeholder="请输入加班详情"></i-input>
-                	</form-item >
                 	
                 	<form-item label="民族" prop="nation">
-                  		<i-input type="text" name="nation" v-model="userInfo.nation" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="nation" v-model="userInfo.nation" :maxlength="25" placeholder="请输入民族"></i-input>
                 	</form-item >
                 	
                 	<form-item label="毕业院校" prop="byyx">
-                  		<i-input type="text" name="byyx" v-model="userInfo.byyx" search  :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="byyx" v-model="userInfo.byyx" search  :maxlength="25" placeholder="请输入毕业院校"></i-input>
                 	</form-item >
                 	
                 	<form-item label="电话" prop="mobilePhone">
-                  		<i-input type="text" name="mobilePhone" v-model="userInfo.mobilePhone" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="mobilePhone" v-model="userInfo.mobilePhone" :maxlength="11" placeholder="请输入电话"></i-input>
                 	</form-item >
                 	
                 	<form-item label="邮箱" prop="email">
-                  		<i-input type="text" name="email" v-model="userInfo.email" :maxlength="100" placeholder="请输入加班详情"></i-input>
+                  		<i-input type="text" name="email" v-model="userInfo.email" :maxlength="30" placeholder="请输入邮箱"></i-input>
                 	</form-item >
-                	
-                	<!-- <form-item label="加班时间" prop="workdate">
-                  		<Date-picker  :readonly="true" name="workDate" type="date" :options="limitDate" v-model="formParm.workdate"  format="yyyy-MM-dd"  placeholder="加班日期"  >
-                    	</Date-picker>  
-                	</form-item > -->
                 	
                   <form-item align="center">
                 		<Row>
@@ -103,6 +103,7 @@ var myVue =  new Vue({
 			  mobilePhone:userInfoJson.mobilePhone,
 			  email:userInfoJson.email
 		  },
+		  countryParm:[],
 		  limitDate:{
 			  disabledDate (date) {
 		             return date.valueOf() > Date.now() ;
@@ -141,11 +142,11 @@ var myVue =  new Vue({
 	    
 	  },
 	  created: function () {
-		  <%-- axios.all([
-	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/selfinfo/api')
-	    	  ]).then(axios.spread(function (userinfoResp) {
-	    		  myVue.userInfo = userinfoResp.data.data;
-	    	  })); --%>
+		  axios.all([
+	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api')
+	    	  ]).then(axios.spread(function (dicinfoResp) {
+	    		  myVue.countryParm = dicinfoResp.data.data;
+	    	  }));
 	 },
 	  methods:{
 		   handleSubmit:function (name) {

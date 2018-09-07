@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.vo.UserInfoVO;
+import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 
 public class Data2JSONUtil {
@@ -110,6 +111,49 @@ public class Data2JSONUtil {
                 object.put("deleteFlag", DeleteFlagEnum.getName(data.getDeleteFlag()));
                 jsonArray.add(object);
             }
+        }
+        
+        return jsonArray;
+    }
+    
+    public static JSONArray dicInfoData2JSONArray(DicInfoData data) {
+        if (null == data ) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        JSONObject object = new JSONObject();
+        object.put("id", data.getId());
+        object.put("category", data.getCategory());
+        object.put("code", data.getCode());
+        object.put("name", data.getName());
+        object.put("name2", data.getName2());
+        object.put("name3", data.getName3());
+        object.put("type", data.getType());
+        object.put("orderIndex", data.getOrderIndex());
+        object.put("deleteFlag", data.getDeleteFlag());
+        object.put("remark", data.getRemark());
+        jsonArray.add(object);
+        return jsonArray;
+    }
+    
+    public static JSONArray dicInfoDatas2JSONArray(List<DicInfoData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        for (DicInfoData data : datas) {
+            JSONObject object = new JSONObject();
+            object.put("id", data.getId());
+            object.put("category", data.getCategory());
+            object.put("code", data.getCode());
+            object.put("name", data.getName());
+            object.put("name2", data.getName2());
+            object.put("name3", data.getName3());
+            object.put("type", data.getType());
+            object.put("orderIndex", data.getOrderIndex());
+            object.put("deleteFlag", data.getDeleteFlag());
+            object.put("remark", data.getRemark());
+            jsonArray.add(object);
         }
         
         return jsonArray;
