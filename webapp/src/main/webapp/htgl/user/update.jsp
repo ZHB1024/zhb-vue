@@ -31,7 +31,7 @@ li {list-style-type:none;}
                 	</form-item >
                 	
                 	<form-item label="国家/地区" prop="country">
-                	  <i-select name="country" v-model="userInfo.country" placeholder="请选择加国家/地区">
+                	  <i-select name="country" v-model="userInfo.country" placeholder="请选择国家/地区">
                         	<i-option v-bind:value="item.name" v-for="item in countryParm">
                         		{{item.name}}
                         	</i-option>
@@ -51,10 +51,13 @@ li {list-style-type:none;}
                   		<i-input type="text" name="identityCard" v-model="userInfo.identityCard" :maxlength="18" placeholder="请输入身份证号"></i-input>
                 	</form-item >
                 	
-                	
                 	<form-item label="民族" prop="nation">
-                  		<i-input type="text" name="nation" v-model="userInfo.nation" :maxlength="25" placeholder="请输入民族"></i-input>
-                	</form-item >
+                	  <i-select name="nation" v-model="userInfo.nation" placeholder="请选择民族">
+                        	<i-option v-bind:value="item.name" v-for="item in mzParm">
+                        		{{item.name}}
+                        	</i-option>
+                    	</i-select>
+                	</form-item>
                 	
                 	<form-item label="毕业院校" prop="byyx">
                   		<i-input type="text" name="byyx" v-model="userInfo.byyx" search  :maxlength="25" placeholder="请输入毕业院校"></i-input>
@@ -104,6 +107,7 @@ var myVue =  new Vue({
 			  email:userInfoJson.email
 		  },
 		  countryParm:[],
+		  mzParm:[],
 		  limitDate:{
 			  disabledDate (date) {
 		             return date.valueOf() > Date.now() ;
@@ -143,9 +147,19 @@ var myVue =  new Vue({
 	  },
 	  created: function () {
 		  axios.all([
-	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api')
-	    	  ]).then(axios.spread(function (dicinfoResp) {
+	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api', {
+	    	    	params : { 
+	    	    		category : 'gjmc'
+	    	    	}
+	    	    }),
+	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api', {
+	    	    	params : { 
+	    	    		category : 'mz'
+	    	    	}
+	    	    })
+	    	  ]).then(axios.spread(function (dicinfoResp,mzResp) {
 	    		  myVue.countryParm = dicinfoResp.data.data;
+	    		  myVue.mzParm = mzResp.data.data;
 	    	  }));
 	 },
 	  methods:{

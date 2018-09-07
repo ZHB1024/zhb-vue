@@ -7,6 +7,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -37,10 +38,15 @@ public class DicInfoDaoImpl implements DicInfoDao {
             return null;
         }
         Session session = sessionFactory.getCurrentSession();
+        //Criteria criteria = session.createCriteria(DicInfoData.class);
+        
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<DicInfoData> criteriaQuery = criteriaBuilder.createQuery(DicInfoData.class);
         Root<DicInfoData> root = criteriaQuery.from(DicInfoData.class);
         
+        if (StringUtil.isNotBlank(param.getId())) {
+            criteriaQuery.where(criteriaBuilder.equal(root.get("id"), param.getId()));
+        }
         if (StringUtil.isNotBlank(param.getCategory())) {
             criteriaQuery.where(criteriaBuilder.equal(root.get("category"), param.getCategory()));
         }
@@ -66,7 +72,7 @@ public class DicInfoDaoImpl implements DicInfoDao {
             criteriaQuery.where(criteriaBuilder.equal(root.get("deleteFlag"), DeleteFlagEnum.UDEL.getIndex()));
         }
         
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("orderIndex")));
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("category"))).orderBy(criteriaBuilder.asc(root.get("orderIndex")));
         
         Query<DicInfoData> query = session.createQuery(criteriaQuery);
         return query.list();
