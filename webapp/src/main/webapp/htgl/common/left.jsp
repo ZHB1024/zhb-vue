@@ -38,7 +38,7 @@ new Vue({
       beforeCreate: function(){
     	  axios({
     		  method:'get',
-    		  url:'/htgl/functioninfocontroller/getfunctions/api',
+    		  url:'/htgl/authoritycontroller/getfunctions/api',
     		  responseType:'json'
     		}).then((response) => {
     			this.menu=response.data.data;

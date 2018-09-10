@@ -74,7 +74,7 @@ function login() {
   			  if(response.data.flag){
   				var redirectUrl = $("input[name='redirectUrl']").val().trim();
   				if(null == redirectUrl || "" == redirectUrl){
-  					window.location.href='/htgl/userinfocontroller/touserinfo';
+  					window.location.href='/htgl/userinfocontroller/toindex';
   			    }else{
   			    	window.location.href= redirectUrl;
   			    }

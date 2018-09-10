@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.PasswordUtil;
 import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.params.UserInfoParam;
+import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.service.FunctionInfoService;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.CheckUtil;
@@ -39,19 +42,22 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
     
+    @Autowired
+    private FunctionInfoService functionInfoService;
     
-    @RequestMapping(value="/touserinfo",method=RequestMethod.GET)
+    
+    @RequestMapping(value="/toindex",method=RequestMethod.GET)
     @Transactional
-    public String toUserInfo(HttpServletRequest request,HttpServletResponse response) {
+    public String toIndex(HttpServletRequest request,HttpServletResponse response) {
         return "htgl.user.index";
     }
     
     
     //查询用户信息
-    @RequestMapping(value="/searchuserinfo/api")
+    @RequestMapping(value="/getuserinfo/api")
     @ResponseBody
     @Transactional
-    public AjaxData searchUserInfo(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
+    public AjaxData getUserInfo(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
         AjaxData ajaxData = new AjaxData();
         List<UserInfoData> userInfos = userInfoService.getUserInfos(param);
         if (null != userInfos) {
@@ -75,10 +81,10 @@ public class UserInfoController {
     }
     
     //获取个人信息
-    @RequestMapping(value="/selfinfo/api")
+    @RequestMapping(value="/getselfinfo/api")
     @ResponseBody
     @Transactional
-    public AjaxData selfInfo(HttpServletRequest request,HttpServletResponse response) {
+    public AjaxData getSelfInfo(HttpServletRequest request,HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
         if (null == vo) {
@@ -92,9 +98,9 @@ public class UserInfoController {
     }
     
     //to新增一个用户
-    @RequestMapping(value="/toadduserinfo",method=RequestMethod.GET)
+    @RequestMapping(value="/toadd",method=RequestMethod.GET)
     @Transactional
-    public String toAddUserInfo(HttpServletRequest request,HttpServletResponse response) {
+    public String toAdd(HttpServletRequest request,HttpServletResponse response) {
         UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
         if (null == vo) {
             return "login.index";
@@ -152,9 +158,9 @@ public class UserInfoController {
     }
     
     //to修改用户个人信息
-    @RequestMapping(value="/toupdateselfinfo",method=RequestMethod.GET)
+    @RequestMapping(value="/toupdate",method=RequestMethod.GET)
     @Transactional
-    public String toUpdateSelfInfo(HttpServletRequest request,HttpServletResponse response) {
+    public String toUpdate(HttpServletRequest request,HttpServletResponse response) {
         UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
         if (null == vo) {
             return "login.index";
@@ -211,7 +217,7 @@ public class UserInfoController {
     
     
     //获取真实姓名
-    @RequestMapping(value="/realname/api")
+    @RequestMapping(value="/getrealname/api")
     @ResponseBody
     @Transactional
     public AjaxData getRealName(HttpServletRequest request,HttpServletResponse response) {
@@ -225,7 +231,6 @@ public class UserInfoController {
         ajaxData.setFlag(true);
         return ajaxData;
     }
-    
     
     //退出系统
     @RequestMapping("/exit")

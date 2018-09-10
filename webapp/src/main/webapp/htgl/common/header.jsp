@@ -24,7 +24,7 @@ new Vue({
     beforeCreate: function(){
   	  axios({
   		  method:'get',
-  		  url:'/htgl/userinfocontroller/realname/api',
+  		  url:'/htgl/userinfocontroller/getrealname/api',
   		  responseType:'json'
   		}).then((response) => {
   			this.realname=response.data.data;

@@ -50,7 +50,7 @@ li {list-style-type:none;}
                 </form-item>
                 	
                 <form-item>
-                    	<i-button type="primary" to="/htgl/userinfocontroller/toadduserinfo">新增用户</i-button> 
+                    	<i-button type="primary" to="/htgl/userinfocontroller/toadd">新增用户</i-button> 
                 </form-item>
                 
         	</i-form>
@@ -155,7 +155,7 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/searchuserinfo/api')
+    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getuserinfo/api')
     	  ]).then(axios.spread(function (userinfoResp) {
     		  myVue.tableDatas = userinfoResp.data.data;
     		  //flushPage(workRecordResp.data.data);

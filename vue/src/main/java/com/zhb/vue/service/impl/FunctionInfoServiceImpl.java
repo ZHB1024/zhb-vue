@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.zhb.vue.dao.FunctionInfoDao;
 import com.zhb.vue.dao.UserFunctionInfoDao;
+import com.zhb.vue.params.FunctionInfoParam;
+import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
@@ -32,8 +34,23 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     }
 
     @Override
+    public List<FunctionInfoData> getFunctions(FunctionInfoParam param) {
+        return functionInfoDao.getFunctions(param);
+    }
+
+    @Override
+    public int getMaxOrder() {
+        return functionInfoDao.getMaxOrder();
+    }
+
+    @Override
     public List<UserFunctionInfoData> getDataByUser(UserInfoData data) {
         return userFunctionInfoDao.getDataByUser(data);
+    }
+    
+    @Override
+    public List<UserFunctionInfoData> getUserFunctionInfoDatas(UserFunctionInfoParam param) {
+        return userFunctionInfoDao.getUserFunctionInfoDatas(param);
     }
     
     

@@ -9,14 +9,16 @@ public class FunctionInfoParam {
     
     private String id;
     private String name;
-    private Short type;
+    private Integer type;
     private String path;
     private Integer order;
     private IconInfoData iconInfoData;
     private FunctionInfoData parentFunctionInfo;
-    private String deleteFlag;
+    private Integer deleteFlag;
     
     private List<FunctionInfoData> childFunctionInfos;
+    private String iconId;
+    private String parentId;
     
     
 
@@ -36,11 +38,11 @@ public class FunctionInfoParam {
         this.name = name;
     }
 
-    public Short getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(Short type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
@@ -76,11 +78,11 @@ public class FunctionInfoParam {
         this.parentFunctionInfo = parentFunctionInfo;
     }
 
-    public String getDeleteFlag() {
+    public Integer getDeleteFlag() {
         return deleteFlag;
     }
 
-    public void setDeleteFlag(String deleteFlag) {
+    public void setDeleteFlag(Integer deleteFlag) {
         this.deleteFlag = deleteFlag;
     }
 
@@ -90,6 +92,22 @@ public class FunctionInfoParam {
 
     public void setChildFunctionInfos(List<FunctionInfoData> childFunctionInfos) {
         this.childFunctionInfos = childFunctionInfos;
+    }
+
+    public String getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(String iconId) {
+        this.iconId = iconId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
 }

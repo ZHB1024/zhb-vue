@@ -11,12 +11,12 @@ li {list-style-type:none;}
     <Layout :style="{padding: '0 20px 20px'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
             <breadcrumb-item>首页</breadcrumb-item> 
-            <breadcrumb-item>字典管理</breadcrumb-item> 
-            <breadcrumb-item>字典信息</breadcrumb-item> 
+            <breadcrumb-item>用户管理</breadcrumb-item> 
+            <breadcrumb-item>用户信息</breadcrumb-item> 
         </Breadcrumb> 
         
         <i-content :style="{padding: '24px', background: '#fff'}">
-          <i-form inline method="post" action="" ref="formValidate">
+          <i-form inline method="post" action="<%=ctxPath %>/jb/worktime/searchworkrecord/api" ref="formValidate">
         	
         		<!-- <form-item prop="workdate">
                   		<Date-picker  type="daterange"  name="workdate"  v-model="formParm.workdate"  format="yyyy-MM-dd"  placeholder="加班日期" style="width: 200px">
@@ -50,7 +50,7 @@ li {list-style-type:none;}
                 </form-item>
                 	
                 <form-item>
-                    	<i-button type="primary" to="/htgl/dicinfocontroller/toupload">新增字典</i-button> 
+                    	<i-button type="primary" to="/htgl/userinfocontroller/toadduserinfo">新增用户</i-button> 
                 </form-item>
                 
         	</i-form>
@@ -89,46 +89,16 @@ var myVue = new Vue({
                 width: 70
             },
             {
-                title: 'category',
-                key: 'category',
+                title: '图标名称',
+                key: 'name',
                 minWidth: 100,
                 sortable:true
             },
             {
-                title: 'name',
-                key: 'name',
+                title: '图标代码',
+                key: 'value',
                 minWidth: 100
-            },
-            {
-                title: 'name2',
-                key: 'name2',
-                minWidth: 100
-            },
-            {
-                title: 'name3',
-                key: 'name3',
-                minWidth: 100
-            },{
-                title: 'type',
-                key: 'type',
-                minWidth: 100
-            },
-            {
-                title: 'order_index',
-                key: 'orderIndex',
-                minWidth: 100
-            },
-            {
-                title: 'remark',
-                key: 'remark',
-                minWidth: 100
-            },
-            {
-                title: 'delete_flag',
-                key: 'deleteFlag',
-                minWidth: 100
-            }
-            /* ,
+            }/* ,
             {
                 title: '操作',
                 key: 'action',
@@ -175,9 +145,9 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api')
-    	  ]).then(axios.spread(function (userinfoResp) {
-    		  myVue.tableDatas = userinfoResp.data.data;
+    	    axios.get('<%=ctxPath %>/htgl/iconinfocontroller/geticoninfo/api')
+    	  ]).then(axios.spread(function (iconinfoResp) {
+    		  myVue.tableDatas = iconinfoResp.data.data;
     		  //flushPage(workRecordResp.data.data);
     	  }));
     },

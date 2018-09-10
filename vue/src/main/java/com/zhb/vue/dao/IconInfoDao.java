@@ -1,5 +1,8 @@
 package com.zhb.vue.dao;
 
+import java.util.List;
+
+import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
 
 public interface IconInfoDao {
@@ -10,5 +13,11 @@ public interface IconInfoDao {
      * @param data
      */
     void saveOrUpdate(IconInfoData data);
+    
+    /**
+     * *获取 图标
+     * @param param
+     */
+    List<IconInfoData> getIconInfos(IconInfoParam param);
 
 }

@@ -20,7 +20,7 @@ li {list-style-type:none;}
               <i-col span="11">
                   <Card :bordered="false">
                       <p slot="title">个人信息</p>
-                      <a href="<%=ctxPath%>/htgl/userinfocontroller/toupdateselfinfo" slot="extra" >
+                      <a href="<%=ctxPath%>/htgl/userinfocontroller/toupdate" slot="extra" >
 			            <Icon type="ios-loop-strong"></Icon>
 			            修改
 			          </a>
@@ -54,7 +54,7 @@ var myVue =  new Vue({
 	  },
 	  created: function () {
 		  axios.all([
-	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/selfinfo/api')
+	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getselfinfo/api')
 	    	  ]).then(axios.spread(function (userInfoResp) {
 	    		  myVue.userInfo = userInfoResp.data.data;
 	    	  }));

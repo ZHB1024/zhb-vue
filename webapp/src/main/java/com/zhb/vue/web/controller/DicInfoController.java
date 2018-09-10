@@ -48,7 +48,7 @@ public class DicInfoController {
     @Autowired
     private DicInfoService dicInfoService;
     
-    @RequestMapping(value = "/todicindex",method = RequestMethod.GET)
+    @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
     public String toDicIndex(HttpServletRequest request,HttpServletResponse response) {
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
@@ -57,10 +57,10 @@ public class DicInfoController {
         return "htgl.dic.index";
     }
     
-    @RequestMapping(value = "/getdic/api")
+    @RequestMapping(value = "/getdicinfo/api")
     @ResponseBody
     @Transactional
-    public AjaxData getDic(HttpServletRequest request,HttpServletResponse response,DicInfoParam param) {
+    public AjaxData getDicInfo(HttpServletRequest request,HttpServletResponse response,DicInfoParam param) {
         AjaxData ajaxData = new AjaxData();
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
             ajaxData.setFlag(false);
@@ -73,7 +73,7 @@ public class DicInfoController {
         return ajaxData;
     }
     
-    @RequestMapping(value = "/touploaddic",method = RequestMethod.GET)
+    @RequestMapping(value = "/toupload",method = RequestMethod.GET)
     @Transactional
     public String toUploadDic(HttpServletRequest request,HttpServletResponse response) {
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
@@ -82,9 +82,9 @@ public class DicInfoController {
         return "htgl.dic.upload";
     }
     
-    @RequestMapping(value = "/uploaddic")
+    @RequestMapping(value = "/uploaddicinfo")
     @Transactional
-    public String uploadDic(HttpServletRequest request,HttpServletResponse response) {
+    public String uploadDicInfo(HttpServletRequest request,HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
             ajaxData.setFlag(false);

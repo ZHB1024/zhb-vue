@@ -52,6 +52,28 @@
         <put-attribute name="body" value="/htgl/user/update.jsp" />
     </definition>
     
+    <!-- function -->
+	<definition name="htgl.function.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/function/index.jsp" />
+    </definition>
+	<definition name="htgl.function.add" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/function/add.jsp" />
+    </definition>
+    <!-- function icon -->
+	<definition name="htgl.icon.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/function/icon/index.jsp" />
+    </definition>
+	<definition name="htgl.icon.add" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/function/icon/add.jsp" />
+    </definition>
+    <!-- authority -->
+	<definition name="htgl.authority.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/authority/index.jsp" />
+    </definition>
+	<definition name="htgl.authority.add" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/authority/add.jsp" />
+    </definition>
+    
     <!-- dic -->
     <definition name="htgl.dic.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/dic/index.jsp" />

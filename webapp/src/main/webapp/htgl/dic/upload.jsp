@@ -18,7 +18,7 @@ li {list-style-type:none;}
         <i-content :style="{padding: '24px', minHeight: '428px', background: '#fff'}">
           <div style="width:100%;">
             <div style="width: 600px;margin-left: auto;margin-right: auto;">
-            	<Upload type="drag" name="upFile" action="<%=ctxPath%>/htgl/dicinfocontroller/uploaddic">
+            	<Upload type="drag" name="upFile" action="<%=ctxPath%>/htgl/dicinfocontroller/uploaddicinfo">
         			<div style="padding: 20px 0">
             			<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
             			<p>Click or drag files here to upload</p>
