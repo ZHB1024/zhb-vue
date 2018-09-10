@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.vue.base.BaseTest;
 import com.zhb.vue.params.FunctionInfoParam;
+import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
+import com.zhb.vue.pojo.IconInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 
@@ -26,6 +28,35 @@ public class FunctionInfoServiceTest extends BaseTest {
     
     @Autowired
     private UserInfoService userInfoService;
+    
+    @Autowired
+    private IconInfoService iconInfoService;
+    
+    @Test
+    @Transactional
+    @Rollback(true)
+    public void saveFunctionsTest() {
+        FunctionInfoData data = new FunctionInfoData();
+        data.setName("授权信息");
+        data.setType(1);
+        data.setPath("/htgl/authoritycontroller/toindex");
+        data.setOrder(32);
+        
+        //设置父节点
+        FunctionInfoParam param = new FunctionInfoParam();
+        param.setId("sp9mdx3sn9rgxslt");
+        List<FunctionInfoData> datas  = functionInfoService.getFunctions(param);
+        data.setParentFunctionInfo(datas.get(0));
+        
+        //设置图标
+        /*IconInfoParam param = new IconInfoParam();
+        param.setId("azxt39kmmgb5bcj5");
+        List<IconInfoData> datas = iconInfoService.getIconInfos(param);
+        
+        data.setIconInfoData(datas.get(0));*/
+        
+        functionInfoService.saveOrUpdate(data);
+    }
     
     @Test
     @Transactional
@@ -60,7 +91,7 @@ public class FunctionInfoServiceTest extends BaseTest {
         UserFunctionInfoData data = new UserFunctionInfoData();
         
         FunctionInfoParam param = new FunctionInfoParam();
-        param.setName("图标信息");
+        param.setName("授权信息");
         List<FunctionInfoData> datas = functionInfoService.getFunctions(param);
         
         data.setFunctionInfoData(datas.get(0));

@@ -21,8 +21,8 @@ public class IconInfoServiceTest extends BaseTest {
     @Rollback(true)
     public void saveOrUpdateTest() {
         IconInfoData data = new IconInfoData();
-        data.setName("功能");
-        data.setValue("<Icon type=\"ios-construct\" />");
+        data.setName("授权管理");
+        data.setValue("logo-designernews");
         iconInfoService.saveOrUpdate(data);
     }
     
@@ -31,10 +31,11 @@ public class IconInfoServiceTest extends BaseTest {
     @Rollback(true)
     public void getIconInfoTest() {
         IconInfoParam param = new IconInfoParam();
+        param.setName("授权管理");
         List<IconInfoData> datas = iconInfoService.getIconInfos(param);
         if (null != datas) {
             for (IconInfoData iconInfoData : datas) {
-                System.out.println(iconInfoData.getName() + "--" + iconInfoData.getValue());
+                System.out.println(iconInfoData.getId() + "--" + iconInfoData.getName() + "--" + iconInfoData.getValue());
             }
         }
     }

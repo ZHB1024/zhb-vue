@@ -60,6 +60,9 @@ public class IconInfoDaoImpl implements IconInfoDao {
             conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), DeleteFlagEnum.UDEL.getIndex()));
         }
         
+        if (conditions.size() > 0) {
+            criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
+        }
         Query<IconInfoData> query = session.createQuery(criteriaQuery);
         
         return query.getResultList();
