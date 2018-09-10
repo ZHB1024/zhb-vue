@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.framework.util.PasswordUtil;
+import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.params.UserInfoParam;
@@ -86,6 +88,66 @@ public class UserInfoController {
         }
         ajaxData.setFlag(true);
         ajaxData.setData(Data2JSONUtil.userInfoVO2JSONObject(vo));
+        return ajaxData;
+    }
+    
+    //to新增一个用户
+    @RequestMapping(value="/toadduserinfo",method=RequestMethod.GET)
+    @Transactional
+    public String toAddUserInfo(HttpServletRequest request,HttpServletResponse response) {
+        UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
+        if (null == vo) {
+            return "login.index";
+        }
+        return "htgl.user.add";
+    }
+    
+    //新增一个用户
+    @RequestMapping(value="/adduserinfo/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData addUserInfo(HttpServletRequest request,HttpServletResponse response,UserInfoParam param,String confirmPassword) {
+        AjaxData ajaxData = new AjaxData();
+        UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
+        if (null == vo) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getUserName())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请输入用户名");
+            return ajaxData;
+        }
+        
+        if (StringUtil.isBlank(param.getPassword())|| StringUtil.isBlank(confirmPassword)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请输入密码或确认密码");
+            return ajaxData;
+        }
+        if (!param.getPassword().equals(confirmPassword)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("密码与确认密码必须相同");
+            return ajaxData;
+        }
+        
+        UserInfoParam userInfoParam = new UserInfoParam();
+        userInfoParam.setUserName(param.getUserName());
+        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam);
+        if (null != datas && datas.size() > 0 ) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("此用户名已存在，请更换用户名");
+            return ajaxData;
+        }
+        
+        UserInfoData userInfoData = new UserInfoData();
+        userInfoData.setUserName(param.getUserName());
+        String salt = RandomUtil.getRandomString(8);
+        userInfoData.setSalt(salt);
+        userInfoData.setPassword(PasswordUtil.encrypt(param.getUserName(), param.getPassword(), PasswordUtil.generateSalt(salt)));
+        userInfoService.saveOrUpdate(userInfoData);
+        
+        ajaxData.setFlag(true);
         return ajaxData;
     }
     

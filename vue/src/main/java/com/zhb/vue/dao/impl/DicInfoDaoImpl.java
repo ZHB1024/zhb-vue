@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
@@ -44,32 +45,37 @@ public class DicInfoDaoImpl implements DicInfoDao {
         CriteriaQuery<DicInfoData> criteriaQuery = criteriaBuilder.createQuery(DicInfoData.class);
         Root<DicInfoData> root = criteriaQuery.from(DicInfoData.class);
         
+        List<Predicate> conditions = new ArrayList<>();
         if (StringUtil.isNotBlank(param.getId())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("id"), param.getId()));
+            conditions.add(criteriaBuilder.equal(root.get("id"), param.getId()));
         }
         if (StringUtil.isNotBlank(param.getCategory())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("category"), param.getCategory()));
+            conditions.add(criteriaBuilder.equal(root.get("category"), param.getCategory()));
         }
         
         if (StringUtil.isNotBlank(param.getCode())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("code"), param.getCode()));
+            conditions.add(criteriaBuilder.equal(root.get("code"), param.getCode()));
         }
         if (StringUtil.isNotBlank(param.getName())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("name"), param.getName()));
+            conditions.add(criteriaBuilder.equal(root.get("name"), param.getName()));
         }
         if (StringUtil.isNotBlank(param.getName2())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("name2"), param.getName2()));
+            conditions.add(criteriaBuilder.equal(root.get("name2"), param.getName2()));
         }
         if (StringUtil.isNotBlank(param.getName3())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("name3"), param.getName3()));
+            conditions.add(criteriaBuilder.equal(root.get("name3"), param.getName3()));
         }
         if (StringUtil.isNotBlank(param.getType())) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("type"), param.getType()));
+            conditions.add(criteriaBuilder.equal(root.get("type"), param.getType()));
         }
         if (null != param.getDeleteFlag()) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
+            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
         }else {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("deleteFlag"), DeleteFlagEnum.UDEL.getIndex()));
+            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), DeleteFlagEnum.UDEL.getIndex()));
+        }
+        
+        if (conditions.size() > 0 ) {
+            criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
         }
         
         criteriaQuery.orderBy(criteriaBuilder.asc(root.get("category"))).orderBy(criteriaBuilder.asc(root.get("orderIndex")));

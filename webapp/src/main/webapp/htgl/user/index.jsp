@@ -50,7 +50,7 @@ li {list-style-type:none;}
                 </form-item>
                 	
                 <form-item>
-                    	<i-button type="primary" to="/jb/worktime/toaddrecord">新增加班记录</i-button> 
+                    	<i-button type="primary" to="/htgl/userinfocontroller/toadduserinfo">新增用户</i-button> 
                 </form-item>
                 
         	</i-form>
