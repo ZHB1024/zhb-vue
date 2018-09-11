@@ -42,7 +42,7 @@ public class UserFunctionInfoDaoImpl implements UserFunctionInfoDao {
         CriteriaQuery<UserFunctionInfoData> criteriaQuery = criteriaBuilder.createQuery(UserFunctionInfoData.class);
         Root<UserFunctionInfoData> root = criteriaQuery.from(UserFunctionInfoData.class);
         criteriaQuery.where(criteriaBuilder.equal(root.get("userInfoData"), data));
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("functionInfoData")));
+        //criteriaQuery.orderBy(criteriaBuilder.asc(root.get("functionInfoData")));
         Query<UserFunctionInfoData> query = session.createQuery(criteriaQuery);
         return query.list();
     }

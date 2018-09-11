@@ -72,7 +72,7 @@ var myVue =  new Vue({
 		  functionInfo:{
 			  parentId:'',
 			  name:'',
-			  path:''
+			  path:'',
 			  iconId:'',
 			  orderIndex:''
 		  },

@@ -7,7 +7,7 @@
             <template slot="title"> 
                 <Icon v-bind:type="parent.icon"></Icon> {{ parent.name }}
             </template> 
-            <Menu-item v-for="child in parent.children" v-bind:to="child.url" v-bind:name="index+1+ '--' + child.id" >{{ child.name }}</Menu-item> 
+            <Menu-item v-for="child in parent.children" v-bind:to="child.path" v-bind:name="index+1+ '--' + child.id" >{{ child.name }}</Menu-item> 
             
         </Submenu>
     </i-menu>

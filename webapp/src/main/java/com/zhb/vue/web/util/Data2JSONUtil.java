@@ -1,6 +1,7 @@
 package com.zhb.vue.web.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,9 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
+import com.zhb.forever.framework.util.ComparatorVOComparator;
 import com.zhb.forever.framework.util.DateTimeUtil;
+import com.zhb.forever.framework.vo.ComparatorVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.FunctionInfoData;
@@ -247,6 +250,7 @@ public class Data2JSONUtil {
         JSONArray jsonArray = new JSONArray();
         Map<FunctionInfoData, List<FunctionInfoData>> map = null;
         if (null != datas && datas.size() >0) {
+            //将父级相同的功能整合到map中
             map = new HashMap<FunctionInfoData, List<FunctionInfoData>>();
             for (UserFunctionInfoData data : datas) {
                 FunctionInfoData functionInfo = data.getFunctionInfoData();
@@ -261,23 +265,49 @@ public class Data2JSONUtil {
                 }
             }
             
+            //将map整理到可排序的ComparatorVO中
+            List<ComparatorVO> vos = new ArrayList<>();
             for (Map.Entry<FunctionInfoData,List<FunctionInfoData>> object : map.entrySet()) {
                 FunctionInfoData parent = object.getKey();
                 List<FunctionInfoData> childrens = object.getValue();
                 
-                JSONArray jbjlChildrenMenu = new JSONArray();
+                ComparatorVO vo = new ComparatorVO(parent.getOrder());
+                vo.setId(parent.getId());
+                vo.setName(parent.getName());
+                vo.setPath(parent.getPath());
+                vo.setIconName(parent.getIconInfoData().getName());
+                List<ComparatorVO> childs = new ArrayList<>();
                 for(FunctionInfoData funData : childrens){
+                    ComparatorVO child = new ComparatorVO(funData.getOrder());
+                    child.setId(funData.getId());
+                    child.setName(funData.getName());
+                    child.setPath(funData.getPath());
+                    childs.add(child);
+                }
+                vo.setChilds(childs);
+                vos.add(vo);
+            }
+            
+            //排序,对List<ComparatorVO>排序
+            Collections.sort(vos, new ComparatorVOComparator());
+            
+            //将排序后的数据 整理到 JSONArray中返回给用户
+            for (ComparatorVO comparatorVO : vos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", comparatorVO.getId());
+                jsonObject.put("url", comparatorVO.getPath());
+                jsonObject.put("name", comparatorVO.getName());
+                jsonObject.put("icon", comparatorVO.getIconName());
+                
+                JSONArray jbjlChildrenMenu = new JSONArray();
+                for(ComparatorVO funData : comparatorVO.getChilds()){
                     JSONObject json = new JSONObject();
                     json.put("id", funData.getId());
                     json.put("url", funData.getPath());
                     json.put("name", funData.getName());
                     jbjlChildrenMenu.add(json);
                 }
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", parent.getId());
-                jsonObject.put("url", parent.getPath());
-                jsonObject.put("name", parent.getName());
-                jsonObject.put("icon", parent.getIconInfoData().getValue());
+                
                 jsonObject.put("children", jbjlChildrenMenu);
                 
                 jsonArray.add(jsonObject);

@@ -59,12 +59,12 @@
 	<definition name="htgl.function.add" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/function/add.jsp" />
     </definition>
-    <!-- function icon -->
+    <!--icon -->
 	<definition name="htgl.icon.index" extends="htgl.main.layout">
-        <put-attribute name="body" value="/htgl/function/icon/index.jsp" />
+        <put-attribute name="body" value="/htgl/icon/index.jsp" />
     </definition>
 	<definition name="htgl.icon.add" extends="htgl.main.layout">
-        <put-attribute name="body" value="/htgl/function/icon/add.jsp" />
+        <put-attribute name="body" value="/htgl/icon/add.jsp" />
     </definition>
     <!-- authority -->
 	<definition name="htgl.authority.index" extends="htgl.main.layout">

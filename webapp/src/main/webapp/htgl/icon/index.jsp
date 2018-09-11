@@ -11,15 +11,15 @@ li {list-style-type:none;}
     <Layout :style="{padding: '0 20px 20px'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
             <breadcrumb-item>首页</breadcrumb-item> 
-            <breadcrumb-item>功能管理</breadcrumb-item> 
-            <breadcrumb-item>功能信息</breadcrumb-item> 
+            <breadcrumb-item>图标管理</breadcrumb-item> 
+            <breadcrumb-item>图标信息</breadcrumb-item> 
         </Breadcrumb> 
         
         <i-content :style="{padding: '24px', background: '#fff'}">
           <i-form inline method="post" action="" ref="formValidate">
-        	
+               
                 <form-item>
-                    	<i-button type="primary" to="/htgl/functioninfocontroller/toadd">新增功能</i-button> 
+                    	<i-button type="primary" to="/htgl/iconinfocontroller/toadd">新增图标</i-button> 
                 </form-item>
                 
         	</i-form>
@@ -44,24 +44,14 @@ var myVue = new Vue({
                 width: 70
             },
             {
-                title: '功能名称',
+                title: '图标名称',
                 key: 'name',
                 minWidth: 100,
                 sortable:true
             },
             {
-                title: '访问路径',
-                key: 'path',
-                minWidth: 200
-            },
-            {
-                title: '图标',
-                key: 'icon',
-                minWidth: 100
-            },
-            {
-                title: '顺序',
-                key: 'orderIndex',
+                title: '图标代码',
+                key: 'value',
                 minWidth: 100
             },
             {
@@ -103,9 +93,9 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/functioninfocontroller/getfunctions/api')
-    	  ]).then(axios.spread(function (funinfoResp) {
-    		  myVue.tableDatas = funinfoResp.data.data;
+    	    axios.get('<%=ctxPath %>/htgl/iconinfocontroller/geticoninfo/api')
+    	  ]).then(axios.spread(function (iconinfoResp) {
+    		  myVue.tableDatas = iconinfoResp.data.data;
     	  }));
     },
     methods: {
@@ -122,9 +112,7 @@ var myVue = new Vue({
             onCancel:function(){
             }
          });
-        
        }
-      
     }
 });
 </script>

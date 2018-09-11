@@ -11,7 +11,7 @@ li {list-style-type:none;}
     <Layout :style="{padding: '0 24px 24px', height: '100%'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
             <breadcrumb-item><a href="">首页</a></breadcrumb-item> 
-            <breadcrumb-item>功能管理</breadcrumb-item> 
+            <breadcrumb-item>图标管理</breadcrumb-item> 
             <breadcrumb-item>新增图标</breadcrumb-item> 
         </Breadcrumb> 
         
@@ -19,7 +19,6 @@ li {list-style-type:none;}
           <div style="width:100%;">
             <div style="width: 600px;margin-left:  auto;margin-right:  auto;">
             	<i-form method="post" action="" ref="formValidate" :model="iconInfo" :rules="ruleValidate" :label-width="80">
-                	<input type="hidden" name="id" v-model="iconInfo.id"/>
                 	
                 	<form-item label="图标名称" prop="name">
                   		<i-input type="text" name="name" v-model="iconInfo.name" :maxlength="15" placeholder="请输入图标名称"></i-input>
@@ -52,7 +51,6 @@ var myVue =  new Vue({
 	  el: '#app_content',
 	  data:{
 		  iconInfo:{
-			  id:'',
 			  name:'',
 			  value:''
 		  },
@@ -74,10 +72,9 @@ var myVue =  new Vue({
 			   myVue.$refs[name].validate((valid) => {
 				   if (valid){
 					    let param = new URLSearchParams(); 
-		          	  	param.append("id",myVue.iconInfo.id); 
 		          	  	param.append("name",myVue.iconInfo.name); 
 		          	  	param.append("value",myVue.iconInfo.value); 
-		          	  	axios.post('<%=ctxPath%>/htgl/userinfocontroller/adduserinfo/api', param)
+		          	  	axios.post('<%=ctxPath%>/htgl/iconinfocontroller/addiconinfo/api', param)
 		          		  	 .then(function (response) {
 		          			  	 if(response.data.flag){
 		          			  		myVue.$Message.success({
@@ -85,7 +82,7 @@ var myVue =  new Vue({
 		                                duration: 3,
 		                                closable: true
 		                            });
-		          			  	    window.location.href='<%=ctxPath%>/htgl/userinfocontroller/touserinfo';
+		          			  	    window.location.href='<%=ctxPath%>/htgl/iconinfocontroller/toindex';
 		                        }else{
 		                      	  myVue.$Message.error({
 		                                content: response.data.errorMessages,
