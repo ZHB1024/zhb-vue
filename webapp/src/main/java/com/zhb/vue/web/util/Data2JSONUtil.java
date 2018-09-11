@@ -216,26 +216,54 @@ public class Data2JSONUtil {
                 }
             }
             
+            //将map整理到可排序的ComparatorVO中
+            List<ComparatorVO> vos = new ArrayList<>();
             for (Map.Entry<FunctionInfoData,List<FunctionInfoData>> object : map.entrySet()) {
                 FunctionInfoData parent = object.getKey();
                 List<FunctionInfoData> childrens = object.getValue();
                 
-                JSONArray jbjlChildrenMenu = new JSONArray();
+                ComparatorVO vo = new ComparatorVO(parent.getOrder());
+                vo.setId(parent.getId());
+                vo.setName(parent.getName());
+                vo.setPath(parent.getPath());
+                vo.setIconName(parent.getIconInfoData().getName());
+                List<ComparatorVO> childs = new ArrayList<>();
                 for(FunctionInfoData funData : childrens){
+                    ComparatorVO child = new ComparatorVO(funData.getOrder());
+                    child.setId(funData.getId());
+                    child.setName(funData.getName());
+                    child.setPath(funData.getPath());
+                    childs.add(child);
+                }
+                //排序,对子菜单排序
+                Collections.sort(childs, new ComparatorVOComparator());
+                vo.setChilds(childs);
+                vos.add(vo);
+            }
+            
+            //排序,对父菜单排序
+            Collections.sort(vos, new ComparatorVOComparator());
+            
+            //将排序后的数据 整理到 JSONArray中返回给用户
+            for (ComparatorVO comparatorVO : vos) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("id", comparatorVO.getId());
+                jsonObject.put("path", comparatorVO.getPath());
+                jsonObject.put("name", comparatorVO.getName());
+                jsonObject.put("icon", comparatorVO.getIconName());
+                jsonObject.put("orderIndex", comparatorVO.getOrder());
+                
+                JSONArray jbjlChildrenMenu = new JSONArray();
+                for(ComparatorVO funData : comparatorVO.getChilds()){
                     JSONObject json = new JSONObject();
                     json.put("id", funData.getId());
-                    json.put("name", funData.getName());
                     json.put("path", funData.getPath());
+                    json.put("name", funData.getName());
                     json.put("icon", "");
                     json.put("orderIndex", funData.getOrder());
                     jbjlChildrenMenu.add(json);
                 }
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", parent.getId());
-                jsonObject.put("name", parent.getName());
-                jsonObject.put("path", parent.getPath());
-                jsonObject.put("orderIndex", parent.getOrder());
-                jsonObject.put("icon", parent.getIconInfoData().getValue());
+                
                 jsonObject.put("children", jbjlChildrenMenu);
                 
                 jsonArray.add(jsonObject);
@@ -284,18 +312,20 @@ public class Data2JSONUtil {
                     child.setPath(funData.getPath());
                     childs.add(child);
                 }
+                //排序,对子菜单排序
+                Collections.sort(childs, new ComparatorVOComparator());
                 vo.setChilds(childs);
                 vos.add(vo);
             }
             
-            //排序,对List<ComparatorVO>排序
+            //排序,对父菜单排序
             Collections.sort(vos, new ComparatorVOComparator());
             
             //将排序后的数据 整理到 JSONArray中返回给用户
             for (ComparatorVO comparatorVO : vos) {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("id", comparatorVO.getId());
-                jsonObject.put("url", comparatorVO.getPath());
+                jsonObject.put("path", comparatorVO.getPath());
                 jsonObject.put("name", comparatorVO.getName());
                 jsonObject.put("icon", comparatorVO.getIconName());
                 
@@ -303,7 +333,7 @@ public class Data2JSONUtil {
                 for(ComparatorVO funData : comparatorVO.getChilds()){
                     JSONObject json = new JSONObject();
                     json.put("id", funData.getId());
-                    json.put("url", funData.getPath());
+                    json.put("path", funData.getPath());
                     json.put("name", funData.getName());
                     jbjlChildrenMenu.add(json);
                 }

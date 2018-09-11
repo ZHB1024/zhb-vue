@@ -75,6 +75,7 @@ li {list-style-type:none;}
                 		<Row>
                       		<i-col span="4" offset="6">
                         		<i-button type="primary" @click="handleSubmit('formValidate')">确 定</i-button>
+                        		<i-button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
                       		</i-col>
                     	</Row>
                   </form-item>
@@ -199,6 +200,9 @@ var myVue =  new Vue({
 				   }
 	            })
 	                
+	        },
+	        handleReset (name) {
+	            this.$refs[name].resetFields();
 	        }
 	  }
 });

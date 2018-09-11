@@ -31,14 +31,58 @@ li {list-style-type:none;}
     </Layout>
 </div>
 
+<script type="x-template" id="expand-detail">
+<div>
+  <Row v-for="record in row.children" class="expand-row">
+    <i-col span="8">
+      <span class="expand-key">功能名称: </span>
+      <span class="expand-value">{{ record.name }}</span>
+    </i-col>
+    <i-col span="10">
+      <span class="expand-key">访问路径: </span>
+      <span class="expand-value">{{ record.path }}</span>
+    </i-col>
+    <i-col span="3">
+      <span class="expand-key">顺序: </span>
+      <span class="expand-value">{{ record.orderIndex }}</span>
+    </i-col>
 
+	<i-col span="2" align="center">
+      <span class="expand-key"><i-button type="primary"  v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
+      <span class="expand-key"><i-button type="error"  v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
+    </i-col>
+
+  </Row>
+</div>
+</script>
+<!-- <i-col span="2" align="center">
+      <span class="expand-key"><i-button type="primary" v-if="record.status==0||record.status==1" v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
+      <span class="expand-key"><i-button type="error" v-if="record.status==0||record.status==1" v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
+
+	  <span class="expand-key"><i-button type="primary" v-if="record.status!=0&&record.status!=1" disabled="disabled" v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
+      <span class="expand-key"><i-button type="error" v-if="record.status!=0&&record.status!=1" disabled="disabled" v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
+    </i-col> -->
 <script>
+Vue.component('newRow', {
+	  props: ['row'],
+	  template: '#expand-detail'
+	});
 var myVue = new Vue({
     el: '#app_content',
     data:{
     	tableDatas:[],
     	columns1:[
     		{
+            	type: 'expand',
+      			width: 100,
+      			render: (h, params) => {
+      			    return h("new-row", {
+      			       props: {
+      			    	  row: params.row
+      			      }
+      			    })
+      			}
+      		},{
                 title: '序号',
                 type:"index",
                 width: 70
