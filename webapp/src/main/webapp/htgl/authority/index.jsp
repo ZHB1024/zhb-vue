@@ -11,8 +11,8 @@ li {list-style-type:none;}
     <Layout :style="{padding: '0 20px 20px'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
             <breadcrumb-item>首页</breadcrumb-item> 
-            <breadcrumb-item>用户管理</breadcrumb-item> 
-            <breadcrumb-item>用户信息</breadcrumb-item> 
+            <breadcrumb-item>授权管理</breadcrumb-item> 
+            <breadcrumb-item>授权信息</breadcrumb-item> 
         </Breadcrumb> 
         
         <i-content :style="{padding: '24px', background: '#fff'}">

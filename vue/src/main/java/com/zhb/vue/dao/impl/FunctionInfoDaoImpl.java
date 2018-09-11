@@ -33,7 +33,11 @@ public class FunctionInfoDaoImpl implements FunctionInfoDao {
     public void saveOrUpdate(FunctionInfoData data) {
         sessionFactory.getCurrentSession().saveOrUpdate(data);
     }
-
+    
+    @Override
+    public void delFunctionInfoData(FunctionInfoData data) {
+        sessionFactory.getCurrentSession().delete(data);
+    }
 
     @Override
     public List<FunctionInfoData> getFunctions(FunctionInfoParam param) {

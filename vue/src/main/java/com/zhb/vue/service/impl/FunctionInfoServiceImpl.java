@@ -32,6 +32,16 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     public void saveOrUpdate(UserFunctionInfoData data) {
         userFunctionInfoDao.saveOrUpdate(data);
     }
+    
+    @Override
+    public void delFunctionInfoData(FunctionInfoData data) {
+        functionInfoDao.delFunctionInfoData(data);
+    }
+
+    @Override
+    public void delUserFunctionInfoData(UserFunctionInfoData data) {
+        userFunctionInfoDao.delUserFunctionInfoData(data);
+    }
 
     @Override
     public List<FunctionInfoData> getFunctions(FunctionInfoParam param) {
@@ -52,7 +62,5 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     public List<UserFunctionInfoData> getUserFunctionInfoDatas(UserFunctionInfoParam param) {
         return userFunctionInfoDao.getUserFunctionInfoDatas(param);
     }
-    
-    
 
 }

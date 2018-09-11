@@ -14,6 +14,12 @@ public interface FunctionInfoDao {
     void saveOrUpdate(FunctionInfoData data);
     
     /**
+     * *删除 功能
+     * @param data
+     */
+    void delFunctionInfoData(FunctionInfoData data);
+    
+    /**
      * *获取功能
      * @param param
      * @return

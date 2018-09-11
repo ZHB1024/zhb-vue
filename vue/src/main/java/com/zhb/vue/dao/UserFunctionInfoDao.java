@@ -15,6 +15,12 @@ public interface UserFunctionInfoDao {
     void saveOrUpdate(UserFunctionInfoData data);
     
     /**
+     * *删除 人员功能关系
+     * @param data
+     */
+    void delUserFunctionInfoData(UserFunctionInfoData data);
+    
+    /**
      * *根据用户信息 获取 用户功能关系
      * @param data
      * @return

@@ -17,10 +17,22 @@ public interface FunctionInfoService {
     void saveOrUpdate(FunctionInfoData data);
     
     /**
+     * *删除 功能
+     * @param data
+     */
+    void delFunctionInfoData(FunctionInfoData data);
+    
+    /**
      * *新增或修改 人员功能关系
      * @param data
      */
     void saveOrUpdate(UserFunctionInfoData data);
+    
+    /**
+     * *删除 人员功能关系
+     * @param data
+     */
+    void delUserFunctionInfoData(UserFunctionInfoData data);
     
     
     /**

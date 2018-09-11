@@ -21,7 +21,6 @@ import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.params.IconInfoParam;
-import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.IconInfoData;
@@ -158,6 +157,29 @@ public class FunctionInfoController {
             json.put("name", funData.getName());
             json.put("path", funData.getPath());
             json.put("icon", funData.getIconInfoData().getName());
+            jsonArray.add(json);
+        }
+        
+        ajaxData.setData(jsonArray);
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    @RequestMapping("/getchildfunctions/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getChildFunctions(HttpServletRequest request,HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        FunctionInfoParam param = new FunctionInfoParam();
+        param.setType(1);
+        List<FunctionInfoData> datas = functionInfoService.getFunctions(param);
+        JSONArray jsonArray = new JSONArray();
+        for(FunctionInfoData funData : datas){
+            JSONObject json = new JSONObject();
+            json.put("id", funData.getId());
+            json.put("name", funData.getName());
+            json.put("parentName", funData.getParentFunctionInfo().getName());
+            json.put("path", funData.getPath());
             jsonArray.add(json);
         }
         

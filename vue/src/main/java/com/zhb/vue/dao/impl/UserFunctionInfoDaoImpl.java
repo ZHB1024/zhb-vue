@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import com.zhb.vue.dao.UserFunctionInfoDao;
 import com.zhb.vue.params.UserFunctionInfoParam;
-import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 
@@ -29,6 +28,11 @@ public class UserFunctionInfoDaoImpl implements UserFunctionInfoDao {
     @Override
     public void saveOrUpdate(UserFunctionInfoData data) {
         sessionFactory.getCurrentSession().saveOrUpdate(data);
+    }
+    
+    @Override
+    public void delUserFunctionInfoData(UserFunctionInfoData data) {
+        sessionFactory.getCurrentSession().delete(data);
     }
 
     @Override
@@ -61,7 +65,7 @@ public class UserFunctionInfoDaoImpl implements UserFunctionInfoDao {
             criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
         }
         
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("cateuserInfoDatagory")));
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("userInfoData")));
         
         Query<UserFunctionInfoData> query = session.createQuery(criteriaQuery);
         return query.list();

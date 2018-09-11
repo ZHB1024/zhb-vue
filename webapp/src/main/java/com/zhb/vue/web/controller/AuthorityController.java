@@ -100,7 +100,7 @@ public class AuthorityController {
     @RequestMapping("/addauthority/api")
     @ResponseBody
     @Transactional
-    public AjaxData addAuthority(HttpServletRequest request,HttpServletResponse response,UserFunctionInfoParam param) {
+    public AjaxData addAuthority(HttpServletRequest request,HttpServletResponse response,UserFunctionInfoParam param,boolean opt) {
         AjaxData ajaxData = new AjaxData();
         
         if (StringUtil.isBlank(param.getUserId())) {
@@ -119,15 +119,26 @@ public class AuthorityController {
         List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam);
         param.setUserInfoData(userInfoData.get(0));
         
-        FunctionInfoParam functionInfoParam = new FunctionInfoParam();
-        functionInfoParam.setId(param.getFunctionId());
-        List<FunctionInfoData> datas = functionInfoService.getFunctions(functionInfoParam);
-        param.setFunctionInfoData(datas.get(0));
-        
-        UserFunctionInfoData data = new UserFunctionInfoData();
-        Param2DataUtil.userFunctionParam2Data(param, data);
-        
-        functionInfoService.saveOrUpdate(data);
+        String[] functionIds = param.getFunctionId().split(",");
+        for (String funId : functionIds) {
+            FunctionInfoParam functionInfoParam = new FunctionInfoParam();
+            functionInfoParam.setId(funId);
+            List<FunctionInfoData> datas = functionInfoService.getFunctions(functionInfoParam);
+            param.setFunctionInfoData(datas.get(0));
+            
+            List<UserFunctionInfoData> userFunctionInfoDatas = functionInfoService.getUserFunctionInfoDatas(param);
+            if (null == userFunctionInfoDatas || userFunctionInfoDatas.size() == 0) {
+                if (opt) {//新增
+                    UserFunctionInfoData data = new UserFunctionInfoData();
+                    Param2DataUtil.userFunctionParam2Data(param, data);
+                    functionInfoService.saveOrUpdate(data);
+                }
+            }else {
+                if (!opt) {//删除
+                    functionInfoService.delUserFunctionInfoData(userFunctionInfoDatas.get(0));
+                }
+            }
+        }
         
         ajaxData.setFlag(true);
         return ajaxData;
