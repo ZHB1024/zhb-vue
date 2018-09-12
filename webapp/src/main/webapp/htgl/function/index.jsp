@@ -2,12 +2,7 @@
 <%
 String ctxPath = request.getContextPath();
 %>
-
-<style>
-li {list-style-type:none;}
-</style>
-
-<div id="app_content" >
+<div id="app_content" v-cloak style="height: 100%">
     <Layout :style="{padding: '0 20px 20px'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
             <breadcrumb-item>首页</breadcrumb-item> 
@@ -16,16 +11,10 @@ li {list-style-type:none;}
         </Breadcrumb> 
         
         <i-content :style="{padding: '24px', background: '#fff'}">
-          <i-form inline method="post" action="" ref="formValidate">
-        	
-                <form-item>
-                    	<i-button type="primary" to="/htgl/functioninfocontroller/toadd">新增功能</i-button> 
-                </form-item>
-                
-        	</i-form>
-        	
-        	
-        	<i-table border :columns="columns1" :data="tableDatas"></i-table> 
+        	<div class="filter-box clearfix">
+                <i-button type="success" class="add-btn" to="/htgl/functioninfocontroller/toadd">新增功能</i-button>
+            </div>
+        	<i-table border :columns="columns1" :data="tableDatas" class="expand-table"></i-table> 
         </i-content>
         
     </Layout>

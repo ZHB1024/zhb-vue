@@ -17,7 +17,7 @@ li {list-style-type:none;}
         
         <i-content :style="{padding: '24px', minHeight: '428px', background: '#fff'}">
             <Row style="background:#eee;padding:20px">
-              <i-col span="11">
+              <i-col span="20">
                   <Card :bordered="false">
                       <p slot="title">个人信息</p>
                       <a href="<%=ctxPath%>/htgl/userinfocontroller/toupdate" slot="extra" >
@@ -29,12 +29,19 @@ li {list-style-type:none;}
                         <i-col span="12">
                           <p>用户名：{{userInfo.userName}}</p>
                           <p>姓名：{{userInfo.realName}}</p>
+                          <p>身份证号：{{userInfo.identityCard}}</p>
                           <p>性别：{{userInfo.sex}}</p>
+                          <p>出生日期：{{userInfo.birthday}}</p>
+                          <p>国家/地区：{{userInfo.country}}</p>
+                          <p>民族：{{userInfo.nation}}</p>
+                          <p>毕业院校：{{userInfo.byyx}}</p>
                           <p>电话：{{userInfo.mobilePhone}}</p>
                           <p>邮箱：{{userInfo.email}}</p>
                         </i-col>
                         <i-col offset='6' span="6">
-                          <Icon type="md-person" size='80'/>
+                          <!-- <Icon type="md-person" size='80'/> -->
+                          <div><img src="/images/loading.gif"/><div>
+                          <div><i-button type="primary" to="/htgl/userinfocontroller/toadd">修改照片</i-button> <div>
                         </i-col>
                       </Row>
                   </Card>

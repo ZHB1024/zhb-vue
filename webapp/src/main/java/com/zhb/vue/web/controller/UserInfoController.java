@@ -15,16 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONArray;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.PasswordUtil;
 import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.params.UserInfoParam;
-import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
-import com.zhb.vue.service.FunctionInfoService;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.CheckUtil;
@@ -41,10 +38,6 @@ public class UserInfoController {
     
     @Autowired
     private UserInfoService userInfoService;
-    
-    @Autowired
-    private FunctionInfoService functionInfoService;
-    
     
     @RequestMapping(value="/toindex",method=RequestMethod.GET)
     @Transactional

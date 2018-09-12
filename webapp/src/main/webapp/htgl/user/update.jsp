@@ -3,10 +3,6 @@
 String ctxPath = request.getContextPath();
 %>
 
-<style>
-li {list-style-type:none;}
-</style>
-
 <div id="app_content" style="height: 100%">
     <Layout :style="{padding: '0 24px 24px', height: '100%'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
@@ -72,12 +68,8 @@ li {list-style-type:none;}
                 	</form-item >
                 	
                   <form-item align="center">
-                		<Row>
-                      		<i-col span="4" offset="6">
-                        		<i-button type="primary" @click="handleSubmit('formValidate')">确 定</i-button>
-                        		<i-button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
-                      		</i-col>
-                    	</Row>
+                		<i-button type="primary" @click="handleSubmit('formValidate')">确 定</i-button>
+                        <i-button @click="handleReset('formValidate')" style="margin-left: 8px">重置</i-button>
                   </form-item>
                   
                 </i-form>
@@ -148,12 +140,12 @@ var myVue =  new Vue({
 	  },
 	  created: function () {
 		  axios.all([
-	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api', {
+	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', {
 	    	    	params : { 
 	    	    		category : 'gjmc'
 	    	    	}
 	    	    }),
-	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api', {
+	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', {
 	    	    	params : { 
 	    	    		category : 'mz'
 	    	    	}
@@ -201,8 +193,8 @@ var myVue =  new Vue({
 	            })
 	                
 	        },
-	        handleReset (name) {
-	            this.$refs[name].resetFields();
+	        handleReset:function (name) {
+	        	myVue.$refs[name].resetFields();
 	        }
 	  }
 });

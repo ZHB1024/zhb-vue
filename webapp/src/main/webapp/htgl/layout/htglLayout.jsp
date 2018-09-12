@@ -11,11 +11,18 @@ String ctxPath = request.getContextPath();
 
 <title><tiles:insertAttribute name="title" /></title>
 
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/iview@3.0.0/dist/styles/iview.css">
+<!-- <link rel="stylesheet" type="text/css" href="https://unpkg.com/iview@3.0.0/dist/styles/iview.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
 <script type="text/javascript" src="https://unpkg.com/iview@3.0.0/dist/iview.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+
+	<link rel="stylesheet" href="/css/iview.css">
+    <link rel="stylesheet" href="/css/htgl.css">
+    <script src="https://t1.chei.com.cn/common/js/vue/2.5.6/vue.js"></script>
+    <script src="/js/iview-3.0.0.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/jquery-3.3.1.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/my.css">
 
@@ -25,39 +32,6 @@ String ctxPath = request.getContextPath();
 <script type="text/javascript" src="/js/vue.js"></script>
 <script type="text/javascript" src="/js/iview.js"></script>
 <script type="text/javascript" src="/js/axios.min.js"></script> -->
-
-
-<style>
-/* .layout {
-	border: 1px solid #d7dde4;
-	background: #f5f7f9;
-	position: relative;
-	border-radius: 4px;
-	overflow: hidden;
-} */
-
-.layout-logo {
-	width: 100px;
-	height: 30px;
-/* 	background: #5b6270; */
-	border-radius: 3px;
-	float: left;
-	position: relative;
-	top: 0px;
-	left: 20px;
-    color:white;
-    font-size:25px
-}
-
-.layout-nav {
-	width: 300px;
-	margin: 0 auto;
-	margin-right: 20px;
-}
-
-html,body{height:100%}
-
-</style>
 
 </head>
 
