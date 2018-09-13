@@ -131,7 +131,7 @@ public class FunctionInfoController {
         if (data.getType() == 1) {
             UserInfoParam userInfoParam = new UserInfoParam();
             userInfoParam.setId(WebAppUtil.getUserId(request));
-            List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(userInfoParam);
+            List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(userInfoParam,null);
             
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setFunctionInfoData(data);

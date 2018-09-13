@@ -64,7 +64,7 @@ public class LoginController {
             ajaxData.addMessage("请填写用户名或密码");
             return ajaxData;
         }
-        List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(param);
+        List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(param,null);
         
         if (null == userInfoDatas || userInfoDatas.size() == 0 ) {
             ajaxData.setFlag(false);
@@ -94,7 +94,7 @@ public class LoginController {
         
         UserInfoParam param = new UserInfoParam();
         param.setUserName("root");
-        List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(param);
+        List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(param,null);
         if (null == userInfoDatas || userInfoDatas.size() == 0 ) {
             //用户信息
             UserInfoData data = new UserInfoData();

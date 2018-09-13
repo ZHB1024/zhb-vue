@@ -40,7 +40,8 @@ public class Data2JSONUtil {
         object.put("email", data.getEmail());
         object.put("createTime", data.getCreateTime());
         object.put("updateTime", data.getUpdateTime());
-        object.put("deleteFlag", DeleteFlagEnum.getName(data.getDeleteFlag()));
+        object.put("deleteFlag", data.getDeleteFlag());
+        object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
         return object;
     }
     
@@ -64,7 +65,8 @@ public class Data2JSONUtil {
                 object.put("email", data.getEmail());
                 object.put("createTime", data.getCreateTime());
                 object.put("updateTime", data.getUpdateTime());
-                object.put("deleteFlag", DeleteFlagEnum.getName(data.getDeleteFlag()));
+                object.put("deleteFlag", data.getDeleteFlag());
+                object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
                 jsonArray.add(object);
             }
         }
@@ -92,7 +94,8 @@ public class Data2JSONUtil {
         object.put("email", data.getEmail());
         object.put("createTime", data.getCreateTime());
         object.put("updateTime", data.getUpdateTime());
-        object.put("deleteFlag", DeleteFlagEnum.getName(data.getDeleteFlag()));
+        object.put("deleteFlag", data.getDeleteFlag());
+        object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
         
         return object;
     }
@@ -117,7 +120,8 @@ public class Data2JSONUtil {
                 object.put("email", data.getEmail());
                 object.put("createTime", data.getCreateTime());
                 object.put("updateTime", data.getUpdateTime());
-                object.put("deleteFlag", DeleteFlagEnum.getName(data.getDeleteFlag()));
+                object.put("deleteFlag", data.getDeleteFlag());
+                object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
                 jsonArray.add(object);
             }
         }
@@ -140,6 +144,7 @@ public class Data2JSONUtil {
         object.put("type", data.getType());
         object.put("orderIndex", data.getOrderIndex());
         object.put("deleteFlag", data.getDeleteFlag());
+        object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
         object.put("remark", data.getRemark());
         jsonArray.add(object);
         return jsonArray;
@@ -161,6 +166,7 @@ public class Data2JSONUtil {
             object.put("type", data.getType());
             object.put("orderIndex", data.getOrderIndex());
             object.put("deleteFlag", data.getDeleteFlag());
+            object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
             object.put("remark", data.getRemark());
             jsonArray.add(object);
         }
@@ -177,6 +183,7 @@ public class Data2JSONUtil {
         object.put("name", data.getName());
         object.put("value", data.getValue());
         object.put("deleteFlag", data.getDeleteFlag());
+        object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
         jsonArray.add(object);
         return jsonArray;
     }
@@ -192,6 +199,7 @@ public class Data2JSONUtil {
             object.put("name", data.getName());
             object.put("value", data.getValue());
             object.put("deleteFlag", data.getDeleteFlag());
+            object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
             jsonArray.add(object);
         }
         

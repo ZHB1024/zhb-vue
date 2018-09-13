@@ -3,10 +3,6 @@
 String ctxPath = request.getContextPath();
 %>
 
-<style>
-li {list-style-type:none;}
-</style>
-
 <div id="app_content" style="height: 100%">
     <Layout :style="{padding: '0 24px 24px', height: '100%'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
@@ -37,10 +33,11 @@ li {list-style-type:none;}
                           <p>毕业院校：{{userInfo.byyx}}</p>
                           <p>电话：{{userInfo.mobilePhone}}</p>
                           <p>邮箱：{{userInfo.email}}</p>
+                          <p>lobId：{{userInfo.lobId}}</p>
                         </i-col>
                         <i-col offset='6' span="6">
                           <!-- <Icon type="md-person" size='80'/> -->
-                          <div><img src="/images/loading.gif"/><div>
+                          <div><img :src="userInfo.lobId"/><div>
                           <div><i-button type="primary" to="/htgl/userinfocontroller/toadd">修改照片</i-button> <div>
                         </i-col>
                       </Row>
@@ -52,18 +49,30 @@ li {list-style-type:none;}
     </Layout>
 </div>
 
-
-<script type="text/javascript">
+<script>
 var myVue =  new Vue({
 	  el: '#app_content',
 	  data:{
-		  userInfo:{},
+		  userInfo:{
+			  userName:'',
+			  realName:'',
+			  identityCard:'',
+			  sex:'',
+			  birthday:'',
+			  country:'',
+			  nation:'',
+			  byyx:'',
+			  mobilePhone:'',
+			  email:'',
+			  lobId:''
+		  },
 	  },
 	  created: function () {
 		  axios.all([
 	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getselfinfo/api')
 	    	  ]).then(axios.spread(function (userInfoResp) {
 	    		  myVue.userInfo = userInfoResp.data.data;
+	    		  myVue.userInfo.lobId = '/images/loading.gif';
 	    	  }));
 	 },
 	  methods:{

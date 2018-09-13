@@ -78,7 +78,7 @@ public class DicInfoDaoImpl implements DicInfoDao {
             criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
         }
         
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("category"))).orderBy(criteriaBuilder.asc(root.get("orderIndex")));
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("category")),criteriaBuilder.asc(root.get("orderIndex")));
         
         Query<DicInfoData> query = session.createQuery(criteriaQuery);
         return query.list();

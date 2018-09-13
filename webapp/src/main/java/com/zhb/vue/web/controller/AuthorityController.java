@@ -50,7 +50,7 @@ public class AuthorityController {
         AjaxData ajaxData = new AjaxData();
         UserInfoParam userInfoParam = new UserInfoParam();
         userInfoParam.setId(WebAppUtil.getUserId(request));
-        List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam);
+        List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam,null);
         List<UserFunctionInfoData> datas = functionInfoService.getDataByUser(userInfoData.get(0));
         JSONArray jsonArray = Data2JSONUtil.generateJSonArray(datas);
         
@@ -74,7 +74,7 @@ public class AuthorityController {
         if (StringUtil.isNotBlank(param.getUserId())) {
             UserInfoParam userInfoParam = new UserInfoParam();
             userInfoParam.setId(param.getUserId());
-            List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam);
+            List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam,null);
             param.setUserInfoData(userInfoData.get(0));
         }
         if (StringUtil.isNotBlank(param.getFunctionId())) {
@@ -117,7 +117,7 @@ public class AuthorityController {
         
         UserInfoParam userInfoParam = new UserInfoParam();
         userInfoParam.setId(param.getUserId());
-        List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam);
+        List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam,null);
         param.setUserInfoData(userInfoData.get(0));
         
         String[] functionIds = param.getFunctionId().split(",");

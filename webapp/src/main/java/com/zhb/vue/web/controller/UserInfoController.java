@@ -1,6 +1,7 @@
 package com.zhb.vue.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,9 +20,12 @@ import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.PasswordUtil;
 import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.params.UserInfoParam;
+import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.service.FunctionInfoService;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.CheckUtil;
@@ -39,6 +43,9 @@ public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;
     
+    @Autowired
+    private FunctionInfoService functionInfoService;
+    
     @RequestMapping(value="/toindex",method=RequestMethod.GET)
     @Transactional
     public String toIndex(HttpServletRequest request,HttpServletResponse response) {
@@ -51,13 +58,7 @@ public class UserInfoController {
     @ResponseBody
     @Transactional
     public AjaxData getUserInfo(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
-        AjaxData ajaxData = new AjaxData();
-        List<UserInfoData> userInfos = userInfoService.getUserInfos(param);
-        if (null != userInfos) {
-            ajaxData.setData(Data2JSONUtil.userInfoDatas2JSONArray(userInfos));
-        }
-        ajaxData.setFlag(true);
-        
+        AjaxData ajaxData = searchUserInfo2AjaxData(param,request);
         return ajaxData;
     }
     
@@ -132,7 +133,7 @@ public class UserInfoController {
         
         UserInfoParam userInfoParam = new UserInfoParam();
         userInfoParam.setUserName(param.getUserName());
-        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam);
+        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam,null);
         if (null != datas && datas.size() > 0 ) {
             ajaxData.setFlag(false);
             ajaxData.addMessage("此用户名已存在，请更换用户名");
@@ -189,7 +190,7 @@ public class UserInfoController {
         
         UserInfoParam userInfoParam = new UserInfoParam();
         userInfoParam.setId(param.getId());
-        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam);
+        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam,null);
         UserInfoData userInfoData = null;
         if (null != datas && datas.size() > 0 ) {
             userInfoData = datas.get(0);
@@ -225,6 +226,39 @@ public class UserInfoController {
         return ajaxData;
     }
     
+    //注销或开通账号
+    @RequestMapping(value="/deloropenaccount/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData delOrOpenAccount(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(param.getId()) || null == param.getDeleteFlag()) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        UserInfoData data = userInfoService.getUserInfoById(param.getId());
+        if (data.getUserName().equals("root")) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("root账号不能注销");
+            return ajaxData;
+        }
+        data.setDeleteFlag(param.getDeleteFlag());
+        userInfoService.saveOrUpdate(data);
+        
+        //注销账号时，需要删除授权信息
+        if (param.getDeleteFlag() == 1) {
+            List<UserFunctionInfoData> datas = functionInfoService.getDataByUser(data);
+            if (null != datas && datas.size() > 0) {
+                for (UserFunctionInfoData userFunctionInfoData : datas) {
+                    functionInfoService.delUserFunctionInfoData(userFunctionInfoData);
+                }
+            }
+        }
+        ajaxData = searchUserInfo2AjaxData(null, request);
+        return ajaxData;
+    }
+    
     //退出系统
     @RequestMapping("/exit")
     @Transactional
@@ -235,6 +269,27 @@ public class UserInfoController {
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+    
+    private AjaxData searchUserInfo2AjaxData(UserInfoParam param,HttpServletRequest request) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new UserInfoParam();
+        }
+        
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("deleteFlag",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("createTime",false);
+        orderVos.add(vo2);
+        
+        List<UserInfoData> userInfos = userInfoService.getUserInfos(param,orderVos);
+        if (null != userInfos) {
+            ajaxData.setData(Data2JSONUtil.userInfoDatas2JSONArray(userInfos));
+        }
+        ajaxData.setFlag(true);
+        return ajaxData;
     }
 
 }

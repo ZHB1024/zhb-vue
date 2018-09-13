@@ -98,7 +98,7 @@ public class FunctionInfoServiceTest extends BaseTest {
         
         UserInfoParam param2 = new UserInfoParam();
         param2.setUserName("root");
-        List<UserInfoData> datas2 = userInfoService.getUserInfos(param2);
+        List<UserInfoData> datas2 = userInfoService.getUserInfos(param2,null);
         
         data.setUserInfoData(datas2.get(0));
         

@@ -23,7 +23,7 @@ public class UserInfoServiceTest extends BaseTest {
     public void getParamsTest() {
         UserInfoParam userInfoParam = new UserInfoParam();
         userInfoParam.setUserName("root");
-        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam);
+        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam,null);
         if (null != datas) {
             for (UserInfoData userInfoData : datas) {
                 System.out.println(userInfoData.getRealName());
