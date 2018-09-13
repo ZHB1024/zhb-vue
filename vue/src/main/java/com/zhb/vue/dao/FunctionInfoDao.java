@@ -27,10 +27,18 @@ public interface FunctionInfoDao {
     List<FunctionInfoData> getFunctions(FunctionInfoParam param);
     
     /**
-     * *获取最大排序号
+     * *获取功能,根据id
+     * @param id
      * @return
      */
-    int getMaxOrder();
+    FunctionInfoData getFunctionById(String id);
+    
+    /**
+     * *获取最大排序号
+     * * @param param
+     * @return
+     */
+    int getMaxOrder(FunctionInfoParam param);
     
     
 }

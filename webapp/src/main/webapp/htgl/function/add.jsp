@@ -21,7 +21,10 @@ li {list-style-type:none;}
             	<i-form method="post" action="" ref="formValidate" :model="functionInfo" :rules="ruleValidate" :label-width="80">
                 	
                 	<form-item label="父节点" prop="parentId">
-                	  <i-select name="parentId" v-model="functionInfo.parentId" placeholder="请选择父节点">
+                	  <i-select name="parentId" v-model="functionInfo.parentId" @on-change="getMaxOrder" placeholder="请选择父节点">
+                	  		<i-option value="" >
+                        		请选择
+                        	</i-option>
                         	<i-option v-bind:value="item.id" v-for="item in parentFunctions">
                         		{{item.name}}
                         	</i-option>
@@ -44,8 +47,8 @@ li {list-style-type:none;}
                     	</i-select>
                 	</form-item>
                 	
-                	<form-item label="排序号" prop="orderIndex">
-                  		<Input-number name="orderIndex" :min="1" :step="1" v-model="functionInfo.orderIndex"></Input-number>
+                	<form-item label="排序号" prop="order">
+                  		<Input-number disabled name="order" v-model="functionInfo.order"></Input-number>
                 	</form-item >
                 	
                   <form-item align="center">
@@ -71,7 +74,7 @@ var myVue =  new Vue({
 			  name:'',
 			  path:'',
 			  iconId:'',
-			  orderIndex:''
+			  order:''
 		  },
 		  parentFunctions:[],
 		  icons:[],
@@ -82,8 +85,8 @@ var myVue =  new Vue({
 	    		  path: [
 		    		    { required: true, message: '请填写访问路径', trigger: 'change' }
 		    	  ],
-		    	  orderIndex: [
-		    		    { required: true, message: '请填写顺序号', trigger: 'change' }
+		    	  order: [
+		    		    { required: true, type:'number', message: '请填写顺序号', trigger: 'change' }
 		    	  ]
 	    		  
 	      } 
@@ -96,7 +99,7 @@ var myVue =  new Vue({
 	    	    axios.get('<%=ctxPath %>/htgl/iconinfocontroller/geticoninfo/api')
 	    	  ]).then(axios.spread(function (funinfoResp,maxOrderResp,iconResp) {
 	    		  myVue.parentFunctions = funinfoResp.data.data;
-	    		  myVue.functionInfo.orderIndex = maxOrderResp.data.data;
+	    		  myVue.functionInfo.order = maxOrderResp.data.data;
 	    		  myVue.icons = iconResp.data.data;
 	    	  }));
 	 },
@@ -109,7 +112,7 @@ var myVue =  new Vue({
 		          	  	param.append("name",myVue.functionInfo.name); 
 		          	  	param.append("path",myVue.functionInfo.path); 
 		          	  	param.append("iconId",myVue.functionInfo.iconId); 
-		          	  	param.append("orderIndex",myVue.functionInfo.orderIndex); 
+		          	  	param.append("order",myVue.functionInfo.order); 
 		          	  	axios.post('<%=ctxPath%>/htgl/functioninfocontroller/addfunctioninfo/api', param)
 		          		  	 .then(function (response) {
 		          			  	 if(response.data.flag){
@@ -133,6 +136,23 @@ var myVue =  new Vue({
 	        },
 	        handleReset:function (name) {
 	        	myVue.$refs[name].resetFields();
+	        },
+	        getMaxOrder:function(parentId){
+	        	let param = new URLSearchParams(); 
+	       	  	param.append("parentId",parentId); 
+	       	  	axios.post('<%=ctxPath %>/htgl/functioninfocontroller/getmaxorder/api', param)
+	       		  	.then(function (response) {
+	       			  	if(response.data.flag){
+	       			  		myVue.functionInfo.order=response.data.data;
+	       				  	myVue.$forceUpdate();
+	                     }else{
+	                   	  myVue.$Message.info({
+	                             content: response.data.errorMessages,
+	                             duration: 3,
+	                             closable: true
+	                         });
+	                     }
+	       		  })
 	        }
 	  }
 });

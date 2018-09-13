@@ -43,10 +43,17 @@ public interface FunctionInfoService {
     List<FunctionInfoData> getFunctions(FunctionInfoParam param);
     
     /**
+     * *获取功能,根据id
+     * @param id
+     * @return
+     */
+    FunctionInfoData getFunctionById(String id);
+    
+    /**
      * *获取最大排序号
      * @return
      */
-    int getMaxOrder();
+    int getMaxOrder(FunctionInfoParam param);
     
     
     /**

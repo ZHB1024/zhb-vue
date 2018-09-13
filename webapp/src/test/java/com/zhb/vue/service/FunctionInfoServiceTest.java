@@ -62,7 +62,8 @@ public class FunctionInfoServiceTest extends BaseTest {
     @Transactional
     @Rollback(true)
     public void getMaxOrderTest() {
-        int max = functionInfoService.getMaxOrder();
+        FunctionInfoParam param = new FunctionInfoParam();
+        int max = functionInfoService.getMaxOrder(param);
         System.out.println(max);
     }
     

@@ -10,8 +10,6 @@ import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -93,17 +91,44 @@ public class FunctionInfoDaoImpl implements FunctionInfoDao {
 
 
     @Override
-    public int getMaxOrder() {
+    public int getMaxOrder(FunctionInfoParam param) {
         Session session = sessionFactory.getCurrentSession();
         CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
         
         Root<FunctionInfoData> root = criteriaQuery.from(FunctionInfoData.class);
-        //criteriaBuilder.max(root.get("order"));
         
         criteriaQuery.select(criteriaBuilder.max(root.get("order")));
         
+        List<Predicate> conditions = new ArrayList<>();
+        if (StringUtil.isNotBlank(param.getParentId()) && !"undefined".equals(param.getParentId())) {
+            conditions.add(criteriaBuilder.or(criteriaBuilder.equal(root.get("id"), param.getParentId()),criteriaBuilder.equal(root.get("parentFunctionInfo"), param.getParentFunctionInfo())));
+        }
+        if (conditions.size() > 0 ) {
+            criteriaQuery.where(criteriaBuilder.and(conditions.toArray(new Predicate[conditions.size()])));
+        }
+        
         return session.createQuery(criteriaQuery).getSingleResult();
+    }
+
+    @Override
+    public FunctionInfoData getFunctionById(String id) {
+        if (StringUtil.isBlank(id)) {
+            return null;
+        }
+        
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<FunctionInfoData> criteriaQuery = criteriaBuilder.createQuery(FunctionInfoData.class);
+        Root<FunctionInfoData> root = criteriaQuery.from(FunctionInfoData.class);
+        
+        criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
+        Query<FunctionInfoData> query = session.createQuery(criteriaQuery);
+        List<FunctionInfoData> datas = query.list();
+        if (null == datas || datas.size() ==0) {
+            return null;
+        }
+        return datas.get(0);
     }
 
 }

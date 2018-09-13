@@ -97,7 +97,7 @@ public class FunctionInfoController {
             return ajaxData;
         }
         
-        if (StringUtil.isNotBlank(param.getParentId())) {
+        if (StringUtil.isNotBlank(param.getParentId()) && !"undefined".equals(param.getParentId())) {
             FunctionInfoParam param2 = new FunctionInfoParam();
             param2.setId(param.getParentId());
             List<FunctionInfoData> datas = functionInfoService.getFunctions(param2);
@@ -119,7 +119,6 @@ public class FunctionInfoController {
                 param.setIconInfoData(iconInfoDatas.get(0));
             }
         }
-        param.setOrder(functionInfoService.getMaxOrder());
         param.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
         
         FunctionInfoData data = new FunctionInfoData();
@@ -191,9 +190,19 @@ public class FunctionInfoController {
     @RequestMapping("/getmaxorder/api")
     @ResponseBody
     @Transactional
-    public AjaxData getMaxOrder(HttpServletRequest request,HttpServletResponse response) {
+    public AjaxData getMaxOrder(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
         AjaxData ajaxData = new AjaxData();
-        int max = functionInfoService.getMaxOrder();
+        if (StringUtil.isNotBlank(param.getParentId()) && !"undefined".equals(param.getParentId())) {
+            FunctionInfoData data = functionInfoService.getFunctionById(param.getParentId());
+            param.setParentFunctionInfo(data);
+        }
+        int max = functionInfoService.getMaxOrder(param);
+        if (StringUtil.isNotBlank(param.getParentId()) && !"undefined".equals(param.getParentId())) {
+            max += 1;
+        }else {
+            int temp = max / 10;
+            max = (temp+1)*10 + 1;
+        }
         ajaxData.setData(max);
         ajaxData.setFlag(true);
         return ajaxData;

@@ -47,10 +47,15 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     public List<FunctionInfoData> getFunctions(FunctionInfoParam param) {
         return functionInfoDao.getFunctions(param);
     }
-
+    
     @Override
-    public int getMaxOrder() {
-        return functionInfoDao.getMaxOrder();
+    public FunctionInfoData getFunctionById(String id) {
+        return functionInfoDao.getFunctionById(id);
+    }
+    
+    @Override
+    public int getMaxOrder(FunctionInfoParam param) {
+        return functionInfoDao.getMaxOrder(param);
     }
 
     @Override
