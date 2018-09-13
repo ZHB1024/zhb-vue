@@ -14,8 +14,8 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.IconInfoDao;
 import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
@@ -34,7 +34,7 @@ public class IconInfoDaoImpl implements IconInfoDao {
 
 
     @Override
-    public List<IconInfoData> getIconInfos(IconInfoParam param) {
+    public List<IconInfoData> getIconInfos(IconInfoParam param,List<OrderVO> orderVos) {
         if (null == param) {
             return null;
         }
@@ -56,16 +56,38 @@ public class IconInfoDaoImpl implements IconInfoDao {
         }
         if (null != param.getDeleteFlag()) {
             conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
-        }else {
-            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), DeleteFlagEnum.UDEL.getIndex()));
         }
         
         if (conditions.size() > 0) {
             criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
         }
+        if (null != orderVos && orderVos.size() > 0) {
+            DaoUtil.addOrders(criteriaBuilder, criteriaQuery, root, orderVos);
+        }
         Query<IconInfoData> query = session.createQuery(criteriaQuery);
         
         return query.getResultList();
+    }
+
+
+    @Override
+    public IconInfoData getIconInfoById(String id) {
+        if (StringUtil.isBlank(id)) {
+            return null;
+        }
+        
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<IconInfoData> criteriaQuery = criteriaBuilder.createQuery(IconInfoData.class);
+        Root<IconInfoData> root = criteriaQuery.from(IconInfoData.class);
+        
+        criteriaQuery.where(criteriaBuilder.equal(root.get("id"), id));
+        Query<IconInfoData> query = session.createQuery(criteriaQuery);
+        List<IconInfoData> datas = query.list();
+        if (null == datas || datas.size() ==0) {
+            return null;
+        }
+        return datas.get(0);
     }
 
 }

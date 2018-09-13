@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.IconInfoDao;
 import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
@@ -22,8 +23,13 @@ public class IconInfoServiceImpl implements IconInfoService {
     }
 
     @Override
-    public List<IconInfoData> getIconInfos(IconInfoParam param) {
-        return iconInfoDao.getIconInfos(param);
+    public List<IconInfoData> getIconInfos(IconInfoParam param,List<OrderVO> orderVos) {
+        return iconInfoDao.getIconInfos(param,orderVos);
+    }
+
+    @Override
+    public IconInfoData getIconInfoById(String id) {
+        return iconInfoDao.getIconInfoById(id);
     }
 
 }

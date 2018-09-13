@@ -173,19 +173,19 @@ public class Data2JSONUtil {
         
         return jsonArray;
     }
-    public static JSONArray iconInfoData2JSONArray(IconInfoData data) {
+    public static JSONObject iconInfoData2JSONArray(IconInfoData data) {
         if (null == data ) {
             return null;
         }
-        JSONArray jsonArray = new JSONArray();
         JSONObject object = new JSONObject();
         object.put("id", data.getId());
         object.put("name", data.getName());
         object.put("value", data.getValue());
         object.put("deleteFlag", data.getDeleteFlag());
         object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
-        jsonArray.add(object);
-        return jsonArray;
+        object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
+        object.put("updateTime", DateTimeUtil.getDateTime(data.getUpdateTime(),"yyyy-MM-dd HH:mm:ss"));
+        return object;
     }
     
     public static JSONArray iconInfoDatas2JSONArray(List<IconInfoData> datas) {
@@ -200,6 +200,8 @@ public class Data2JSONUtil {
             object.put("value", data.getValue());
             object.put("deleteFlag", data.getDeleteFlag());
             object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
+            object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(),"yyyy-MM-dd HH:mm:ss"));
+            object.put("updateTime", DateTimeUtil.getDateTime(data.getUpdateTime(),"yyyy-MM-dd HH:mm:ss"));
             jsonArray.add(object);
         }
         
@@ -234,7 +236,7 @@ public class Data2JSONUtil {
                 vo.setId(parent.getId());
                 vo.setName(parent.getName());
                 vo.setPath(parent.getPath());
-                vo.setIconName(parent.getIconInfoData().getName());
+                vo.setIconName(parent.getIconInfoData().getValue());
                 List<ComparatorVO> childs = new ArrayList<>();
                 for(FunctionInfoData funData : childrens){
                     ComparatorVO child = new ComparatorVO(funData.getOrder());
@@ -311,7 +313,7 @@ public class Data2JSONUtil {
                 vo.setId(parent.getId());
                 vo.setName(parent.getName());
                 vo.setPath(parent.getPath());
-                vo.setIconName(parent.getIconInfoData().getName());
+                vo.setIconName(parent.getIconInfoData().getValue());
                 List<ComparatorVO> childs = new ArrayList<>();
                 for(FunctionInfoData funData : childrens){
                     ComparatorVO child = new ComparatorVO(funData.getOrder());

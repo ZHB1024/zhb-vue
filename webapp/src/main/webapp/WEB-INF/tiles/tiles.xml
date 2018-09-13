@@ -66,6 +66,9 @@
 	<definition name="htgl.icon.add" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/icon/add.jsp" />
     </definition>
+	<definition name="htgl.icon.update" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/icon/update.jsp" />
+    </definition>
     <!-- authority -->
 	<definition name="htgl.authority.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/authority/index.jsp" />

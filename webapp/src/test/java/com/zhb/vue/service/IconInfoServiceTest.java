@@ -32,7 +32,7 @@ public class IconInfoServiceTest extends BaseTest {
     public void getIconInfoTest() {
         IconInfoParam param = new IconInfoParam();
         param.setName("授权管理");
-        List<IconInfoData> datas = iconInfoService.getIconInfos(param);
+        List<IconInfoData> datas = iconInfoService.getIconInfos(param,null);
         if (null != datas) {
             for (IconInfoData iconInfoData : datas) {
                 System.out.println(iconInfoData.getId() + "--" + iconInfoData.getName() + "--" + iconInfoData.getValue());

@@ -114,7 +114,7 @@ public class FunctionInfoController {
         if (StringUtil.isNotBlank(param.getIconId())) {
             IconInfoParam iconInfoParam = new IconInfoParam();
             iconInfoParam.setId(param.getIconId());
-            List<IconInfoData> iconInfoDatas = iconInfoService.getIconInfos(iconInfoParam);
+            List<IconInfoData> iconInfoDatas = iconInfoService.getIconInfos(iconInfoParam,null);
             if (null != iconInfoDatas && iconInfoDatas.size() > 0) {
                 param.setIconInfoData(iconInfoDatas.get(0));
             }

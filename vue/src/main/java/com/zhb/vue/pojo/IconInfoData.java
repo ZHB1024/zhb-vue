@@ -1,5 +1,7 @@
 package com.zhb.vue.pojo;
 
+import java.util.Calendar;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,9 +20,12 @@ public class IconInfoData {
     private String name;
     private String value;
     private Integer deleteFlag;
+    private Calendar createTime;
+    private Calendar updateTime;
     
     public IconInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
+        this.createTime = Calendar.getInstance();
     }
     
     @Id
@@ -56,5 +61,23 @@ public class IconInfoData {
     }
     public void setDeleteFlag(Integer deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+
+    @Column(name = "create_time")
+    public Calendar getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Calendar createTime) {
+        this.createTime = createTime;
+    }
+
+    @Column(name = "update_time")
+    public Calendar getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Calendar updateTime) {
+        this.updateTime = updateTime;
     }
 }

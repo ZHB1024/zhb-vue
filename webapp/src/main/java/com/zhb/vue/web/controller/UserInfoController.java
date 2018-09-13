@@ -238,6 +238,11 @@ public class UserInfoController {
             return ajaxData;
         }
         UserInfoData data = userInfoService.getUserInfoById(param.getId());
+        if (null ==data ) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
         if (data.getUserName().equals("root")) {
             ajaxData.setFlag(false);
             ajaxData.addMessage("root账号不能注销");
@@ -271,6 +276,8 @@ public class UserInfoController {
         }
     }
     
+    
+    //共用查询
     private AjaxData searchUserInfo2AjaxData(UserInfoParam param,HttpServletRequest request) {
         AjaxData ajaxData = new AjaxData();
         if (null == param) {
