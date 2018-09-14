@@ -173,7 +173,7 @@ public class Data2JSONUtil {
         
         return jsonArray;
     }
-    public static JSONObject iconInfoData2JSONArray(IconInfoData data) {
+    public static JSONObject iconInfoData2JSONObject(IconInfoData data) {
         if (null == data ) {
             return null;
         }

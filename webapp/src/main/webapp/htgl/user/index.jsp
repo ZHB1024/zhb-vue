@@ -10,7 +10,7 @@ li {list-style-type:none;}
 <div id="app_content" >
     <Layout :style="{padding: '0 20px 20px'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
-            <breadcrumb-item>首页</breadcrumb-item> 
+            <breadcrumb-item><a href="<%=ctxPath%>/"><Icon v-bind:type="homeIcon.value"></Icon></a></breadcrumb-item> 
             <breadcrumb-item>用户管理</breadcrumb-item> 
             <breadcrumb-item>用户信息</breadcrumb-item> 
         </Breadcrumb> 
@@ -33,11 +33,20 @@ var myVue = new Vue({
     el: '#app_content',
     data:{
     	tableDatas:[],
+    	homeIcon:{
+    		name:'',
+    		value:''
+    	},
     	columns1:[
     		{
                 title: '序号',
                 type:"index",
                 width: 70
+            },
+            {
+                title: '用户名',
+                key: 'userName',
+                minWidth: 100
             },
             {
                 title: '姓名',
@@ -46,18 +55,13 @@ var myVue = new Vue({
                 sortable:true
             },
             {
-                title: '用户名',
-                key: 'userName',
-                minWidth: 100
-            },
-            {
                 title: '性别',
                 key: 'sex',
                 minWidth: 100
             },
             {
-                title: '身份证号',
-                key: 'identityCard',
+                title: '邮箱',
+                key: 'email',
                 minWidth: 100
             },
             {
@@ -113,9 +117,19 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getuserinfo/api')
-    	  ]).then(axios.spread(function (userinfoResp) {
+    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getuserinfo/api'),
+    	    axios.get('<%=ctxPath %>/htgl/iconinfocontroller/geticoninfobyname/api', {
+    	    	params : { 
+    	    		name : 'home'
+    	    	}
+    	    })
+    	  ]).then(axios.spread(function (userinfoResp,iconinfoResp) {
     		  myVue.tableDatas = userinfoResp.data.data;
+    		  if(iconinfoResp.data.flag){
+    			  myVue.homeIcon = iconinfoResp.data.data;
+    		  }else{
+    			  myVue.homeIcon.name = 'md-home';
+    		  }
     	  }));
     },
     methods: {

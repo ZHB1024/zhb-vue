@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
@@ -44,7 +45,7 @@ public class IconInfoController {
     @RequestMapping(value="/geticoninfo/api")
     @ResponseBody
     @Transactional
-    public AjaxData searchIconInfo(HttpServletRequest request,HttpServletResponse response,IconInfoParam param) {
+    public AjaxData getIconInfo(HttpServletRequest request,HttpServletResponse response,IconInfoParam param) {
         AjaxData ajaxData = searchIconInfo2AjaxData(param,request);
         return ajaxData;
     }
@@ -73,6 +74,14 @@ public class IconInfoController {
             ajaxData.addMessage("请输入图标代码");
             return ajaxData;
         }
+        IconInfoParam iconInfoParam = new IconInfoParam();
+        iconInfoParam.setName(param.getName());
+        List<IconInfoData> datas = iconInfoService.getIconInfos(iconInfoParam, null);
+        if (null != datas && datas.size() > 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("该图标名称已存在，请修改为其它的名称");
+            return ajaxData;
+        }
         IconInfoData data = new IconInfoData();
         data.setName(param.getName());
         data.setValue(param.getValue());
@@ -93,7 +102,7 @@ public class IconInfoController {
         if (null == data || 1 == data.getDeleteFlag()) {
             return WriteJSUtil.writeJS("非法操作", response);
         }
-        request.setAttribute("iconInfoJson", Data2JSONUtil.iconInfoData2JSONArray(data));
+        request.setAttribute("iconInfoJson", Data2JSONUtil.iconInfoData2JSONObject(data));
         return "htgl.icon.update";
     }
     
@@ -157,6 +166,29 @@ public class IconInfoController {
         iconInfoService.saveOrUpdate(data);
         
         ajaxData = searchIconInfo2AjaxData(null, request);
+        return ajaxData;
+    }
+    
+    //根据名称查询icon信息
+    @RequestMapping(value="/geticoninfobyname/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getIconInfoByName(HttpServletRequest request,HttpServletResponse response,IconInfoParam param) {
+        AjaxData ajaxData = searchIconInfo2AjaxData(param,request);
+        if (StringUtil.isBlank(param.getName())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        List<IconInfoData> datas = iconInfoService.getIconInfos(param, null);
+        if (null != datas && datas.size() > 0) {
+            JSONObject object = Data2JSONUtil.iconInfoData2JSONObject(datas.get(0));
+            ajaxData.setFlag(true);
+            ajaxData.setData(object);
+            return ajaxData;
+        }
+        ajaxData.setFlag(false);
+        ajaxData.addMessage("非法操作");
         return ajaxData;
     }
     

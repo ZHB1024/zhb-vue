@@ -35,8 +35,18 @@ String ctxPath = request.getContextPath();
                 	</form-item>
                 	
                 	<form-item label="性别" prop="sex">
-                  		<i-input type="text" name="sex" v-model="userInfo.sex" :maxlength="1" placeholder="请输入性别"></i-input>
+                  		<Radio-group v-model="userInfo.sex">
+        					<Radio label="男">
+            					<Icon type="md-male"></Icon>
+            					<span>男</span>
+        					</Radio>
+        					<Radio label="女">
+            					<Icon type="md-female"></Icon>
+            					<span>女</span>
+        					</Radio>
+    					</Radio-group>
                 	</form-item >
+                	
                 	
                 	<form-item label="出生日期" prop="birthday">
                   		<Date-picker  name="birthday" type="date" :options="limitDate" v-model="userInfo.birthday"  format="yyyy-MM-dd"  placeholder="出生日期"  >
@@ -114,7 +124,7 @@ var myVue =  new Vue({
 	    		    { required: true,type:'date', message: '请选择出生日期', trigger: 'change' }
 	    		  ]  ,
 	    		  sex: [
-		    		    { required: true, message: '请填写性别', trigger: 'change' }
+		    		    { required: true, message: '请选择性别', trigger: 'change' }
 		    	  ], 
 		    	  identityCard: [
 		    		    { required: true, message: '请填写身份证号', trigger: 'change' }

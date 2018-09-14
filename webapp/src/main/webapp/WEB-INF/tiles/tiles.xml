@@ -35,7 +35,7 @@
     </definition>
     
 <!-- htgl -->   
-    <definition name="htgl.index" extends="htgl.main.layout">
+    <definition name="system.htgl.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/index.jsp" />
     </definition>
     
