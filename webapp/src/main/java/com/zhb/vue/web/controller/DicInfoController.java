@@ -35,9 +35,7 @@ import com.zhb.forever.framework.util.PoiUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.DicInfoParam;
-import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
-import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.DicInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
@@ -73,7 +71,7 @@ public class DicInfoController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
-        ajaxData = searchDicInfo2AjaxData(param, request);
+        ajaxData = searchDicInfo2AjaxDataPage(param, request);
         return ajaxData;
     }
     
@@ -240,6 +238,16 @@ public class DicInfoController {
         orderVos.add(vo);
         OrderVO vo2 = new OrderVO("orderIndex",true);
         orderVos.add(vo2);
+        
+        //设置分页信息
+        if(null == param.getCurrentPage()){
+            param.setCurrentPage(1);
+        }
+        if(null == param.getPageSize()){
+            param.setPageSize(PageUtil.PAGE_SIZE);
+        }
+        param.setStart(param.getPageSize()*(param.getCurrentPage()-1));
+        
         Page<DicInfoData> page = dicInfoService.getDicInfosPage(param,orderVos);
         JSONObject jsonObject = new JSONObject();
         if (null != page) {

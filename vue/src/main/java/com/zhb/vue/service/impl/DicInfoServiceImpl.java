@@ -42,7 +42,7 @@ public class DicInfoServiceImpl implements DicInfoService {
 
     @Override
     public Page<DicInfoData> getDicInfosPage(DicInfoParam param, List<OrderVO> orderVos) {
-        int total = dicInfoDao.getDicInfosPageCount(param);
+        long total = dicInfoDao.getDicInfosPageCount(param);
         if (total > 0 ) {
             List<DicInfoData> dicInfoDatas = dicInfoDao.getDicInfosPage(param,orderVos);
             //上一页可能有数据

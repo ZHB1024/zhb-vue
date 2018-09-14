@@ -13,7 +13,7 @@ public interface DicInfoDao {
     
     List<DicInfoData> getDicInfos(DicInfoParam param,List<OrderVO> orderVos);
     
-    int getDicInfosPageCount(DicInfoParam param);
+    Long getDicInfosPageCount(DicInfoParam param);
 
     List<DicInfoData> getDicInfosPage(DicInfoParam param,List<OrderVO> orderVos);
 

@@ -87,8 +87,50 @@ public class DicInfoDaoImpl implements DicInfoDao {
     }
 
     @Override
-    public int getDicInfosPageCount(DicInfoParam param) {
-        return 0;
+    public Long getDicInfosPageCount(DicInfoParam param) {
+        if (null == param) {
+            return 0l;
+        }
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<DicInfoData> root = criteriaQuery.from(DicInfoData.class);
+        
+        criteriaQuery.select(criteriaBuilder.count(root.get("id")));
+        
+        List<Predicate> conditions = new ArrayList<>();
+        if (StringUtil.isNotBlank(param.getId())) {
+            conditions.add(criteriaBuilder.equal(root.get("id"), param.getId()));
+        }
+        if (StringUtil.isNotBlank(param.getCategory())) {
+            conditions.add(criteriaBuilder.equal(root.get("category"), param.getCategory()));
+        }
+        
+        if (StringUtil.isNotBlank(param.getCode())) {
+            conditions.add(criteriaBuilder.equal(root.get("code"), param.getCode()));
+        }
+        if (StringUtil.isNotBlank(param.getName())) {
+            conditions.add(criteriaBuilder.equal(root.get("name"), param.getName()));
+        }
+        if (StringUtil.isNotBlank(param.getName2())) {
+            conditions.add(criteriaBuilder.equal(root.get("name2"), param.getName2()));
+        }
+        if (StringUtil.isNotBlank(param.getName3())) {
+            conditions.add(criteriaBuilder.equal(root.get("name3"), param.getName3()));
+        }
+        if (StringUtil.isNotBlank(param.getType())) {
+            conditions.add(criteriaBuilder.equal(root.get("type"), param.getType()));
+        }
+        if (null != param.getDeleteFlag()) {
+            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
+        }
+        
+        if (conditions.size() > 0 ) {
+            criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
+        }
+        
+        return session.createQuery(criteriaQuery).getSingleResult();
     }
     
     @Override
@@ -139,6 +181,13 @@ public class DicInfoDaoImpl implements DicInfoDao {
         
         
         Query<DicInfoData> query = session.createQuery(criteriaQuery);
+        if (null != param.getPageSize()) {
+            query.setMaxResults(param.getPageSize());
+        }
+        
+        if (null != param.getStart()) {
+            query.setFirstResult(param.getStart());
+        }
         return query.list();
     }
 

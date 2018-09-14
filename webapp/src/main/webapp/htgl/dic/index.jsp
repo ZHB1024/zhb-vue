@@ -23,7 +23,7 @@ li {list-style-type:none;}
                     	</Date-picker>  
                 </form-item > -->
         	    
-        		<form-item prop="content">
+        		<!-- <form-item prop="content">
         			<i-select name="content" v-model="formParm.content" style="width: 150px;" placeholder="请选择加班内容">
         					<i-option value="" >
                         		全部
@@ -43,7 +43,7 @@ li {list-style-type:none;}
                         		{{checkStatus.name}}
                         	</i-option>
                 	</i-select>
-                </form-item>
+                </form-item> -->
                 
                 <form-item>
                     	<i-button type="primary" @click="search()" > 查   询 </i-button>
@@ -71,10 +71,10 @@ var myVue = new Vue({
     	contentParm:[] ,
     	statusParm:[] ,
     	formParm:{
-	        content:'',
-	        detail:'',
-	        workdate:'',
-	        status:''
+	        category:'',
+	        name:'',
+	        type:'',
+	        code:''
 	  	},
 	  	pageParm:{
 	  		currentPage:1,
@@ -177,8 +177,8 @@ var myVue = new Vue({
     	axios.all([
     	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api')
     	  ]).then(axios.spread(function (dicinfoResp) {
-    		  myVue.tableDatas = dicinfoResp.data.data;
-    		  //flushPage(workRecordResp.data.data);
+    		  myVue.tableDatas = dicinfoResp.data.data.result;
+    		  flushPage(dicinfoResp.data.data);
     	  }));
     },
     methods: {
@@ -201,11 +201,11 @@ var myVue = new Vue({
        //查询按钮
        search:function () {
     	  let param = new URLSearchParams(); 
-    	  param.append("contentId",myVue.formParm.content); 
-    	  param.append("detail",myVue.formParm.detail); 
-    	  param.append("workdate",myVue.formParm.workdate); 
-    	  param.append("status",myVue.formParm.status); 
-    	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
+    	  param.append("category",myVue.formParm.category); 
+    	  param.append("name",myVue.formParm.name); 
+    	  param.append("type",myVue.formParm.type); 
+    	  param.append("code",myVue.formParm.code); 
+    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
@@ -220,16 +220,16 @@ var myVue = new Vue({
                   }
     		  })
       },
-      //分页查询
+      //点击页码查询
       searchPage:function (page) {
     	  let param = new URLSearchParams(); 
-    	  param.append("contentId",myVue.formParm.content); 
-    	  param.append("detail",myVue.formParm.detail); 
-    	  param.append("workdate",myVue.formParm.workdate); 
-    	  param.append("status",myVue.formParm.status); 
+    	  param.append("category",myVue.formParm.category); 
+    	  param.append("name",myVue.formParm.name); 
+    	  param.append("type",myVue.formParm.type); 
+    	  param.append("code",myVue.formParm.code); 
     	  param.append("pageSize",myVue.pageParm.pageCount); 
     	  param.append("currentPage",page); 
-    	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
+    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
@@ -244,12 +244,13 @@ var myVue = new Vue({
                   }
     		  })
       },
+      //改变每页大小 
       changePageSize:function(pageSize){
     	  let param = new URLSearchParams(); 
-    	  param.append("contentId",myVue.formParm.content); 
-    	  param.append("detail",myVue.formParm.detail); 
-    	  param.append("workdate",myVue.formParm.workdate); 
-    	  param.append("status",myVue.formParm.status); 
+    	  param.append("category",myVue.formParm.category); 
+    	  param.append("name",myVue.formParm.name); 
+    	  param.append("type",myVue.formParm.type); 
+    	  param.append("code",myVue.formParm.code); 
     	  param.append("pageSize",pageSize); 
     	  param.append("currentPage",1); 
     	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
