@@ -13,6 +13,10 @@ public class DicInfoParam {
     private String remark;
     private Integer deleteFlag;
     
+    private Integer start;
+    private Integer pageSize;
+    private Integer currentPage;
+    
     public String getId() {
         return id;
     }
@@ -72,5 +76,23 @@ public class DicInfoParam {
     }
     public void setDeleteFlag(Integer deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+    public Integer getStart() {
+        return start;
+    }
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+    public Integer getPageSize() {
+        return pageSize;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
     }
 }

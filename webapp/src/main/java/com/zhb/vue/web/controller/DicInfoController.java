@@ -25,12 +25,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
+import com.zhb.forever.framework.page.Page;
+import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.PoiUtil;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.DicInfoParam;
+import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
+import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.DicInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
@@ -45,6 +52,7 @@ public class DicInfoController {
     @Autowired
     private DicInfoService dicInfoService;
     
+    //toindex
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
     public String toDicIndex(HttpServletRequest request,HttpServletResponse response) {
@@ -54,6 +62,7 @@ public class DicInfoController {
         return "htgl.dic.index";
     }
     
+    //查询
     @RequestMapping(value = "/getdicinfo/api")
     @ResponseBody
     @Transactional
@@ -64,12 +73,11 @@ public class DicInfoController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
-        List<DicInfoData> datas = dicInfoService.getDicInfos(param);
-        ajaxData.setData(Data2JSONUtil.dicInfoDatas2JSONArray(datas));
-        ajaxData.setFlag(true);
+        ajaxData = searchDicInfo2AjaxData(param, request);
         return ajaxData;
     }
     
+    //toupload
     @RequestMapping(value = "/toupload",method = RequestMethod.GET)
     @Transactional
     public String toUploadDic(HttpServletRequest request,HttpServletResponse response) {
@@ -79,6 +87,7 @@ public class DicInfoController {
         return "htgl.dic.upload";
     }
     
+    //上传
     @RequestMapping(value = "/uploaddicinfo")
     @Transactional
     public String uploadDicInfo(HttpServletRequest request,HttpServletResponse response) {
@@ -194,6 +203,54 @@ public class DicInfoController {
         }
         ajaxData.setFlag(true);
         return "htgl.dic.index";
+    }
+    
+    //共用查询,不分页
+    private AjaxData searchDicInfo2AjaxData(DicInfoParam param,HttpServletRequest request) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new DicInfoParam();
+        }
+        
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("category",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("orderIndex",true);
+        orderVos.add(vo2);
+        
+        List<DicInfoData> dicInfos = dicInfoService.getDicInfos(param,orderVos);
+        if (null != dicInfos) {
+            ajaxData.setData(Data2JSONUtil.dicInfoDatas2JSONArray(dicInfos));
+        }
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    //共用查询,分页
+    private AjaxData searchDicInfo2AjaxDataPage(DicInfoParam param,HttpServletRequest request) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new DicInfoParam();
+        }
+        
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("category",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("orderIndex",true);
+        orderVos.add(vo2);
+        Page<DicInfoData> page = dicInfoService.getDicInfosPage(param,orderVos);
+        JSONObject jsonObject = new JSONObject();
+        if (null != page) {
+            JSONArray workDayJson = Data2JSONUtil.dicInfoDatas2JSONArray(page.getList());
+            jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), workDayJson);
+        }else{
+            jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());
+        }
+        ajaxData.setFlag(true);
+        ajaxData.setData(jsonObject);
+        return ajaxData;
     }
     
     

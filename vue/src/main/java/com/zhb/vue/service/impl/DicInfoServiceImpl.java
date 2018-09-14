@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zhb.forever.framework.page.Page;
+import com.zhb.forever.framework.page.PageUtil;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.DicInfoDao;
 import com.zhb.vue.params.DicInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
@@ -33,8 +36,24 @@ public class DicInfoServiceImpl implements DicInfoService {
     }
 
     @Override
-    public List<DicInfoData> getDicInfos(DicInfoParam param) {
-        return dicInfoDao.getDicInfos(param);
+    public List<DicInfoData> getDicInfos(DicInfoParam param,List<OrderVO> orderVos) {
+        return dicInfoDao.getDicInfos(param,orderVos);
     }
 
+    @Override
+    public Page<DicInfoData> getDicInfosPage(DicInfoParam param, List<OrderVO> orderVos) {
+        int total = dicInfoDao.getDicInfosPageCount(param);
+        if (total > 0 ) {
+            List<DicInfoData> dicInfoDatas = dicInfoDao.getDicInfosPage(param,orderVos);
+            //上一页可能有数据
+            if ((null == dicInfoDatas || dicInfoDatas.size() == 0) && param.getCurrentPage() > 1) {
+                param.setStart(param.getPageSize() * (param.getCurrentPage()-2));
+                dicInfoDatas = dicInfoDao.getDicInfosPage(param,orderVos);
+            }
+            Page<DicInfoData> page = PageUtil.getPage(dicInfoDatas.iterator(), param.getStart(), param.getPageSize(), total);
+            return page;
+        }
+        return null;
+    }
+    
 }
