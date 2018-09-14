@@ -24,3 +24,6 @@ INSERT INTO `icon_info` (`id`,`name`,`value`,`delete_flag`,`create_time`,`update
 INSERT INTO `icon_info` (`id`,`name`,`value`,`delete_flag`,`create_time`,`update_time`) VALUES ('hnw3rhtilwfmagdw','图标管理','ios-information-circle-outline',0,'2018-09-13 16:36:28','2018-09-13 16:36:28');
 INSERT INTO `icon_info` (`id`,`name`,`value`,`delete_flag`,`create_time`,`update_time`) VALUES ('tdwhrvjilthmhsdl','功能管理','ios-construct',0,'2018-09-13 16:36:32','2018-09-13 16:36:32');
 INSERT INTO `icon_info` (`id`,`name`,`value`,`delete_flag`,`create_time`,`update_time`) VALUES ('w5wexvq1ltmrhckg','用户管理','ios-person',0,'2018-09-13 16:36:34','2018-09-13 16:37:49');
+
+
+alter table dic_info modify code varchar(10);

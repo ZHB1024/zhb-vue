@@ -175,9 +175,9 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdic/api')
-    	  ]).then(axios.spread(function (userinfoResp) {
-    		  myVue.tableDatas = userinfoResp.data.data;
+    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api')
+    	  ]).then(axios.spread(function (dicinfoResp) {
+    		  myVue.tableDatas = dicinfoResp.data.data;
     		  //flushPage(workRecordResp.data.data);
     	  }));
     },
