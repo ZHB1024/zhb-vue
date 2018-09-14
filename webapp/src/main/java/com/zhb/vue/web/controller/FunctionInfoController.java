@@ -129,7 +129,7 @@ public class FunctionInfoController {
         
         //将功能授权给管理员
         if (data.getType() == 1) {
-            UserInfoData userInfoData = userInfoService.getUserInfoById("jw8bv72egutwqigf");
+            UserInfoData userInfoData = userInfoService.getUserInfoById(WebAppUtil.getUserId(request));
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setFunctionInfoData(data);
             userFunctionInfoData.setUserInfoData(userInfoData);
@@ -301,7 +301,7 @@ public class FunctionInfoController {
             functionInfoService.saveOrUpdate(parent);
             
             //将功能授权给管理员
-            UserInfoData userInfoData = userInfoService.getUserInfoById("jw8bv72egutwqigf");
+            UserInfoData userInfoData = userInfoService.getUserInfoById("WebAppUtil.getUserId(request)");
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setFunctionInfoData(data);
             userFunctionInfoData.setUserInfoData(userInfoData);
@@ -314,7 +314,7 @@ public class FunctionInfoController {
                 functionInfoData.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
                 functionInfoService.saveOrUpdate(functionInfoData);
                 //将功能授权给管理员
-                UserInfoData userInfoData = userInfoService.getUserInfoById("jw8bv72egutwqigf");
+                UserInfoData userInfoData = userInfoService.getUserInfoById("WebAppUtil.getUserId(request)");
                 UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
                 userFunctionInfoData.setFunctionInfoData(functionInfoData);
                 userFunctionInfoData.setUserInfoData(userInfoData);

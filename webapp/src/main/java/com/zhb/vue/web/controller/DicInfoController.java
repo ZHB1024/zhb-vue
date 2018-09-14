@@ -71,6 +71,21 @@ public class DicInfoController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
+        ajaxData = searchDicInfo2AjaxData(param, request);
+        return ajaxData;
+    }
+    
+    //查询,分页
+    @RequestMapping(value = "/getdicinfopage/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getDicInfoPage(HttpServletRequest request,HttpServletResponse response,DicInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
         ajaxData = searchDicInfo2AjaxDataPage(param, request);
         return ajaxData;
     }

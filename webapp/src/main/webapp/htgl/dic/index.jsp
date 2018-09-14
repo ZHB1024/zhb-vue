@@ -175,7 +175,7 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api')
+    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api')
     	  ]).then(axios.spread(function (dicinfoResp) {
     		  myVue.tableDatas = dicinfoResp.data.data.result;
     		  flushPage(dicinfoResp.data.data);
@@ -205,7 +205,7 @@ var myVue = new Vue({
     	  param.append("name",myVue.formParm.name); 
     	  param.append("type",myVue.formParm.type); 
     	  param.append("code",myVue.formParm.code); 
-    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', param)
+    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
@@ -229,7 +229,7 @@ var myVue = new Vue({
     	  param.append("code",myVue.formParm.code); 
     	  param.append("pageSize",myVue.pageParm.pageCount); 
     	  param.append("currentPage",page); 
-    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', param)
+    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
@@ -253,7 +253,7 @@ var myVue = new Vue({
     	  param.append("code",myVue.formParm.code); 
     	  param.append("pageSize",pageSize); 
     	  param.append("currentPage",1); 
-    	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
+    	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
