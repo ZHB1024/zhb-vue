@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -82,8 +81,8 @@ public class FunctionInfoData {
         this.order = order;
     }
     
-    @JoinColumn(name = "icon_id",nullable = true)
-    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "icon_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     public IconInfoData getIconInfoData() {
         return iconInfoData;
     }

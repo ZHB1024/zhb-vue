@@ -43,10 +43,8 @@ public class FunctionInfoServiceTest extends BaseTest {
         data.setOrder(32);
         
         //设置父节点
-        FunctionInfoParam param = new FunctionInfoParam();
-        param.setId("sp9mdx3sn9rgxslt");
-        List<FunctionInfoData> datas  = functionInfoService.getFunctions(param);
-        data.setParentFunctionInfo(datas.get(0));
+        FunctionInfoData functionInfoData = functionInfoService.getFunctionById("sp9mdx3sn9rgxslt");
+        data.setParentFunctionInfo(functionInfoData);
         
         //设置图标
         /*IconInfoParam param = new IconInfoParam();
@@ -74,7 +72,7 @@ public class FunctionInfoServiceTest extends BaseTest {
         FunctionInfoParam param = new FunctionInfoParam();
         param.setName("个人信息");
         param.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
-        List<FunctionInfoData> datas  = functionInfoService.getFunctions(param);
+        List<FunctionInfoData> datas  = functionInfoService.getFunctions(param,null);
         if (null != datas && datas.size() > 0) {
             for (FunctionInfoData functionInfoData : datas) {
                 System.out.println(functionInfoData.getName()+ "---" + functionInfoData.getPath())  ;
@@ -93,7 +91,7 @@ public class FunctionInfoServiceTest extends BaseTest {
         
         FunctionInfoParam param = new FunctionInfoParam();
         param.setName("授权信息");
-        List<FunctionInfoData> datas = functionInfoService.getFunctions(param);
+        List<FunctionInfoData> datas = functionInfoService.getFunctions(param,null);
         
         data.setFunctionInfoData(datas.get(0));
         

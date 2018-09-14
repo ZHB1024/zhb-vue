@@ -60,6 +60,9 @@
 	<definition name="htgl.function.add" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/function/add.jsp" />
     </definition>
+	<definition name="htgl.function.update" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/function/update.jsp" />
+    </definition>
     <!--icon -->
 	<definition name="htgl.icon.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/icon/index.jsp" />

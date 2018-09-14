@@ -2,6 +2,7 @@ package com.zhb.vue.service;
 
 import java.util.List;
 
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
@@ -40,7 +41,7 @@ public interface FunctionInfoService {
      * @param param
      * @return
      */
-    List<FunctionInfoData> getFunctions(FunctionInfoParam param);
+    List<FunctionInfoData> getFunctions(FunctionInfoParam param,List<OrderVO> orderVos);
     
     /**
      * *获取功能,根据id

@@ -78,10 +78,8 @@ public class AuthorityController {
             param.setUserInfoData(userInfoData.get(0));
         }
         if (StringUtil.isNotBlank(param.getFunctionId())) {
-            FunctionInfoParam functionInfoParam = new FunctionInfoParam();
-            functionInfoParam.setId(param.getFunctionId());
-            List<FunctionInfoData> datas = functionInfoService.getFunctions(functionInfoParam);
-            param.setFunctionInfoData(datas.get(0));
+            FunctionInfoData functionInfoData = functionInfoService.getFunctionById(param.getFunctionId());
+            param.setFunctionInfoData(functionInfoData);
         }
         
         List<UserFunctionInfoData> datas = functionInfoService.getUserFunctionInfoDatas(param);
@@ -122,10 +120,8 @@ public class AuthorityController {
         
         String[] functionIds = param.getFunctionId().split(",");
         for (String funId : functionIds) {
-            FunctionInfoParam functionInfoParam = new FunctionInfoParam();
-            functionInfoParam.setId(funId);
-            List<FunctionInfoData> datas = functionInfoService.getFunctions(functionInfoParam);
-            param.setFunctionInfoData(datas.get(0));
+            FunctionInfoData functionInfoData = functionInfoService.getFunctionById(funId);
+            param.setFunctionInfoData(functionInfoData);
             
             List<UserFunctionInfoData> userFunctionInfoDatas = functionInfoService.getUserFunctionInfoDatas(param);
             if (null == userFunctionInfoDatas || userFunctionInfoDatas.size() == 0) {

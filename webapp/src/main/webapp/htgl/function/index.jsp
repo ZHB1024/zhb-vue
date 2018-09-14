@@ -33,24 +33,23 @@ String ctxPath = request.getContextPath();
     </i-col>
     <i-col span="3">
       <span class="expand-key">顺序: </span>
-      <span class="expand-value">{{ record.orderIndex }}</span>
+      <span class="expand-value">{{ record.order }}</span>
     </i-col>
 
-	<i-col span="2" align="center">
-      <span class="expand-key"><i-button type="primary"  v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
-      <span class="expand-key"><i-button type="error"  v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
+	<i-col span="3" align="center">
+      <span class="expand-key"><i-button type="primary"  v-if="record.deleteFlag==0" v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
+      <span class="expand-key"><i-button type="error"  v-if="record.deleteFlag==0" v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
+      <span class="expand-key"><i-button type="primary"  v-if="record.deleteFlag==0" disabled="disabled" v-bind:open-id="record.id" size="small" onclick="openRecord(this)" >恢复 </i-button></span>
+
+      <span class="expand-key"><i-button type="primary"  v-if="record.deleteFlag==1" disabled="disabled" v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
+      <span class="expand-key"><i-button type="error"  v-if="record.deleteFlag==1" disabled="disabled" v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
+      <span class="expand-key"><i-button type="primary"  v-if="record.deleteFlag==1" v-bind:open-id="record.id" size="small" onclick="openRecord(this)" >恢复 </i-button></span>
+
     </i-col>
 
   </Row>
 </div>
 </script>
-<!-- <i-col span="2" align="center">
-      <span class="expand-key"><i-button type="primary" v-if="record.status==0||record.status==1" v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
-      <span class="expand-key"><i-button type="error" v-if="record.status==0||record.status==1" v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
-
-	  <span class="expand-key"><i-button type="primary" v-if="record.status!=0&&record.status!=1" disabled="disabled" v-bind:update-id="record.id" size="small"  onclick="toUpdate(this)" > 修改 </i-button></span>
-      <span class="expand-key"><i-button type="error" v-if="record.status!=0&&record.status!=1" disabled="disabled" v-bind:del-id="record.id" size="small" onclick="delRecord(this)" > 删除 </i-button></span>
-    </i-col> -->
 <script>
 Vue.component('newRow', {
 	  props: ['row'],
@@ -94,20 +93,28 @@ var myVue = new Vue({
             },
             {
                 title: '顺序',
-                key: 'orderIndex',
+                key: 'order',
                 minWidth: 100
             },
             {
                 title: '操作',
                 key: 'action',
-                width: 150,
+                width: 200,
                 align: 'center',
                 render: (h, params) => {
+                	var status = myVue.tableDatas[params.index].deleteFlag,openFlag,delFlag;
+                	if(status == 0 ){
+                		openFlag = 'disabled';
+                	}
+                	if(status == 1 ){
+                		delFlag = 'disabled';
+                	}
                 	return h('div', [
                         h('i-button', {
                             props: {
                                 type: 'primary',
-                                size: 'small'
+                                size: 'small',
+                                disabled:delFlag
                             },
                             style: {
                                 marginRight: '5px'
@@ -121,14 +128,30 @@ var myVue = new Vue({
                         h('i-button', {
                             props: {
                                 type: 'error',
-                                size: 'small'
+                                size: 'small',
+                                disabled:delFlag
+                            },
+                            style: {
+                                marginRight: '5px'
                             },
                             on: {
                                 click: () => {
                                 	  myVue.remove(params.index)
                                 }
                             }
-                        }, '删除')
+                        }, '删除'),
+                        h('i-button', {
+                            props: {
+                                type: 'primary',
+                                size: 'small',
+                                disabled:openFlag
+                            },
+                            on: {
+                                click: () => {
+                                	myVue.open(params.index)
+                                }
+                            }
+                        }, '恢复')
                     ]);
                 }
             } 
@@ -143,21 +166,138 @@ var myVue = new Vue({
     },
     methods: {
         modify: function (index) {
-    		window.location.href='<%=ctxPath%>/jb/worktime/touprecord?workRecordId='+myVue.tableDatas[index].id;
+    		window.location.href='<%=ctxPath%>/htgl/functioninfocontroller/toupdate?id='+myVue.tableDatas[index].id;
       	},
        remove: function (index) {
-        this.$Modal.confirm({
-            title: '提示',
-            content: '您确定要删除么？',
-            onOk:function(){
-            	window.location.href='<%=ctxPath%>/jb/worktime/delrecord?workRecordId='+myVue.tableDatas[index].id;
-            },
-            onCancel:function(){
-            }
-         });
-        
+    	   myVue.$Modal.confirm({
+    	        title: '提示',
+    	        content: '您确定要删除么？',
+    	        onOk:function(){
+    	        	let param = new URLSearchParams(); 
+    	      	    param.append("id",myVue.tableDatas[index].id); 
+    	       	    axios.post('<%=ctxPath %>/htgl/functioninfocontroller/delfunctioninfo/api', param)
+    	      		  .then(function (response) {
+    	      			  if(response.data.flag){
+    	      				  myVue.$Message.success({
+    	                          content: "删除成功",
+    	                          duration: 3,
+    	                          closable: true
+    	                      });
+    	      				  myVue.tableDatas=response.data.data;
+    	      				  myVue.$forceUpdate();
+    	                    }else{
+    	                  	  myVue.$Message.error({
+    	                            content: response.data.errorMessages,
+    	                            duration: 3,
+    	                            closable: true
+    	                        });
+    	                    }
+    	      		  })
+    	        },
+    	        onCancel:function(){
+    	        }
+    	     });
+       },
+       open:function(index){
+    	   this.$Modal.confirm({
+               title: '提示',
+               content: '您确定要恢复这个功能么？',
+               onOk:function(){
+               		let param = new URLSearchParams(); 
+             	    param.append("id",myVue.tableDatas[index].id); 
+             	    axios.post('<%=ctxPath %>/htgl/functioninfocontroller/openfunctioninfo/api', param)
+       		         .then(function (response) {
+       			  		if(response.data.flag){
+       			  			myVue.$Message.success({
+                                   content: "恢复成功",
+                                   duration: 3,
+                                   closable: true
+                               });
+       				 		 myVue.tableDatas = response.data.data;
+       				  		 myVue.$forceUpdate();
+                     		}else{
+                   	  		myVue.$Message.error({
+                             		content: response.data.errorMessages,
+                             		duration: 3,
+                             		closable: true
+                         		});
+                     		}
+       		  		})
+               },
+               onCancel:function(){
+               }
+            });
        }
       
     }
 });
+//修改功能信息
+function toUpdate(data){
+	var id = data.getAttribute("update-id");
+	window.location.href='<%=ctxPath%>/htgl/functioninfocontroller/toupdate?id='+id;
+};
+//删除功能信息
+function delRecord(data){
+	var id = data.getAttribute("del-id");
+	myVue.$Modal.confirm({
+        title: '提示',
+        content: '您确定要删除么？',
+        onOk:function(){
+        	let param = new URLSearchParams(); 
+      	    param.append("id",id); 
+       	    axios.post('<%=ctxPath %>/htgl/functioninfocontroller/delfunctioninfo/api', param)
+      		  .then(function (response) {
+      			  if(response.data.flag){
+      				  myVue.$Message.success({
+                          content: "删除成功",
+                          duration: 3,
+                          closable: true
+                      });
+      				  myVue.tableDatas=response.data.data;
+      				  myVue.$forceUpdate();
+                    }else{
+                  	  myVue.$Message.error({
+                            content: response.data.errorMessages,
+                            duration: 3,
+                            closable: true
+                        });
+                    }
+      		  })
+        },
+        onCancel:function(){
+        }
+     });
+}
+//恢复功能信息
+function openRecord(data){
+	var id = data.getAttribute("open-id");
+	myVue.$Modal.confirm({
+        title: '提示',
+        content: '您确定要恢复么？',
+        onOk:function(){
+        	let param = new URLSearchParams(); 
+      	    param.append("id",id); 
+       	    axios.post('<%=ctxPath %>/htgl/functioninfocontroller/openfunctioninfo/api', param)
+      		  .then(function (response) {
+      			  if(response.data.flag){
+      				  myVue.$Message.success({
+                          content: "恢复成功",
+                          duration: 3,
+                          closable: true
+                      });
+      				  myVue.tableDatas=response.data.data;
+      				  myVue.$forceUpdate();
+                    }else{
+                  	  myVue.$Message.error({
+                            content: response.data.errorMessages,
+                            duration: 3,
+                            closable: true
+                        });
+                    }
+      		  })
+        },
+        onCancel:function(){
+        }
+     });
+}
 </script>

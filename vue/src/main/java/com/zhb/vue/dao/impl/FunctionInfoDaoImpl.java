@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.FunctionInfoDao;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
@@ -38,7 +39,7 @@ public class FunctionInfoDaoImpl implements FunctionInfoDao {
     }
 
     @Override
-    public List<FunctionInfoData> getFunctions(FunctionInfoParam param) {
+    public List<FunctionInfoData> getFunctions(FunctionInfoParam param,List<OrderVO> orderVos) {
         if (null == param) {
             return null;
         }
@@ -75,15 +76,15 @@ public class FunctionInfoDaoImpl implements FunctionInfoDao {
         
         if (null != param.getDeleteFlag()) {
             conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
-        }else {
-            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), DeleteFlagEnum.UDEL.getIndex()));
         }
         
         if (conditions.size() > 0 ) {
             criteriaQuery.where(criteriaBuilder.and(conditions.toArray(new Predicate[conditions.size()])));
         }
         
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("order")));
+        if (null != orderVos && orderVos.size() > 0) {
+            DaoUtil.addOrders(criteriaBuilder, criteriaQuery, root, orderVos);
+        }
         
         Query<FunctionInfoData> query = session.createQuery(criteriaQuery);
         return query.list();

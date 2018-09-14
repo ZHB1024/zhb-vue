@@ -65,8 +65,6 @@ public class UserFunctionInfoDaoImpl implements UserFunctionInfoDao {
             criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
         }
         
-        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("userInfoData")));
-        
         Query<UserFunctionInfoData> query = session.createQuery(criteriaQuery);
         return query.list();
     }

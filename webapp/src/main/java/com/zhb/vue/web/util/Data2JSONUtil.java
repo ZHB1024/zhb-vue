@@ -209,75 +209,58 @@ public class Data2JSONUtil {
     }
     
     //功能
-    public static JSONArray functionInfo2JSONArray(List<FunctionInfoData> datas) {
+    public static JSONObject functionInfoData2JSONObject(FunctionInfoData data) {
+        if (null == data) {
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", data.getId());
+        jsonObject.put("path", data.getPath());
+        jsonObject.put("name", data.getName());
+        if (null != data.getIconInfoData()) {
+            jsonObject.put("icon", data.getIconInfoData().getName());
+            jsonObject.put("iconId", data.getIconInfoData().getId());
+        }
+        jsonObject.put("order", data.getOrder());
+        jsonObject.put("deleteFlag", data.getDeleteFlag());
+        if (null != data.getParentFunctionInfo()) {
+            jsonObject.put("parentId", data.getParentFunctionInfo().getId());
+        }
+        
+        return jsonObject;
+    }
+    
+    //父功能
+    public static JSONArray functionInfoDatas2JSONArray(List<FunctionInfoData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
         JSONArray jsonArray = new JSONArray();
-        Map<FunctionInfoData, List<FunctionInfoData>> map = null;
-        if (null != datas && datas.size() >0) {
-            map = new HashMap<FunctionInfoData, List<FunctionInfoData>>();
-            for (FunctionInfoData data : datas) {
-                if (!map.containsKey(data.getParentFunctionInfo())) {
-                    List<FunctionInfoData> functionsList = new ArrayList<>();
-                    functionsList.add(data);
-                    map.put(data.getParentFunctionInfo(), functionsList);
-                }else {
-                    List<FunctionInfoData> functionsList = map.get(data.getParentFunctionInfo());
-                    functionsList.add(data);
-                    map.put(data.getParentFunctionInfo(), functionsList);
-                }
+        for (FunctionInfoData parent : datas) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", parent.getId());
+            jsonObject.put("path", parent.getPath());
+            jsonObject.put("name", parent.getName());
+            jsonObject.put("icon", parent.getIconInfoData().getName());
+            jsonObject.put("order", parent.getOrder());
+            jsonObject.put("deleteFlag", parent.getDeleteFlag());
+            
+            JSONArray jbjlChildrenMenu = new JSONArray();
+            for(FunctionInfoData data : parent.getChildFunctionInfos()){
+                JSONObject json = new JSONObject();
+                json.put("id", data.getId());
+                json.put("path", data.getPath());
+                json.put("name", data.getName());
+                json.put("icon", "");
+                json.put("order", data.getOrder());
+                json.put("deleteFlag", data.getDeleteFlag());
+                jbjlChildrenMenu.add(json);
             }
             
-            //将map整理到可排序的ComparatorVO中
-            List<ComparatorVO> vos = new ArrayList<>();
-            for (Map.Entry<FunctionInfoData,List<FunctionInfoData>> object : map.entrySet()) {
-                FunctionInfoData parent = object.getKey();
-                List<FunctionInfoData> childrens = object.getValue();
-                
-                ComparatorVO vo = new ComparatorVO(parent.getOrder());
-                vo.setId(parent.getId());
-                vo.setName(parent.getName());
-                vo.setPath(parent.getPath());
-                vo.setIconName(parent.getIconInfoData().getValue());
-                List<ComparatorVO> childs = new ArrayList<>();
-                for(FunctionInfoData funData : childrens){
-                    ComparatorVO child = new ComparatorVO(funData.getOrder());
-                    child.setId(funData.getId());
-                    child.setName(funData.getName());
-                    child.setPath(funData.getPath());
-                    childs.add(child);
-                }
-                //排序,对子菜单排序
-                Collections.sort(childs, new ComparatorVOComparator());
-                vo.setChilds(childs);
-                vos.add(vo);
-            }
+            jsonObject.put("children", jbjlChildrenMenu);
             
-            //排序,对父菜单排序
-            Collections.sort(vos, new ComparatorVOComparator());
+            jsonArray.add(jsonObject);
             
-            //将排序后的数据 整理到 JSONArray中返回给用户
-            for (ComparatorVO comparatorVO : vos) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", comparatorVO.getId());
-                jsonObject.put("path", comparatorVO.getPath());
-                jsonObject.put("name", comparatorVO.getName());
-                jsonObject.put("icon", comparatorVO.getIconName());
-                jsonObject.put("orderIndex", comparatorVO.getOrder());
-                
-                JSONArray jbjlChildrenMenu = new JSONArray();
-                for(ComparatorVO funData : comparatorVO.getChilds()){
-                    JSONObject json = new JSONObject();
-                    json.put("id", funData.getId());
-                    json.put("path", funData.getPath());
-                    json.put("name", funData.getName());
-                    json.put("icon", "");
-                    json.put("orderIndex", funData.getOrder());
-                    jbjlChildrenMenu.add(json);
-                }
-                
-                jsonObject.put("children", jbjlChildrenMenu);
-                
-                jsonArray.add(jsonObject);
-            }
         }
         
         return jsonArray;

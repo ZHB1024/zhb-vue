@@ -1,5 +1,6 @@
 package com.zhb.vue.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,8 +20,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.params.IconInfoParam;
+import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.IconInfoData;
@@ -32,6 +35,7 @@ import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.Param2DataUtil;
 import com.zhb.vue.web.util.WebAppUtil;
+import com.zhb.vue.web.util.WriteJSUtil;
 
 @Controller
 @RequestMapping("/htgl/functioninfocontroller")
@@ -48,34 +52,33 @@ public class FunctionInfoController {
     @Autowired
     private IconInfoService iconInfoService;
     
-    
+    //toindex
     @RequestMapping(value="/toindex",method=RequestMethod.GET)
     @Transactional
     public String toIndex(HttpServletRequest request,HttpServletResponse response) {
         return "htgl.function.index";
     }
     
+    //查询功能
     @RequestMapping("/getfunctions/api")
     @ResponseBody
     @Transactional
     public AjaxData getFunctions(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
         AjaxData ajaxData = new AjaxData();
-        param.setType(1);
-        List<FunctionInfoData> datas = functionInfoService.getFunctions(param);
-        JSONArray jsonArray = Data2JSONUtil.functionInfo2JSONArray(datas);
-        
-        ajaxData.setData(jsonArray);
-        ajaxData.setFlag(true);
+        param.setType(0);
+        ajaxData = searchFunctionInfo2AjaxData(param,request);
         return ajaxData;
     }
     
+    //toadd
     @RequestMapping(value="/toadd",method=RequestMethod.GET)
     @Transactional
     public String toAdd(HttpServletRequest request,HttpServletResponse response) {
         return "htgl.function.add";
     }
     
-    @RequestMapping("/addfunctioninfo/api")
+    //新增功能
+    @RequestMapping(value="/addfunctioninfo/api",method = RequestMethod.POST)
     @ResponseBody
     @Transactional
     public AjaxData addFunctionInfo(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
@@ -98,11 +101,9 @@ public class FunctionInfoController {
         }
         
         if (StringUtil.isNotBlank(param.getParentId()) && !"undefined".equals(param.getParentId())) {
-            FunctionInfoParam param2 = new FunctionInfoParam();
-            param2.setId(param.getParentId());
-            List<FunctionInfoData> datas = functionInfoService.getFunctions(param2);
-            if (null != datas && datas.size() > 0) {
-                param.setParentFunctionInfo(datas.get(0));
+            FunctionInfoData functionInfoData = functionInfoService.getFunctionById(param.getParentId());
+            if (null != functionInfoData) {
+                param.setParentFunctionInfo(functionInfoData);
                 param.setType(1);
             }else {
                 param.setType(0);
@@ -128,19 +129,18 @@ public class FunctionInfoController {
         
         //将功能授权给管理员
         if (data.getType() == 1) {
-            UserInfoParam userInfoParam = new UserInfoParam();
-            userInfoParam.setId(WebAppUtil.getUserId(request));
-            List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(userInfoParam,null);
-            
+            UserInfoData userInfoData = userInfoService.getUserInfoById("jw8bv72egutwqigf");
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setFunctionInfoData(data);
-            userFunctionInfoData.setUserInfoData(userInfoDatas.get(0));
+            userFunctionInfoData.setUserInfoData(userInfoData);
+            functionInfoService.saveOrUpdate(userFunctionInfoData);
         }
         
         ajaxData.setFlag(true);
         return ajaxData;
     }
     
+    //获取父级功能
     @RequestMapping("/getparentfunctions/api")
     @ResponseBody
     @Transactional
@@ -148,22 +148,188 @@ public class FunctionInfoController {
         AjaxData ajaxData = new AjaxData();
         FunctionInfoParam param = new FunctionInfoParam();
         param.setType(0);
-        List<FunctionInfoData> datas = functionInfoService.getFunctions(param);
-        JSONArray jsonArray = new JSONArray();
-        for(FunctionInfoData funData : datas){
-            JSONObject json = new JSONObject();
-            json.put("id", funData.getId());
-            json.put("name", funData.getName());
-            json.put("path", funData.getPath());
-            json.put("icon", funData.getIconInfoData().getName());
-            jsonArray.add(json);
+        ajaxData = searchFunctionInfo2AjaxData(param, request);
+        return ajaxData;
+    }
+    
+    //toupdate
+    @RequestMapping(value="/toupdate",method = RequestMethod.GET)
+    @Transactional
+    public String toUpdate(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
+        if (StringUtil.isBlank(param.getId())) {
+            return WriteJSUtil.writeJS("非法操作", response);
+        }
+        FunctionInfoData data = functionInfoService.getFunctionById(param.getId());
+        if (null == data) {
+            return WriteJSUtil.writeJS("非法操作", response);
         }
         
-        ajaxData.setData(jsonArray);
+        JSONObject object = Data2JSONUtil.functionInfoData2JSONObject(data);
+        request.setAttribute("functionInfoJson", object);
+        
+        return "htgl.function.update";
+    }
+    
+    //修改功能信息
+    @RequestMapping(value="/updatefunctioninfo/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData updateFunctionInfo(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(param.getId())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        FunctionInfoData data = functionInfoService.getFunctionById(param.getId());
+        if (null == data) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        if (StringUtil.isNotBlank(param.getParentId())) {
+            FunctionInfoData parent = functionInfoService.getFunctionById(param.getParentId());
+            if (null != parent) {
+                param.setParentFunctionInfo(parent);
+                param.setType(1);
+            }else {
+                param.setType(0);
+            }
+        }else {
+            param.setType(0);
+        }
+        if (StringUtil.isNotBlank(param.getIconId())) {
+            IconInfoData iconInfoData = iconInfoService.getIconInfoById(param.getIconId());
+            param.setIconInfoData(iconInfoData);
+        }
+        param.setDeleteFlag(data.getDeleteFlag());
+        
+        Param2DataUtil.functionParam2Data(param, data);
+        
+        functionInfoService.saveOrUpdate(data);
         ajaxData.setFlag(true);
         return ajaxData;
     }
     
+    //删除功能信息
+    @RequestMapping(value="/delfunctioninfo/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData delFunctionInfo(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(param.getId())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        FunctionInfoData data = functionInfoService.getFunctionById(param.getId());
+        if (null == data) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        
+        if (data.getType() == 1) {//子功能
+            UserFunctionInfoParam userFunctionInfoParam = new UserFunctionInfoParam();
+            userFunctionInfoParam.setFunctionInfoData(data);
+            List<UserFunctionInfoData> datas = functionInfoService.getUserFunctionInfoDatas(userFunctionInfoParam);
+            if (null != data && datas.size() > 0) {
+                for (UserFunctionInfoData userFunctionInfoData : datas) {
+                    functionInfoService.delUserFunctionInfoData(userFunctionInfoData);
+                }
+            }
+            //删除子功能
+            data.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+            functionInfoService.saveOrUpdate(data);
+            
+            FunctionInfoData parent = data.getParentFunctionInfo();
+            if (parent.getChildFunctionInfos().size() == 1) {
+                //删除父功能
+                parent.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+                functionInfoService.saveOrUpdate(parent);
+            }
+        }else {//父功能
+            //获取子功能
+            List<FunctionInfoData> datas = data.getChildFunctionInfos();
+            for (FunctionInfoData functionInfoData : datas) {
+                UserFunctionInfoParam userFunctionInfoParam = new UserFunctionInfoParam();
+                userFunctionInfoParam.setFunctionInfoData(functionInfoData);
+                List<UserFunctionInfoData> userFunctionInfoDatas = functionInfoService.getUserFunctionInfoDatas(userFunctionInfoParam);
+                if (null != data && datas.size() > 0) {//删除子功能授权数据
+                    for (UserFunctionInfoData userFunctionInfoData : userFunctionInfoDatas) {
+                        functionInfoService.delUserFunctionInfoData(userFunctionInfoData);
+                    }
+                }
+                //删除子功能
+                functionInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+                functionInfoService.saveOrUpdate(functionInfoData);
+            }
+            //删除父功能
+            data.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+            functionInfoService.saveOrUpdate(data);
+        }
+        param.setType(0);
+        ajaxData = searchFunctionInfo2AjaxData(param, request);
+        return ajaxData;
+    }
+    
+    //恢复功能信息
+    @RequestMapping(value="/openfunctioninfo/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData openFunctionInfo(HttpServletRequest request,HttpServletResponse response,FunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(param.getId())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        FunctionInfoData data = functionInfoService.getFunctionById(param.getId());
+        if (null == data) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法操作");
+            return ajaxData;
+        }
+        
+        if (data.getType() == 1) {//子功能
+            //恢复子功能
+            data.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+            functionInfoService.saveOrUpdate(data);
+            FunctionInfoData parent = data.getParentFunctionInfo();
+            //恢复子功能
+            parent.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+            functionInfoService.saveOrUpdate(parent);
+            
+            //将功能授权给管理员
+            UserInfoData userInfoData = userInfoService.getUserInfoById("jw8bv72egutwqigf");
+            UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
+            userFunctionInfoData.setFunctionInfoData(data);
+            userFunctionInfoData.setUserInfoData(userInfoData);
+            functionInfoService.saveOrUpdate(userFunctionInfoData);
+        }else {//父功能
+            //获取子功能
+            List<FunctionInfoData> datas = data.getChildFunctionInfos();
+            for (FunctionInfoData functionInfoData : datas) {
+                //恢复子功能
+                functionInfoData.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+                functionInfoService.saveOrUpdate(functionInfoData);
+                //将功能授权给管理员
+                UserInfoData userInfoData = userInfoService.getUserInfoById("jw8bv72egutwqigf");
+                UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
+                userFunctionInfoData.setFunctionInfoData(functionInfoData);
+                userFunctionInfoData.setUserInfoData(userInfoData);
+                functionInfoService.saveOrUpdate(userFunctionInfoData);
+            }
+            //恢复父功能
+            data.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+            functionInfoService.saveOrUpdate(data);
+        }
+        param.setType(0);
+        ajaxData = searchFunctionInfo2AjaxData(param, request);
+        return ajaxData;
+    }
+    
+    //获取子功能
     @RequestMapping("/getchildfunctions/api")
     @ResponseBody
     @Transactional
@@ -171,7 +337,11 @@ public class FunctionInfoController {
         AjaxData ajaxData = new AjaxData();
         FunctionInfoParam param = new FunctionInfoParam();
         param.setType(1);
-        List<FunctionInfoData> datas = functionInfoService.getFunctions(param);
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo2 = new OrderVO("order",true);
+        orderVos.add(vo2);
+        List<FunctionInfoData> datas = functionInfoService.getFunctions(param,orderVos);
         JSONArray jsonArray = new JSONArray();
         for(FunctionInfoData funData : datas){
             JSONObject json = new JSONObject();
@@ -187,6 +357,7 @@ public class FunctionInfoController {
         return ajaxData;
     }
     
+    //最大序号 + 1
     @RequestMapping("/getmaxorder/api")
     @ResponseBody
     @Transactional
@@ -208,4 +379,26 @@ public class FunctionInfoController {
         return ajaxData;
     }
     
+    
+    //共用查询
+    private AjaxData searchFunctionInfo2AjaxData(FunctionInfoParam param,HttpServletRequest request) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new FunctionInfoParam();
+        }
+        param.setId("");
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("deleteFlag",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("order",true);
+        orderVos.add(vo2);
+        
+        List<FunctionInfoData> functionInfos = functionInfoService.getFunctions(param,orderVos);
+        if (null != functionInfos) {
+            ajaxData.setData(Data2JSONUtil.functionInfoDatas2JSONArray(functionInfos));
+        }
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
 }

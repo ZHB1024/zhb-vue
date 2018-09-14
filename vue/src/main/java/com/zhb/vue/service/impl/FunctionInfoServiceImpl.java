@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.FunctionInfoDao;
 import com.zhb.vue.dao.UserFunctionInfoDao;
 import com.zhb.vue.params.FunctionInfoParam;
@@ -44,8 +45,8 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     }
 
     @Override
-    public List<FunctionInfoData> getFunctions(FunctionInfoParam param) {
-        return functionInfoDao.getFunctions(param);
+    public List<FunctionInfoData> getFunctions(FunctionInfoParam param,List<OrderVO> orderVos) {
+        return functionInfoDao.getFunctions(param,orderVos);
     }
     
     @Override
