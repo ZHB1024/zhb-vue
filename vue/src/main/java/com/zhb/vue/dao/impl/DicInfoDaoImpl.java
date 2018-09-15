@@ -191,5 +191,47 @@ public class DicInfoDaoImpl implements DicInfoDao {
         return query.list();
     }
 
+    @Override
+    public List<String> getDicCategory() {
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+        Root<DicInfoData> root = criteriaQuery.from(DicInfoData.class);
+        
+        criteriaQuery.select(root.get("category"));
+        
+        criteriaQuery.groupBy(root.get("category"));
+        
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("category")));
+        
+        Query<String> query = session.createQuery(criteriaQuery);
+        
+        return query.list();
+    }
+
+    @Override
+    public List<String> getDicTypeByCategory(DicInfoParam param) {
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+        Root<DicInfoData> root = criteriaQuery.from(DicInfoData.class);
+        
+        criteriaQuery.select(root.get("type"));
+        
+        if (StringUtil.isNotBlank(param.getCategory())) {
+            criteriaQuery.where(criteriaBuilder.equal(root.get("category"), param.getCategory()));
+        }
+        
+        criteriaQuery.groupBy(root.get("type"));
+        
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("type")));
+        
+        Query<String> query = session.createQuery(criteriaQuery);
+        
+        return query.list();
+    }
+
 
 }

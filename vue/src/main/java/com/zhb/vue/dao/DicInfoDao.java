@@ -16,5 +16,9 @@ public interface DicInfoDao {
     Long getDicInfosPageCount(DicInfoParam param);
 
     List<DicInfoData> getDicInfosPage(DicInfoParam param,List<OrderVO> orderVos);
+    
+    List<String> getDicCategory();
+    
+    List<String> getDicTypeByCategory(DicInfoParam param);
 
 }

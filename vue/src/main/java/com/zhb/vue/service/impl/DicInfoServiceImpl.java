@@ -55,5 +55,15 @@ public class DicInfoServiceImpl implements DicInfoService {
         }
         return null;
     }
+
+    @Override
+    public List<String> getDicCategory() {
+        return dicInfoDao.getDicCategory();
+    }
+
+    @Override
+    public List<String> getDicTypeByCategory(DicInfoParam param) {
+        return dicInfoDao.getDicTypeByCategory(param);
+    }
     
 }

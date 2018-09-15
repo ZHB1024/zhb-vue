@@ -16,5 +16,9 @@ public interface DicInfoService {
     List<DicInfoData> getDicInfos(DicInfoParam param,List<OrderVO> orderVos);
     
     Page<DicInfoData> getDicInfosPage(DicInfoParam param,List<OrderVO> orderVos);
+    
+    List<String> getDicCategory();
+    
+    List<String> getDicTypeByCategory(DicInfoParam param);
 
 }

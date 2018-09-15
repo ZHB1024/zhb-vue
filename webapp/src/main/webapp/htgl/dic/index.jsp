@@ -18,32 +18,25 @@ li {list-style-type:none;}
         <i-content :style="{padding: '24px', background: '#fff'}">
           <i-form inline method="post" action="" ref="formValidate">
         	
-        		<!-- <form-item prop="workdate">
-                  		<Date-picker  type="daterange"  name="workdate"  v-model="formParm.workdate"  format="yyyy-MM-dd"  placeholder="加班日期" style="width: 200px">
-                    	</Date-picker>  
-                </form-item > -->
-        	    
-        		<!-- <form-item prop="content">
-        			<i-select name="content" v-model="formParm.content" style="width: 150px;" placeholder="请选择加班内容">
-        					<i-option value="" >
-                        		全部
-                        	</i-option>
-                        	<i-option v-bind:value="optContent.id" v-for="optContent in contentParm">
-                        		{{optContent.content}}
+        		<form-item prop="category">
+        			<i-select name="category" v-model="formParm.category" @on-change="getDicType" style="width: 150px;" placeholder="请选择字典类型">
+                        	<i-option v-bind:value="item.value" v-for="item in categoryParm">
+                        		{{item.value}}
                         	</i-option>
                 	</i-select>
                 </form-item>
                 
-        		<form-item prop="status">
-        			<i-select name="status" v-model="formParm.status" style="width: 150px;" placeholder="请选择审核状态">
-        					<i-option value="" >
-                        		全部
-                        	</i-option>
-                        	<i-option v-bind:value="checkStatus.index" v-for="checkStatus in statusParm">
-                        		{{checkStatus.name}}
+                <form-item prop="name">
+                  		<i-input type="text" name="name" v-model="formParm.name" :maxlength="15" placeholder="请输入名称"></i-input>
+                </form-item >
+                	
+        		<form-item prop="type">
+        			<i-select name="type" v-model="formParm.type" style="width: 150px;" placeholder="请选择类型">
+                        	<i-option v-bind:value="item.value" v-for="item in typeParm">
+                        		{{item.value}}
                         	</i-option>
                 	</i-select>
-                </form-item> -->
+                </form-item>
                 
                 <form-item>
                     	<i-button type="primary" @click="search()" > 查   询 </i-button>
@@ -68,13 +61,12 @@ li {list-style-type:none;}
 var myVue = new Vue({
     el: '#app_content',
     data:{
-    	contentParm:[] ,
-    	statusParm:[] ,
+    	categoryParm:[] ,
+    	typeParm:[] ,
     	formParm:{
 	        category:'',
 	        name:'',
-	        type:'',
-	        code:''
+	        type:''
 	  	},
 	  	pageParm:{
 	  		currentPage:1,
@@ -175,10 +167,12 @@ var myVue = new Vue({
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api')
-    	  ]).then(axios.spread(function (dicinfoResp) {
+    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api'),
+    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdiccategory/api')
+    	  ]).then(axios.spread(function (dicinfoResp,diccategoryResp) {
     		  myVue.tableDatas = dicinfoResp.data.data.result;
     		  flushPage(dicinfoResp.data.data);
+    		  myVue.categoryParm = diccategoryResp.data.data;
     	  }));
     },
     methods: {
@@ -204,7 +198,6 @@ var myVue = new Vue({
     	  param.append("category",myVue.formParm.category); 
     	  param.append("name",myVue.formParm.name); 
     	  param.append("type",myVue.formParm.type); 
-    	  param.append("code",myVue.formParm.code); 
     	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
@@ -226,7 +219,6 @@ var myVue = new Vue({
     	  param.append("category",myVue.formParm.category); 
     	  param.append("name",myVue.formParm.name); 
     	  param.append("type",myVue.formParm.type); 
-    	  param.append("code",myVue.formParm.code); 
     	  param.append("pageSize",myVue.pageParm.pageCount); 
     	  param.append("currentPage",page); 
     	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
@@ -250,7 +242,6 @@ var myVue = new Vue({
     	  param.append("category",myVue.formParm.category); 
     	  param.append("name",myVue.formParm.name); 
     	  param.append("type",myVue.formParm.type); 
-    	  param.append("code",myVue.formParm.code); 
     	  param.append("pageSize",pageSize); 
     	  param.append("currentPage",1); 
     	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
@@ -260,13 +251,30 @@ var myVue = new Vue({
     				  flushPage(response.data.data);
     				  myVue.$forceUpdate();
                   }else{
-                	  myVue.$Message.info({
+                	  myVue.$Message.error({
                           content: response.data.errorMessages,
                           duration: 3,
                           closable: true
                       });
                   }
     		  })
+      },
+      getDicType:function(category){
+    	  let param = new URLSearchParams(); 
+     	  	param.append("category",category); 
+     	  	axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdictype/api', param)
+     		  	.then(function (response) {
+     			  	if(response.data.flag){
+     			  		myVue.typeParm=response.data.data;
+     				  	myVue.$forceUpdate();
+                   }else{
+                 	  myVue.$Message.error({
+                           content: response.data.errorMessages,
+                           duration: 3,
+                           closable: true
+                       });
+                   }
+     		  })
       }
       
     }

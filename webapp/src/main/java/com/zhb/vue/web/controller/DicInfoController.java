@@ -218,6 +218,55 @@ public class DicInfoController {
         return "htgl.dic.index";
     }
     
+    //category，排重
+    @RequestMapping(value = "/getdiccategory/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getDicCategory(HttpServletRequest request,HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        JSONArray jsonArray = new JSONArray();
+        List<String> categorys = dicInfoService.getDicCategory();
+        if (null != categorys && categorys.size() > 0) {
+            for (String category : categorys) {
+                JSONObject object = new JSONObject();
+                object.put("value", category);
+                jsonArray.add(object);
+            }
+            ajaxData.setData(jsonArray);
+            ajaxData.setFlag(true);
+        }
+        return ajaxData;
+    }
+    //类型，排重
+    @RequestMapping(value = "/getdictype/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getDicType(HttpServletRequest request,HttpServletResponse response,DicInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        JSONArray jsonArray = new JSONArray();
+        List<String> types = dicInfoService.getDicTypeByCategory(param);
+        if (null != types && types.size() > 0) {
+            for (String type : types) {
+                JSONObject object = new JSONObject();
+                object.put("value", type);
+                jsonArray.add(object);
+            }
+            ajaxData.setData(jsonArray);
+            ajaxData.setFlag(true);
+        }
+        return ajaxData;
+    }
+    
     //共用查询,不分页
     private AjaxData searchDicInfo2AjaxData(DicInfoParam param,HttpServletRequest request) {
         AjaxData ajaxData = new AjaxData();
