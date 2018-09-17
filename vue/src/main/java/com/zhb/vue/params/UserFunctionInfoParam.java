@@ -12,6 +12,10 @@ public class UserFunctionInfoParam {
     private String userId;
     private String functionId;
     
+    private Integer start;
+    private Integer pageSize;
+    private Integer currentPage;
+    
     
     public String getId() {
         return id;
@@ -42,6 +46,24 @@ public class UserFunctionInfoParam {
     }
     public void setFunctionId(String functionId) {
         this.functionId = functionId;
+    }
+    public Integer getStart() {
+        return start;
+    }
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+    public Integer getPageSize() {
+        return pageSize;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+    public Integer getCurrentPage() {
+        return currentPage;
+    }
+    public void setCurrentPage(Integer currentPage) {
+        this.currentPage = currentPage;
     }
     
 }

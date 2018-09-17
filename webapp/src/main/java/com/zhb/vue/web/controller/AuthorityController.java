@@ -1,6 +1,6 @@
 package com.zhb.vue.web.controller;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.zhb.forever.framework.page.Page;
+import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
-import com.zhb.vue.params.FunctionInfoParam;
+import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
@@ -59,43 +62,43 @@ public class AuthorityController {
         return ajaxData;
     }
     
+    //toindex
     @RequestMapping(value="/toindex",method=RequestMethod.GET)
     @Transactional
     public String toAuthority(HttpServletRequest request,HttpServletResponse response) {
         return "htgl.authority.index";
     }
     
+    //查询授权信息
     @RequestMapping("/getauthority/api")
     @ResponseBody
     @Transactional
     public AjaxData getAuthority(HttpServletRequest request,HttpServletResponse response,UserFunctionInfoParam param) {
         AjaxData ajaxData = new AjaxData();
         
-        if (StringUtil.isNotBlank(param.getUserId())) {
-            UserInfoParam userInfoParam = new UserInfoParam();
-            userInfoParam.setId(param.getUserId());
-            List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam,null);
-            param.setUserInfoData(userInfoData.get(0));
-        }
-        if (StringUtil.isNotBlank(param.getFunctionId())) {
-            FunctionInfoData functionInfoData = functionInfoService.getFunctionById(param.getFunctionId());
-            param.setFunctionInfoData(functionInfoData);
-        }
-        
-        List<UserFunctionInfoData> datas = functionInfoService.getUserFunctionInfoDatas(param);
-        
-        ajaxData.setData(Data2JSONUtil.userFunctionInfoDatas2JSONObject(datas));
-        ajaxData.setFlag(true);
+        ajaxData = searchAuthority2AjaxData(param);
         return ajaxData;
     }
     
+    //查询授权信息,分页
+    @RequestMapping("/getauthoritypage/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getAuthorityPage(HttpServletRequest request,HttpServletResponse response,UserFunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        
+        ajaxData = searchAuthority2AjaxDataPage(param);
+        return ajaxData;
+    }
     
+    //to授权页
     @RequestMapping(value="/toadd",method=RequestMethod.GET)
     @Transactional
     public String toadd(HttpServletRequest request,HttpServletResponse response) {
         return "htgl.authority.add";
     }
     
+    //新增授权
     @RequestMapping("/addauthority/api")
     @ResponseBody
     @Transactional
@@ -138,6 +141,117 @@ public class AuthorityController {
         }
         
         ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    //删除授权
+    @RequestMapping("/delauthority/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData delAuthority(HttpServletRequest request,HttpServletResponse response,UserFunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        
+        if (StringUtil.isBlank(param.getId())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请选择数据");
+            return ajaxData;
+        }
+        
+        List<UserFunctionInfoData> datas = functionInfoService.getUserFunctionInfoDatas(param);
+        if (null == datas || datas.size() == 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法请求");
+            return ajaxData;
+        }
+        functionInfoService.delUserFunctionInfoData(datas.get(0));
+        
+        ajaxData = searchAuthority2AjaxDataPage(param);
+        return ajaxData;
+    }
+    
+    //公共查询，不分页
+    private AjaxData searchAuthority2AjaxData(UserFunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new UserFunctionInfoParam();
+        }
+        
+        param.setId("");
+        
+        if (StringUtil.isNotBlank(param.getUserId())&&!"undefined".equals(param.getUserId())) {
+            UserInfoParam userInfoParam = new UserInfoParam();
+            userInfoParam.setId(param.getUserId());
+            List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam,null);
+            param.setUserInfoData(userInfoData.get(0));
+        }else {
+            param.setUserId("");
+        }
+        
+        if (StringUtil.isNotBlank(param.getFunctionId())&&!"undefined".equals(param.getFunctionId())) {
+            FunctionInfoData functionInfoData = functionInfoService.getFunctionById(param.getFunctionId());
+            param.setFunctionInfoData(functionInfoData);
+        }else {
+            param.setFunctionId("");
+        }
+        
+        List<UserFunctionInfoData> datas = functionInfoService.getUserFunctionInfoDatas(param);
+        
+        ajaxData.setData(Data2JSONUtil.userFunctionInfoDatas2JSONObject(datas));
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    //共用查询,分页
+    private AjaxData searchAuthority2AjaxDataPage(UserFunctionInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new UserFunctionInfoParam();
+        }
+        
+        param.setId("");
+        
+        if (StringUtil.isNotBlank(param.getUserId())&&!"undefined".equals(param.getUserId())) {
+            UserInfoParam userInfoParam = new UserInfoParam();
+            userInfoParam.setId(param.getUserId());
+            List<UserInfoData> userInfoData = userInfoService.getUserInfos(userInfoParam,null);
+            param.setUserInfoData(userInfoData.get(0));
+        }else {
+            param.setUserId("");
+        }
+        
+        if (StringUtil.isNotBlank(param.getFunctionId())&&!"undefined".equals(param.getFunctionId())) {
+            FunctionInfoData functionInfoData = functionInfoService.getFunctionById(param.getFunctionId());
+            param.setFunctionInfoData(functionInfoData);
+        }else {
+            param.setFunctionId("");
+        }
+        
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("category",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("orderIndex",true);
+        orderVos.add(vo2);
+        
+        //设置分页信息
+        if(null == param.getCurrentPage()){
+            param.setCurrentPage(1);
+        }
+        if(null == param.getPageSize()){
+            param.setPageSize(PageUtil.PAGE_SIZE);
+        }
+        param.setStart(param.getPageSize()*(param.getCurrentPage()-1));
+        
+        Page<UserFunctionInfoData> page = functionInfoService.getUserFunctionInfoDatasPage(param);
+        JSONObject jsonObject = new JSONObject();
+        if (null != page) {
+            JSONArray workDayJson = Data2JSONUtil.userFunctionInfoDatas2JSONObject(page.getList());
+            jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), workDayJson);
+        }else{
+            jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());
+        }
+        ajaxData.setFlag(true);
+        ajaxData.setData(jsonObject);
         return ajaxData;
     }
 }

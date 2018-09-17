@@ -16,31 +16,20 @@ li {list-style-type:none;}
         </Breadcrumb> 
         
         <i-content :style="{padding: '24px', background: '#fff'}">
-          <i-form inline method="post" action="<%=ctxPath %>/jb/worktime/searchworkrecord/api" ref="formValidate">
+          <i-form inline method="post" action="" >
         	
-        		<!-- <form-item prop="workdate">
-                  		<Date-picker  type="daterange"  name="workdate"  v-model="formParm.workdate"  format="yyyy-MM-dd"  placeholder="加班日期" style="width: 200px">
-                    	</Date-picker>  
-                </form-item > -->
-        	    
-        		<form-item prop="content">
-        			<i-select name="content" v-model="formParm.content" style="width: 150px;" placeholder="请选择加班内容">
-        					<i-option value="" >
-                        		全部
-                        	</i-option>
-                        	<i-option v-bind:value="optContent.id" v-for="optContent in contentParm">
-                        		{{optContent.content}}
+        		<form-item prop="userId">
+        			<i-select name="userId" clearable v-model="formParm.userId" style="width: 150px;" placeholder="请选择用户">
+                        	<i-option v-bind:value="item.id" v-for="item in userParm">
+                        		{{item.userName}}
                         	</i-option>
                 	</i-select>
                 </form-item>
                 
-        		<form-item prop="status">
-        			<i-select name="status" v-model="formParm.status" style="width: 150px;" placeholder="请选择审核状态">
-        					<i-option value="" >
-                        		全部
-                        	</i-option>
-                        	<i-option v-bind:value="checkStatus.index" v-for="checkStatus in statusParm">
-                        		{{checkStatus.name}}
+                <form-item prop="functionId">
+        			<i-select name="functionId" clearable v-model="formParm.functionId" style="width: 150px;" placeholder="请选择功能">
+                        	<i-option v-bind:value="item.id" v-for="item in functionParm">
+                        		{{item.name}}
                         	</i-option>
                 	</i-select>
                 </form-item>
@@ -68,14 +57,12 @@ li {list-style-type:none;}
 var myVue = new Vue({
     el: '#app_content',
     data:{
-    	contentParm:[] ,
-    	statusParm:[] ,
     	formParm:{
-	        content:'',
-	        detail:'',
-	        workdate:'',
-	        status:''
+	        userId:'',
+	        functionId:''
 	  	},
+	  	userParm:[] ,
+    	functionParm:[] ,
 	  	pageParm:{
 	  		currentPage:1,
 	        pageCount:20,
@@ -95,47 +82,26 @@ var myVue = new Vue({
                 sortable:true
             },
             {
+                title: '功能名称',
+                key: 'functionName',
+                minWidth: 100
+            },
+            {
                 title: '用户真实姓名',
                 key: 'realName',
                 minWidth: 200
             },
-            {
-                title: '功能名称',
-                key: 'functionName',
-                minWidth: 100
-            }/* ,
             {
                 title: '操作',
                 key: 'action',
                 width: 150,
                 align: 'center',
                 render: (h, params) => {
-                	var status = myVue.tableDatas[params.index].status,upFlag,delFlag;
-                	if(status != 1 && status != 0){
-                		upFlag = 'disabled';
-                		delFlag = 'disabled';
-                	}
                 	return h('div', [
                         h('i-button', {
                             props: {
-                                type: 'primary',
-                                size: 'small',
-                                disabled:upFlag
-                            },
-                            style: {
-                                marginRight: '5px'
-                            },
-                            on: {
-                                click: () => {
-                                	myVue.modify(params.index)
-                                }
-                            }
-                        }, '修改'),
-                        h('i-button', {
-                            props: {
                                 type: 'error',
-                                size: 'small',
-                                disabled:delFlag
+                                size: 'small'
                             },
                             on: {
                                 click: () => {
@@ -145,49 +111,67 @@ var myVue = new Vue({
                         }, '删除')
                     ]);
                 }
-            } */
+            }
         ]
     },
     created: function () {
     	axios.all([
-    	    axios.get('<%=ctxPath %>/htgl/authoritycontroller/getauthority/api')
-    	  ]).then(axios.spread(function (userinfoResp) {
-    		  myVue.tableDatas = userinfoResp.data.data;
-    		  //flushPage(workRecordResp.data.data);
+    	    axios.get('<%=ctxPath %>/htgl/authoritycontroller/getauthoritypage/api'),
+    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getusers/api'),
+    	    axios.get('<%=ctxPath %>/htgl/functioninfocontroller/getchildfunctions/api')
+    	  ]).then(axios.spread(function (authorityResp,userinfoResp,functionResp) {
+    		  myVue.tableDatas = authorityResp.data.data.result;
+    		  flushPage(authorityResp.data.data);
+    		  myVue.userParm = userinfoResp.data.data;
+    		  myVue.functionParm = functionResp.data.data;
+    		  
     	  }));
     },
     methods: {
-    	
-        modify: function (index) {
-    		window.location.href='<%=ctxPath%>/jb/worktime/touprecord?workRecordId='+myVue.tableDatas[index].id;
-      	},
        remove: function (index) {
-        this.$Modal.confirm({
-            title: '提示',
-            content: '您确定要删除么？',
-            onOk:function(){
-            	window.location.href='<%=ctxPath%>/jb/worktime/delrecord?workRecordId='+myVue.tableDatas[index].id;
-            },
-            onCancel:function(){
-            }
-         });
-        
+    	   myVue.$Modal.confirm({
+   	        title: '提示',
+   	        content: '您确定要删除么？',
+   	        onOk:function(){
+   	        	let param = new URLSearchParams(); 
+   	      	    param.append("id",myVue.tableDatas[index].id); 
+   	       	    axios.post('<%=ctxPath %>/htgl/authoritycontroller/delauthority/api', param)
+   	      		  .then(function (response) {
+   	      			  if(response.data.flag){
+   	      				  myVue.$Message.success({
+   	                          content: "删除成功",
+   	                          duration: 3,
+   	                          closable: true
+   	                      });
+   	      				  myVue.tableDatas=response.data.data.result;
+   	      				  flushPage(response.data.data);
+   	      				  myVue.$forceUpdate();
+   	                    }else{
+   	                  	  myVue.$Message.error({
+   	                            content: response.data.errorMessages,
+   	                            duration: 3,
+   	                            closable: true
+   	                        });
+   	                    }
+   	      		  })
+   	        },
+   	        onCancel:function(){
+   	        }
+   	     });
        },
        //查询按钮
        search:function () {
     	  let param = new URLSearchParams(); 
-    	  param.append("contentId",myVue.formParm.content); 
-    	  param.append("detail",myVue.formParm.detail); 
-    	  param.append("workdate",myVue.formParm.workdate); 
-    	  param.append("status",myVue.formParm.status); 
-    	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
+    	  param.append("userId",myVue.formParm.userId); 
+    	  param.append("functionId",myVue.formParm.functionId); 
+    	  axios.post('<%=ctxPath %>/htgl/authoritycontroller/getauthoritypage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
     				  flushPage(response.data.data);
     				  myVue.$forceUpdate();
                   }else{
-                	  myVue.$Message.info({
+                	  myVue.$Message.error({
                           content: response.data.errorMessages,
                           duration: 3,
                           closable: true
@@ -198,20 +182,18 @@ var myVue = new Vue({
       //分页查询
       searchPage:function (page) {
     	  let param = new URLSearchParams(); 
-    	  param.append("contentId",myVue.formParm.content); 
-    	  param.append("detail",myVue.formParm.detail); 
-    	  param.append("workdate",myVue.formParm.workdate); 
-    	  param.append("status",myVue.formParm.status); 
+    	  param.append("userId",myVue.formParm.userId); 
+    	  param.append("functionId",myVue.formParm.functionId); 
     	  param.append("pageSize",myVue.pageParm.pageCount); 
     	  param.append("currentPage",page); 
-    	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
+    	  axios.post('<%=ctxPath %>/htgl/authoritycontroller/getauthoritypage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
     				  flushPage(response.data.data);
     				  myVue.$forceUpdate();
                   }else{
-                	  myVue.$Message.info({
+                	  myVue.$Message.error({
                           content: response.data.errorMessages,
                           duration: 3,
                           closable: true
@@ -221,20 +203,18 @@ var myVue = new Vue({
       },
       changePageSize:function(pageSize){
     	  let param = new URLSearchParams(); 
-    	  param.append("contentId",myVue.formParm.content); 
-    	  param.append("detail",myVue.formParm.detail); 
-    	  param.append("workdate",myVue.formParm.workdate); 
-    	  param.append("status",myVue.formParm.status); 
+    	  param.append("userId",myVue.formParm.userId); 
+    	  param.append("functionId",myVue.formParm.functionId); 
     	  param.append("pageSize",pageSize); 
     	  param.append("currentPage",1); 
-    	  axios.post('<%=ctxPath %>/jb/worktime/searchworkrecord/api', param)
+    	  axios.post('<%=ctxPath %>/htgl/authoritycontroller/getauthoritypage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
     				  myVue.tableDatas = response.data.data.result;
     				  flushPage(response.data.data);
     				  myVue.$forceUpdate();
                   }else{
-                	  myVue.$Message.info({
+                	  myVue.$Message.error({
                           content: response.data.errorMessages,
                           duration: 3,
                           closable: true

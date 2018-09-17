@@ -34,4 +34,13 @@ public interface UserFunctionInfoDao {
      */
     List<UserFunctionInfoData> getUserFunctionInfoDatas(UserFunctionInfoParam param);
     
+    Long countUserFunctionInfos(UserFunctionInfoParam param);
+    
+    /**
+     * *获取 用户功能关系（授权）,分页
+     * @param param
+     * @return
+     */
+    List<UserFunctionInfoData> getUserFunctionInfoDatasPage(UserFunctionInfoParam param);
+    
 }

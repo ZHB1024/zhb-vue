@@ -5,11 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zhb.forever.framework.page.Page;
+import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.FunctionInfoDao;
 import com.zhb.vue.dao.UserFunctionInfoDao;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.params.UserFunctionInfoParam;
+import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
@@ -67,6 +70,22 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     @Override
     public List<UserFunctionInfoData> getUserFunctionInfoDatas(UserFunctionInfoParam param) {
         return userFunctionInfoDao.getUserFunctionInfoDatas(param);
+    }
+
+    @Override
+    public Page<UserFunctionInfoData> getUserFunctionInfoDatasPage(UserFunctionInfoParam param) {
+        long total = userFunctionInfoDao.countUserFunctionInfos(param);
+        if (total > 0 ) {
+            List<UserFunctionInfoData> userFunctionInfoDatas = userFunctionInfoDao.getUserFunctionInfoDatasPage(param);
+            //上一页可能有数据
+            if ((null == userFunctionInfoDatas || userFunctionInfoDatas.size() == 0) && param.getCurrentPage() > 1) {
+                param.setStart(param.getPageSize() * (param.getCurrentPage()-2));
+                userFunctionInfoDatas = userFunctionInfoDao.getUserFunctionInfoDatasPage(param);
+            }
+            Page<UserFunctionInfoData> page = PageUtil.getPage(userFunctionInfoDatas.iterator(), param.getStart(), param.getPageSize(), total);
+            return page;
+        }
+        return null;
     }
 
 }

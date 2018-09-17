@@ -264,6 +264,15 @@ public class UserInfoController {
         return ajaxData;
     }
     
+    //获取用户
+    @RequestMapping(value="/getusers/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getUsers(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
+        AjaxData ajaxData = searchUserInfo2AjaxData(param,request);
+        return ajaxData;
+    }
+    
     //退出系统
     @RequestMapping("/exit")
     @Transactional

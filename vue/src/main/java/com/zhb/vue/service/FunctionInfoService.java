@@ -2,6 +2,7 @@ package com.zhb.vue.service;
 
 import java.util.List;
 
+import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.params.UserFunctionInfoParam;
@@ -70,6 +71,13 @@ public interface FunctionInfoService {
      * @return
      */
     List<UserFunctionInfoData> getUserFunctionInfoDatas(UserFunctionInfoParam param);
+    
+    /**
+     * *获取 用户功能关系（授权）,分页
+     * @param param
+     * @return
+     */
+    Page<UserFunctionInfoData>  getUserFunctionInfoDatasPage(UserFunctionInfoParam param);
     
     
 
