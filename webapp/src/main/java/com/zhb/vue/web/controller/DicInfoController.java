@@ -218,7 +218,7 @@ public class DicInfoController {
         return "htgl.dic.index";
     }
     
-    //category，排重
+    //获取category，排重
     @RequestMapping(value = "/getdiccategory/api")
     @ResponseBody
     @Transactional
@@ -242,7 +242,7 @@ public class DicInfoController {
         }
         return ajaxData;
     }
-    //类型，排重
+    //获取类型，排重
     @RequestMapping(value = "/getdictype/api")
     @ResponseBody
     @Transactional
@@ -254,16 +254,18 @@ public class DicInfoController {
             return ajaxData;
         }
         JSONArray jsonArray = new JSONArray();
-        List<String> types = dicInfoService.getDicTypeByCategory(param);
-        if (null != types && types.size() > 0) {
-            for (String type : types) {
-                JSONObject object = new JSONObject();
-                object.put("value", type);
-                jsonArray.add(object);
+        if (StringUtil.isNotBlank(param.getCategory())) {
+            List<String> types = dicInfoService.getDicTypeByCategory(param);
+            if (null != types && types.size() > 0) {
+                for (String type : types) {
+                    JSONObject object = new JSONObject();
+                    object.put("value", type);
+                    jsonArray.add(object);
+                }
             }
-            ajaxData.setData(jsonArray);
-            ajaxData.setFlag(true);
         }
+        ajaxData.setData(jsonArray);
+        ajaxData.setFlag(true);
         return ajaxData;
     }
     
@@ -295,7 +297,12 @@ public class DicInfoController {
         if (null == param) {
             param = new DicInfoParam();
         }
-        
+        if ("undefined".equals(param.getCategory())) {
+            param.setCategory(null);
+        }
+        if ("undefined".equals(param.getType())) {
+            param.setType(null);
+        }
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
         OrderVO vo = new OrderVO("category",true);

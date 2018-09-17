@@ -27,7 +27,7 @@ String ctxPath = request.getContextPath();
                 	</form-item >
                 	
                 	<form-item label="国家/地区" prop="country">
-                	  <i-select name="country" v-model="userInfo.country" placeholder="请选择国家/地区">
+                	  <i-select name="country" clearable filterable v-model="userInfo.country" placeholder="请选择国家/地区">
                         	<i-option v-bind:value="item.name" v-for="item in countryParm">
                         		{{item.name}}
                         	</i-option>
@@ -58,7 +58,7 @@ String ctxPath = request.getContextPath();
                 	</form-item >
                 	
                 	<form-item label="民族" prop="nation">
-                	  <i-select name="nation" v-model="userInfo.nation" placeholder="请选择民族">
+                	  <i-select name="nation" clearable filterable v-model="userInfo.nation" placeholder="请选择民族">
                         	<i-option v-bind:value="item.name" v-for="item in mzParm">
                         		{{item.name}}
                         	</i-option>
@@ -66,8 +66,12 @@ String ctxPath = request.getContextPath();
                 	</form-item>
                 	
                 	<form-item label="毕业院校" prop="byyx">
-                  		<i-input type="text" name="byyx" v-model="userInfo.byyx" search  :maxlength="25" placeholder="请输入毕业院校"></i-input>
-                	</form-item >
+        				<i-select name="byyx" clearable filterable v-model="userInfo.byyx" placeholder="请输入毕业院校">
+                        	<i-option v-bind:value="item.name" v-for="item in byyxParm">
+                        		{{item.name}}
+                        	</i-option>
+                		</i-select>
+                	</form-item>
                 	
                 	<form-item label="电话" prop="mobilePhone">
                   		<i-input type="text" name="mobilePhone" v-model="userInfo.mobilePhone" :maxlength="11" placeholder="请输入电话"></i-input>
@@ -111,6 +115,7 @@ var myVue =  new Vue({
 		  },
 		  countryParm:[],
 		  mzParm:[],
+		  byyxParm:[],
 		  limitDate:{
 			  disabledDate (date) {
 		             return date.valueOf() > Date.now() ;
@@ -159,10 +164,16 @@ var myVue =  new Vue({
 	    	    	params : { 
 	    	    		category : 'mz'
 	    	    	}
+	    	    }),
+	    	    axios.get('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfo/api', {
+	    	    	params : { 
+	    	    		category : 'yx'
+	    	    	}
 	    	    })
-	    	  ]).then(axios.spread(function (dicinfoResp,mzResp) {
+	    	  ]).then(axios.spread(function (dicinfoResp,mzResp,yxResp) {
 	    		  myVue.countryParm = dicinfoResp.data.data;
 	    		  myVue.mzParm = mzResp.data.data;
+	    		  myVue.byyxParm = yxResp.data.data;
 	    	  }));
 	 },
 	  methods:{

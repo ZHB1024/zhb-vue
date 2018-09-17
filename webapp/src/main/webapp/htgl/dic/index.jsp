@@ -19,7 +19,7 @@ li {list-style-type:none;}
           <i-form inline method="post" action="" ref="formValidate">
         	
         		<form-item prop="category">
-        			<i-select name="category" v-model="formParm.category" @on-change="getDicType" style="width: 150px;" placeholder="请选择字典类型">
+        			<i-select name="category" clearable filterable v-model="formParm.category" @on-change="getDicType" style="width: 150px;" placeholder="请选择字典类别">
                         	<i-option v-bind:value="item.value" v-for="item in categoryParm">
                         		{{item.value}}
                         	</i-option>
@@ -31,8 +31,8 @@ li {list-style-type:none;}
                 </form-item >
                 	
         		<form-item prop="type">
-        			<i-select name="type" v-model="formParm.type" style="width: 150px;" placeholder="请选择类型">
-                        	<i-option v-bind:value="item.value" v-for="item in typeParm">
+        			<i-select name="type" clearable v-model="formParm.type" ref="typeRef" style="width: 150px;" placeholder="请选择类型">
+                        	<i-option v-bind:value="item.value" :key="item.value" v-for="item in typeParm">
                         		{{item.value}}
                         	</i-option>
                 	</i-select>
@@ -260,12 +260,13 @@ var myVue = new Vue({
     		  })
       },
       getDicType:function(category){
-    	  let param = new URLSearchParams(); 
+    	    let param = new URLSearchParams(); 
      	  	param.append("category",category); 
      	  	axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdictype/api', param)
      		  	.then(function (response) {
      			  	if(response.data.flag){
      			  		myVue.typeParm=response.data.data;
+     			  		myVue.$refs.typeRef.clearSingleSelect();
      				  	myVue.$forceUpdate();
                    }else{
                  	  myVue.$Message.error({
