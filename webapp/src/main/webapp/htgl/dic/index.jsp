@@ -81,43 +81,43 @@ var myVue = new Vue({
                 width: 70
             },
             {
-                title: 'category',
+                title: '字典类别',
                 key: 'category',
                 minWidth: 100,
                 sortable:true
             },
             {
-                title: 'name',
+                title: '名称',
                 key: 'name',
                 minWidth: 100
             },
             {
-                title: 'name2',
+                title: '简称',
                 key: 'name2',
                 minWidth: 100
             },
             {
-                title: 'name3',
+                title: '英文名称',
                 key: 'name3',
                 minWidth: 100
             },{
-                title: 'type',
+                title: '类型',
                 key: 'type',
                 minWidth: 100
             },
             {
-                title: 'order_index',
+                title: '排序',
                 key: 'orderIndex',
                 minWidth: 100
             },
             {
-                title: 'remark',
+                title: '描述',
                 key: 'remark',
                 minWidth: 100
             },
             {
-                title: 'delete_flag',
-                key: 'deleteFlag',
+                title: '状态',
+                key: 'deleteFlagName',
                 minWidth: 100
             }
             /* ,
