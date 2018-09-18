@@ -1,9 +1,11 @@
 package com.zhb.vue.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
@@ -37,14 +39,19 @@ public class UserInfoDaoImpl implements UserInfoDao {
         CriteriaQuery<UserInfoData> cq = cb.createQuery(UserInfoData.class);
         Root<UserInfoData> root = cq.from(UserInfoData.class);
         
+        List<Predicate> conditions = new ArrayList<>();
         if (StringUtil.isNotBlank(param.getId())) {
-            cq.where(cb.equal(root.get("id"), param.getId()));
+            conditions.add(cb.equal(root.get("id"), param.getId()));
         }
         if (StringUtil.isNotBlank(param.getUserName())) {
-            cq.where(cb.equal(root.get("userName"), param.getUserName()));
+            conditions.add(cb.equal(root.get("userName"), param.getUserName()));
         }
         if (StringUtil.isNotBlank(param.getEmail())) {
-            cq.where(cb.equal(root.get("email"), param.getEmail()));
+            conditions.add(cb.equal(root.get("email"), param.getEmail()));
+        }
+        
+        if (conditions.size() > 0 ) {
+            cq.where(conditions.toArray(new Predicate[conditions.size()]));
         }
         
         //排序

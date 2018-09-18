@@ -22,8 +22,9 @@ function goto_forget() {
 
 //登录
 function login() {
-	var username = $("#login-username").val(), password = $("#login-password")
-			.val(), validatecode = null, flag = false;
+	var username = $("#login-username").val(), 
+		password = $("#login-password").val(), 
+		flag = false;
 	//判断用户名密码是否为空
 	if (username == "") {
 		myVue.$Message.error({
@@ -60,6 +61,7 @@ function login() {
 		  .then(function (response) {
 			  if(response.data.flag){
 				var redirectUrl = $("input[name='redirectUrl']").val().trim();
+				debugger;
 				if(null == redirectUrl || "" == redirectUrl){
 					window.location.href='/htgl/indexcontroller/index';
 			    }else{
@@ -76,18 +78,49 @@ function login() {
 }
 
 //发送验证码
-function sendCode(){
-	var email = $("#register-email").val();
-	if(null == email || email == ''){
-		myVue.$Message.error({
-            content: "邮箱不能为空",
-            duration: 3,
-            closable: true
-        });
-		return false;
+function sendCode(type){
+	var registerEmail = $("#register-email").val();
+	var forgetEmail = $("#forget-email").val();
+	var userName = $("#forget-username").val();
+	
+	if(0 == type){
+		if(null == registerEmail || registerEmail == ''){
+			myVue.$Message.error({
+	            content: "邮箱不能为空",
+	            duration: 3,
+	            closable: true
+	        });
+			return false;
+		}
+	}
+	if(1 == type){
+		if(null == userName || userName == ''){
+			myVue.$Message.error({
+	            content: "用户名不能为空",
+	            duration: 3,
+	            closable: true
+	        });
+			return false;
+		}
+		if(null == forgetEmail || forgetEmail == ''){
+			myVue.$Message.error({
+	            content: "邮箱不能为空",
+	            duration: 3,
+	            closable: true
+	        });
+			return false;
+		}
 	}
 	let param = new URLSearchParams(); 
-	param.append("email",email); 
+	
+	if(type == 1){
+		param.append("userName",userName);
+		param.append("type",1);
+		param.append("email",forgetEmail);
+	}else{
+		param.append("type",0);
+		param.append("email",registerEmail);
+	}
 	axios.post('/logincontroller/sendverificationcode/api', param)
 		  .then(function (response) {
 			  if(response.data.flag){
@@ -112,8 +145,7 @@ function register() {
 		password = $("#register-password").val(), 
 		repassword = $("#register-repassword").val(), 
 		email = $("#register-email").val(), 
-		code = $("#register-code").val(), 
-		validatecode = null;
+		code = $("#register-code").val();
 	//判断用户名密码是否为空
 	if (username == "") {
 		myVue.$Message.error({
@@ -175,7 +207,7 @@ function register() {
 					duration: 3,
 					closable: true
 				});
-				window.location.href='/htgl/logincontroller/tologin';
+				window.location.href='/logincontroller/tologin';
 			  }else{
 				  myVue.$Message.error({
                   content: response.data.errorMessages,
@@ -210,84 +242,101 @@ function register() {
 
 //重置密码
 function forget() {
-	var username = $("#forget-username").val(), password = $("#forget-password")
-			.val(), code = $("#forget-code").val(), flag = false, validatecode = null;
+	var username = $("#forget-username").val(),
+		password = $("#forget-password").val(), 
+		repassword = $("#forget-repassword").val(), 
+		email = $("#forget-email").val(), 
+		code = $("#forget-code").val();
 	//判断用户名密码是否为空
 	if (username == "") {
-		$.pt({
-			target : $("#forget-username"),
-			position : 'r',
-			align : 't',
-			width : 'auto',
-			height : 'auto',
-			content : "用户名不能为空"
+		myVue.$Message.error({
+            content: "用户名不能为空",
+            duration: 3,
+            closable: true
+        });
+		return false;
+	}
+	if (email == "") {
+		myVue.$Message.error({
+			content: "邮箱不能为空",
+			duration: 3,
+			closable: true
 		});
-		flag = true;
+		return false;
 	}
 	if (password == "") {
-		$.pt({
-			target : $("#forget-password"),
-			position : 'r',
-			align : 't',
-			width : 'auto',
-			height : 'auto',
-			content : "密码不能为空"
-		});
-		flag = true;
+		myVue.$Message.error({
+            content: "密码不能为空",
+            duration: 3,
+            closable: true
+        });
+		return false;
 	}
 	//用户名只能是15位以下的字母或数字
 	var regExp = new RegExp("^[a-zA-Z0-9_]{1,15}$");
 	if (!regExp.test(username)) {
-		$.pt({
-			target : $("#forget-username"),
-			position : 'r',
-			align : 't',
-			width : 'auto',
-			height : 'auto',
-			content : "用户名必须为15位以下的字母或数字"
-		});
-		flag = true;
-	}
-	//检查用户名是否存在
-	//调后台方法
-
-	//检查注册码是否正确
-	if (code != '11111111') {
-		$.pt({
-			target : $("#forget-code"),
-			position : 'r',
-			align : 't',
-			width : 'auto',
-			height : 'auto',
-			content : "注册码不正确"
-		});
-		flag = true;
-	}
-
-	if (flag) {
-		return false;
-	} else {//重置密码
-		spop({
-			template : '<h4 class="spop-title">重置密码成功</h4>即将于3秒后返回登录',
-			position : 'top-center',
-			style : 'success',
-			autoclose : 3000,
-			onOpen : function() {
-				var second = 2;
-				var showPop = setInterval(function() {
-					if (second == 0) {
-						clearInterval(showPop);
-					}
-					$('.spop-body').html(
-							'<h4 class="spop-title">重置密码成功</h4>即将于' + second
-									+ '秒后返回登录');
-					second--;
-				}, 1000);
-			},
-			onClose : function() {
-				goto_login();
-			}
+		myVue.$Message.error({
+			content: "用户名必须为15位以下的字母或数字",
+			duration: 3,
+			closable: true
 		});
 		return false;
 	}
+
+	if (code == '') {
+		myVue.$Message.error({
+			content: "请输入验证码",
+			duration: 3,
+			closable: true
+		});
+		return false;
+	}
+
+	//调用后台
+	let param = new URLSearchParams(); 
+	param.append("userName",username); 
+	param.append("password",password); 
+	param.append("confirmPassword",repassword); 
+	param.append("email",email); 
+	param.append("code",code); 
+	axios.post('/logincontroller/updatepassword/api', param)
+		  .then(function (response) {
+			  if(response.data.flag){
+				myVue.$Message.success({
+					content: "修改成功,请登录",
+					duration: 3,
+					closable: true
+				});
+				window.location.href='/logincontroller/tologin';
+			  }else{
+				  myVue.$Message.error({
+                  content: response.data.errorMessages,
+                  duration: 3,
+                  closable: true
+              });
+			  }
+		  })
+		  
+	/*spop({
+		template : '<h4 class="spop-title">重置密码成功</h4>即将于3秒后返回登录',
+		position : 'top-center',
+		style : 'success',
+		autoclose : 3000,
+		onOpen : function() {
+			var second = 2;
+			var showPop = setInterval(function() {
+				if (second == 0) {
+					clearInterval(showPop);
+				}
+				$('.spop-body').html(
+						'<h4 class="spop-title">重置密码成功</h4>即将于' + second
+								+ '秒后返回登录');
+				second--;
+			}, 1000);
+		},
+		onClose : function() {
+			goto_login();
+		}
+	});
+	return false;*/
 }

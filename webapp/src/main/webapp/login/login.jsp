@@ -75,15 +75,33 @@
 								</label>
 							</span>
 							<span class="input input--hideo">
-								<input class="input__field input__field--hideo" type="text" id="forget-code" autocomplete="off" placeholder="请输入注册码"/>
+								<input class="input__field input__field--hideo" type="email" id="forget-email"  placeholder="请输入邮箱"/>
+								<label class="input__label input__label--hideo" for="register-email">
+									<i class="fa fa-fw fa-wifi icon icon--hideo"></i>
+									<span class="input__label-content input__label-content--hideo"></span>
+								</label>
+							</span>
+							
+							<input type="button" id="forget-button" onclick="sendCode(1);" value="获取验证码"/>
+							
+							<span class="input input--hideo">
+								<input class="input__field input__field--hideo" type="text" id="forget-code" autocomplete="off" placeholder="请输入验证码"/>
 								<label class="input__label input__label--hideo" for="forget-code">
 									<i class="fa fa-fw fa-wifi icon icon--hideo"></i>
 									<span class="input__label-content input__label-content--hideo"></span>
 								</label>
 							</span>
+							
 							<span class="input input--hideo">
-								<input class="input__field input__field--hideo" type="password" id="forget-password" placeholder="请重置密码" />
+								<input class="input__field input__field--hideo" type="password" id="forget-password" placeholder="请输入重置密码" />
 								<label class="input__label input__label--hideo" for="forget-password">
+									<i class="fa fa-fw fa-lock icon icon--hideo"></i>
+									<span class="input__label-content input__label-content--hideo"></span>
+								</label>
+							</span>
+							<span class="input input--hideo">
+								<input class="input__field input__field--hideo" type="password" id="forget-repassword" placeholder="请输入确认重置密码" />
+								<label class="input__label input__label--hideo" for="forget-repassword">
 									<i class="fa fa-fw fa-lock icon icon--hideo"></i>
 									<span class="input__label-content input__label-content--hideo"></span>
 								</label>
@@ -142,8 +160,12 @@
 							</span>
 							<span class="input input--hideo">
 								<input class="input__field input__field--hideo" type="text" id="register-code" autocomplete="off" placeholder="请输入验证码"/>
-								<input type="button" id="register-button" onclick="sendCode();" value="发送"/>
+								<label class="input__label input__label--hideo" for="register-code">
+									<i class="fa fa-fw fa-wifi icon icon--hideo"></i>
+									<span class="input__label-content input__label-content--hideo"></span>
+								</label>
 							</span>
+							<input type="button" id="register-button" onclick="sendCode(0);" value="获取验证码"/>
 						</section>
 					</div>
 					<div class="form-actions">

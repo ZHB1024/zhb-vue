@@ -106,25 +106,51 @@ public class LoginController {
     @RequestMapping(value = "/sendverificationcode/api",method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public AjaxData sendVerificationCode(HttpServletRequest request,HttpServletResponse response,String email) {
+    public AjaxData sendVerificationCode(HttpServletRequest request,HttpServletResponse response,UserInfoParam param,Integer type) {
         AjaxData ajaxData = new AjaxData();
-        if (StringUtil.isBlank(email)) {
+        if (StringUtil.isBlank(param.getEmail())) {
             ajaxData.setFlag(false);
             ajaxData.addMessage("请填写邮箱");
             return ajaxData;
         }
         
-        UserInfoParam userInfoParam2 = new UserInfoParam();
-        userInfoParam2.setEmail(email);
-        List<UserInfoData> userInfoDatas2 = userInfoService.getUserInfos(userInfoParam2,null);
-        if (null != userInfoDatas2 && userInfoDatas2.size() > 0) {
+        if (null == type) {
             ajaxData.setFlag(false);
-            ajaxData.addMessage("邮箱已被别人使用，请重新输入新的邮箱");
+            ajaxData.addMessage("非法访问");
             return ajaxData;
+        }
+        String remark = "";
+        if (type == 0 ) {
+            UserInfoParam userInfoParam2 = new UserInfoParam();
+            userInfoParam2.setEmail(param.getEmail());
+            List<UserInfoData> userInfoDatas2 = userInfoService.getUserInfos(userInfoParam2,null);
+            if (null != userInfoDatas2 && userInfoDatas2.size() > 0) {
+                ajaxData.setFlag(false);
+                ajaxData.addMessage("邮箱已被别人使用，请重新输入新的邮箱");
+                return ajaxData;
+            }
+            remark = "注册love系统的验证码";
+        }else if(type == 1){
+            if (StringUtil.isBlank(param.getUserName())) {
+                ajaxData.setFlag(false);
+                ajaxData.addMessage("请填写用户名");
+                return ajaxData;
+            }
+            
+            UserInfoParam userInfoParam2 = new UserInfoParam();
+            userInfoParam2.setEmail(param.getEmail());
+            userInfoParam2.setUserName(param.getUserName());
+            List<UserInfoData> userInfoDatas2 = userInfoService.getUserInfos(userInfoParam2,null);
+            if (null == userInfoDatas2 || userInfoDatas2.size() == 0) {
+                ajaxData.setFlag(false);
+                ajaxData.addMessage("用户名与邮箱不对应，请修改后重新发送");
+                return ajaxData;
+            }
+            remark = "修改love系统的验证码";
         }
         
         String code = RandomUtil.getRandomString(6);
-        MailVO mailVo = new MailVO(email,"注册love系统的验证码",code,PropertyUtil.getMailUserName(),PropertyUtil.getMailPassword(),PropertyUtil.getMailHost());
+        MailVO mailVo = new MailVO(param.getEmail(),remark,code,PropertyUtil.getMailUserName(),PropertyUtil.getMailPassword(),PropertyUtil.getMailHost());
         String result = EmailUtil.sendMail(mailVo);
         if (StringUtil.isNotBlank(result)) {
             ajaxData.setFlag(false);
@@ -133,11 +159,15 @@ public class LoginController {
         }
         
         VerificationCodeInfoData verificationCodeInfoData = new VerificationCodeInfoData();
-        verificationCodeInfoData.setEmail(email);
+        verificationCodeInfoData.setEmail(param.getEmail());
         verificationCodeInfoData.setCode(code);
-        verificationCodeInfoData.setType(VerificationCodeTypeEnum.REGISTER.getIndex());
+        if (type == 0) {
+            verificationCodeInfoData.setType(VerificationCodeTypeEnum.REGISTER.getIndex());
+        }else if (type == 1) {
+            verificationCodeInfoData.setType(VerificationCodeTypeEnum.UPDATE_PASSWORD.getIndex());
+        }
         verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
-        verificationCodeInfoData.setRemark("注册系统的验证码");
+        verificationCodeInfoData.setRemark(remark);
         verificationCodeInfoData.setCreateTime(Calendar.getInstance());
         verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
         
@@ -215,6 +245,74 @@ public class LoginController {
         String salt = RandomUtil.getRandomString(8);
         userInfoData.setSalt(salt);
         userInfoData.setPassword(PasswordUtil.encrypt(param.getUserName(), param.getPassword(), PasswordUtil.generateSalt(salt)));
+        userInfoService.saveOrUpdate(userInfoData);
+        
+        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+        verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
+        
+        
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    //修改密码
+    @RequestMapping(value = "/updatepassword/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData updatePassword(HttpServletRequest request,HttpServletResponse response,UserInfoParam param,String code) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(param.getUserName()) || StringUtil.isBlank(param.getPassword()) || StringUtil.isBlank(param.getConfirmPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写用户名、密码或确认密码");
+            return ajaxData;
+        }
+        if (!param.getPassword().equals(param.getConfirmPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("您两次输入的密码不一致，请重新输入");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getEmail())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写邮箱");
+            return ajaxData;
+        }
+        
+        UserInfoParam userInfoParam = new UserInfoParam();
+        userInfoParam.setUserName(param.getUserName());
+        userInfoParam.setEmail(param.getEmail());
+        List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(userInfoParam,null);
+        if (null == userInfoDatas || userInfoDatas.size() == 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("用户名与邮箱不对应，请修改后重新提交");
+            return ajaxData;
+        }
+        
+        if (StringUtil.isBlank(code)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请输入验证码");
+            return ajaxData;
+        }
+        
+        VerificationCodeInfoParam verificationCodeInfoParam = new VerificationCodeInfoParam();
+        verificationCodeInfoParam.setType(VerificationCodeTypeEnum.UPDATE_PASSWORD.getIndex());
+        verificationCodeInfoParam.setEmail(param.getEmail());
+        verificationCodeInfoParam.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+        List<VerificationCodeInfoData> verificationCodeInfoDatas = verificationCodeInfoService.getVerificationCodes(verificationCodeInfoParam, null);
+        if (null == verificationCodeInfoDatas || verificationCodeInfoDatas.size() == 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("系统没有收到验证码，请重新发送");
+            return ajaxData;
+        }
+        VerificationCodeInfoData verificationCodeInfoData = verificationCodeInfoDatas.get(0);
+        if (!code.equals(verificationCodeInfoData.getCode())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("您输入的验证码不正确，请修改后重新输入");
+            return ajaxData;
+        }
+        
+        UserInfoData userInfoData = userInfoDatas.get(0);
+        userInfoData.setPassword(PasswordUtil.encrypt(userInfoData.getUserName(), param.getPassword(), PasswordUtil.generateSalt(userInfoData.getSalt())));
+        userInfoData.setUpdateTime(Calendar.getInstance());
         userInfoService.saveOrUpdate(userInfoData);
         
         verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
