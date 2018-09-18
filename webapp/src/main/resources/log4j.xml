@@ -22,9 +22,9 @@
     <!-- A time/date based rolling appender -->
     <appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
 
-        <param name="File" value="/log/tomcat/zhb-vue.log" />
+            <param name="File" value="/log/tomcat/zhb_vue.log" />
         <param name="Append" value="true" />
-        <param name="Threshold" value="DEBUG"></param>
+        <param name="Threshold" value="INFO"></param>
         <!-- Rollover at midnight each day -->
         <param name="DatePattern" value="'.'yyyy-MM-dd" />
 
@@ -164,10 +164,6 @@
         <priority value="INFO" />
     </category>
 
-    <category name="com.chsi.framework.hibernate.HibernateSession">
-        <priority value="INFO" />
-    </category>
-
     <category name="org.springframework">
         <priority value="INFO" />
     </category>
@@ -183,6 +179,10 @@
         <priority value="INFO" />
     </category>
     <category name="httpclient.wire">
+        <priority value="INFO" />
+    </category>
+    
+    <category name="com.zhb.vue">
         <priority value="INFO" />
     </category>
 
