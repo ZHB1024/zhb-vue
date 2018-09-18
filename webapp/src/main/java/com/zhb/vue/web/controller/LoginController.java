@@ -124,7 +124,7 @@ public class LoginController {
         }
         
         String code = RandomUtil.getRandomString(6);
-        MailVO mailVo = new MailVO(email,"注册love系统的验证码",code,PropertyUtil.getMailUserName(),PropertyUtil.getMailPassword());
+        MailVO mailVo = new MailVO(email,"注册love系统的验证码",code,PropertyUtil.getMailUserName(),PropertyUtil.getMailPassword(),PropertyUtil.getMailHost());
         String result = EmailUtil.sendMail(mailVo);
         if (StringUtil.isNotBlank(result)) {
             ajaxData.setFlag(false);
