@@ -25,6 +25,10 @@ li {list-style-type:none;}
                   		<i-input type="text" name="userName" v-model="userInfo.userName" :maxlength="15" placeholder="请输入用户名"></i-input>
                 	</form-item >
                 	
+                	<form-item label="邮箱" prop="email">
+                  		<i-input type="text" name="email" v-model="userInfo.email" :maxlength="30" placeholder="请输入邮箱"></i-input>
+                	</form-item >
+                	
                 	<form-item label="密码" prop="password">
                 		<Tooltip content="默认密码为123456，可自行修改" placement="right-start">
                 		   <i-input type="password" name="password" v-model="userInfo.password" :maxlength="15" placeholder="请输入密码"></i-input>
@@ -65,6 +69,9 @@ var myVue =  new Vue({
 	    	     userName: [
 	    		    { required: true, message: '请填写用户名', trigger: 'change' }
 	    		  ] ,
+	    	     email: [
+	    		    { required: true, message: '请填写邮箱', trigger: 'change' }
+	    		  ] ,
 	    		  password: [
 		    		    { required: true, message: '请填写密码', trigger: 'change' }
 		    	  ],
@@ -92,6 +99,7 @@ var myVue =  new Vue({
 					    let param = new URLSearchParams(); 
 		          	  	param.append("id",myVue.userInfo.id); 
 		          	  	param.append("userName",myVue.userInfo.userName); 
+		          	  	param.append("email",myVue.userInfo.email); 
 		          	  	param.append("password",myVue.userInfo.password); 
 		          	  	param.append("confirmPassword",myVue.userInfo.confirmPassword); 
 		          	  	axios.post('<%=ctxPath%>/htgl/userinfocontroller/adduserinfo/api', param)
@@ -102,7 +110,7 @@ var myVue =  new Vue({
 		                                duration: 3,
 		                                closable: true
 		                            });
-		          			  	    window.location.href='<%=ctxPath%>/htgl/userinfocontroller/touserinfo';
+		          			  	    window.location.href='<%=ctxPath%>/htgl/userinfocontroller/toindex';
 		                        }else{
 		                      	  myVue.$Message.error({
 		                                content: response.data.errorMessages,

@@ -78,7 +78,7 @@ String ctxPath = request.getContextPath();
                 	</form-item >
                 	
                 	<form-item label="邮箱" prop="email">
-                  		<i-input type="text" name="email" v-model="userInfo.email" :maxlength="30" placeholder="请输入邮箱"></i-input>
+                  		<i-input type="text" disabled name="email" v-model="userInfo.email" :maxlength="30" placeholder="请输入邮箱"></i-input>
                 	</form-item >
                 	
                   <form-item align="center">

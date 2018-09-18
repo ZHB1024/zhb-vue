@@ -119,6 +119,11 @@ public class UserInfoController {
             ajaxData.addMessage("请输入用户名");
             return ajaxData;
         }
+        if (StringUtil.isBlank(param.getEmail())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请输入邮箱");
+            return ajaxData;
+        }
         
         if (StringUtil.isBlank(param.getPassword())|| StringUtil.isBlank(confirmPassword)) {
             ajaxData.setFlag(false);
@@ -140,8 +145,18 @@ public class UserInfoController {
             return ajaxData;
         }
         
+        UserInfoParam userInfoParam2 = new UserInfoParam();
+        userInfoParam2.setEmail(param.getEmail());
+        List<UserInfoData> datas2 = userInfoService.getUserInfos(userInfoParam2,null);
+        if (null != datas2 && datas2.size() > 0 ) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("此邮箱已被别人使用，请更换邮箱");
+            return ajaxData;
+        }
+        
         UserInfoData userInfoData = new UserInfoData();
         userInfoData.setUserName(param.getUserName());
+        userInfoData.setEmail(param.getEmail());
         String salt = RandomUtil.getRandomString(8);
         userInfoData.setSalt(salt);
         userInfoData.setPassword(PasswordUtil.encrypt(param.getUserName(), param.getPassword(), PasswordUtil.generateSalt(salt)));
