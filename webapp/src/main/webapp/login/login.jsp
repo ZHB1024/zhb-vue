@@ -134,11 +134,15 @@
 								</label>
 							</span>
 							<span class="input input--hideo">
-								<input class="input__field input__field--hideo" type="text" id="register-code" autocomplete="off" placeholder="请输入注册码"/>
-								<label class="input__label input__label--hideo" for="register-code">
+								<input class="input__field input__field--hideo" type="email" id="register-email"  placeholder="请输入邮箱"/>
+								<label class="input__label input__label--hideo" for="register-email">
 									<i class="fa fa-fw fa-wifi icon icon--hideo"></i>
 									<span class="input__label-content input__label-content--hideo"></span>
 								</label>
+							</span>
+							<span class="input input--hideo">
+								<input class="input__field input__field--hideo" type="text" id="register-code" autocomplete="off" placeholder="请输入验证码"/>
+								<input type="button" id="register-button" onclick="sendCode();" value="发送"/>
 							</span>
 						</section>
 					</div>

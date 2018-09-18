@@ -43,6 +43,9 @@ public class UserInfoDaoImpl implements UserInfoDao {
         if (StringUtil.isNotBlank(param.getUserName())) {
             cq.where(cb.equal(root.get("userName"), param.getUserName()));
         }
+        if (StringUtil.isNotBlank(param.getEmail())) {
+            cq.where(cb.equal(root.get("email"), param.getEmail()));
+        }
         
         //排序
         if (null != orderVos && orderVos.size() > 0) {

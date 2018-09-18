@@ -1,5 +1,6 @@
 package com.zhb.vue.web.controller;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,19 +15,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.framework.util.EmailUtil;
 import com.zhb.forever.framework.util.PasswordUtil;
+import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.vo.MailVO;
 import com.zhb.vue.dic.FunctionTypeEnum;
+import com.zhb.vue.dic.VerificationCodeTypeEnum;
 import com.zhb.vue.params.UserInfoParam;
+import com.zhb.vue.params.VerificationCodeInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.IconInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.pojo.VerificationCodeInfoData;
 import com.zhb.vue.service.FunctionInfoService;
 import com.zhb.vue.service.IconInfoService;
 import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.service.VerificationCodeInfoService;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.WebAppUtil;
 import com.zhb.vue.web.util.WriteJSUtil;
@@ -42,18 +51,23 @@ public class LoginController {
     private UserInfoService userInfoService;
     
     @Autowired
+    private VerificationCodeInfoService verificationCodeInfoService;
+    
+    @Autowired
     private FunctionInfoService functionInfoService;
     
     @Autowired
     private IconInfoService iconInfoService;
     
+    //tologin
     @RequestMapping(value = "/tologin",method = RequestMethod.GET)
     @Transactional
     public String toLogin(HttpServletRequest request,HttpServletResponse response) {
-        System.out.println(request.getAttribute("redirectUrl"));
+        logger.info(String.valueOf(request.getAttribute("redirectUrl")));
         return "login.index";
     }
     
+    //登录
     @RequestMapping(value = "/login/api",method = RequestMethod.POST)
     @ResponseBody
     @Transactional
@@ -88,6 +102,130 @@ public class LoginController {
         return ajaxData;
     }
     
+    //发送验证码，邮箱
+    @RequestMapping(value = "/sendverificationcode/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData sendVerificationCode(HttpServletRequest request,HttpServletResponse response,String email) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(email)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写邮箱");
+            return ajaxData;
+        }
+        
+        UserInfoParam userInfoParam2 = new UserInfoParam();
+        userInfoParam2.setEmail(email);
+        List<UserInfoData> userInfoDatas2 = userInfoService.getUserInfos(userInfoParam2,null);
+        if (null != userInfoDatas2 && userInfoDatas2.size() > 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("邮箱已被别人使用，请重新输入新的邮箱");
+            return ajaxData;
+        }
+        
+        String code = RandomUtil.getRandomString(6);
+        MailVO mailVo = new MailVO(email,"注册love系统的验证码",code,PropertyUtil.getMailUserName(),PropertyUtil.getMailPassword());
+        String result = EmailUtil.sendMail(mailVo);
+        if (StringUtil.isNotBlank(result)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage(result);
+            return ajaxData;
+        }
+        
+        VerificationCodeInfoData verificationCodeInfoData = new VerificationCodeInfoData();
+        verificationCodeInfoData.setEmail(email);
+        verificationCodeInfoData.setCode(code);
+        verificationCodeInfoData.setType(VerificationCodeTypeEnum.REGISTER.getIndex());
+        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+        verificationCodeInfoData.setRemark("注册系统的验证码");
+        verificationCodeInfoData.setCreateTime(Calendar.getInstance());
+        verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
+        
+        
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    //注册
+    @RequestMapping(value = "/register/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData register(HttpServletRequest request,HttpServletResponse response,UserInfoParam param,String code) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(param.getUserName()) || StringUtil.isBlank(param.getPassword()) || StringUtil.isBlank(param.getConfirmPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写用户名、密码或确认密码");
+            return ajaxData;
+        }
+        if (!param.getPassword().equals(param.getConfirmPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("您两次输入的密码不一致，请重新输入");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getEmail())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写邮箱");
+            return ajaxData;
+        }
+        
+        UserInfoParam userInfoParam = new UserInfoParam();
+        userInfoParam.setUserName(param.getUserName());
+        List<UserInfoData> userInfoDatas = userInfoService.getUserInfos(userInfoParam,null);
+        if (null != userInfoDatas && userInfoDatas.size() > 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("用户名已被别人使用，请重新输入新的用户名");
+            return ajaxData;
+        }
+        
+        UserInfoParam userInfoParam2 = new UserInfoParam();
+        userInfoParam2.setEmail(param.getEmail());
+        List<UserInfoData> userInfoDatas2 = userInfoService.getUserInfos(userInfoParam2,null);
+        if (null != userInfoDatas2 && userInfoDatas2.size() > 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("邮箱已被别人使用，请重新输入新的邮箱");
+            return ajaxData;
+        }
+        
+        if (StringUtil.isBlank(code)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请输入验证码");
+            return ajaxData;
+        }
+        
+        VerificationCodeInfoParam verificationCodeInfoParam = new VerificationCodeInfoParam();
+        verificationCodeInfoParam.setType(VerificationCodeTypeEnum.REGISTER.getIndex());
+        verificationCodeInfoParam.setEmail(param.getEmail());
+        verificationCodeInfoParam.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
+        List<VerificationCodeInfoData> verificationCodeInfoDatas = verificationCodeInfoService.getVerificationCodes(verificationCodeInfoParam, null);
+        if (null == verificationCodeInfoDatas || verificationCodeInfoDatas.size() == 0) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("系统没有收到验证码，请重新发送");
+            return ajaxData;
+        }
+        VerificationCodeInfoData verificationCodeInfoData = verificationCodeInfoDatas.get(0);
+        if (!code.equals(verificationCodeInfoData.getCode())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("您输入的验证码不正确，请修改后重新输入");
+            return ajaxData;
+        }
+        
+        UserInfoData userInfoData = new UserInfoData();
+        userInfoData.setUserName(param.getUserName());
+        userInfoData.setEmail(param.getEmail());
+        String salt = RandomUtil.getRandomString(8);
+        userInfoData.setSalt(salt);
+        userInfoData.setPassword(PasswordUtil.encrypt(param.getUserName(), param.getPassword(), PasswordUtil.generateSalt(salt)));
+        userInfoService.saveOrUpdate(userInfoData);
+        
+        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+        verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
+        
+        
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
+    //初始化root账号
     @RequestMapping(value = "/initroot/api",method = RequestMethod.GET)
     @Transactional
     public void initRoot(HttpServletRequest request,HttpServletResponse response) {

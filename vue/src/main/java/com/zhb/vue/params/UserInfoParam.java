@@ -23,6 +23,7 @@ public class UserInfoParam {
     private Calendar updateTime;
     private Integer deleteFlag;
     
+    private String confirmPassword;
     
     public String getId() {
         return id;
@@ -131,6 +132,12 @@ public class UserInfoParam {
     }
     public void setDeleteFlag(Integer deleteFlag) {
         this.deleteFlag = deleteFlag;
+    }
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
     
 }

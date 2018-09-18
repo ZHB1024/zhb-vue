@@ -82,3 +82,18 @@ create table dic_info
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+/*验证码表 */
+create table verification_code_info
+(
+  id                 VARCHAR(16) not null,
+  email           VARCHAR(50) ,
+  mobile_phone           VARCHAR(11) ,
+  type         VARCHAR(1) not null,  
+  code           VARCHAR(10) not null,
+  remark           VARCHAR(50),
+  delete_flag             int(1) not null,
+  create_time         DATETIME not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
