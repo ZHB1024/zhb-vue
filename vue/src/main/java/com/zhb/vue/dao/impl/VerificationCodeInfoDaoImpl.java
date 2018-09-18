@@ -66,6 +66,11 @@ public class VerificationCodeInfoDaoImpl implements VerificationCodeInfoDao {
             conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
         }
         
+        //小于等于这个时间
+        if (null != param.getCreateTime()) {
+            conditions.add(criteriaBuilder.lessThanOrEqualTo(root.get("createTime"), param.getCreateTime()));
+        }
+        
         if (conditions.size() > 0 ) {
             criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
         }
@@ -76,6 +81,11 @@ public class VerificationCodeInfoDaoImpl implements VerificationCodeInfoDao {
         
         Query<VerificationCodeInfoData> query = session.createQuery(criteriaQuery);
         return query.list();
+    }
+
+    @Override
+    public void delete(VerificationCodeInfoData data) {
+        sessionFactory.getCurrentSession().delete(data);
     }
 
 }

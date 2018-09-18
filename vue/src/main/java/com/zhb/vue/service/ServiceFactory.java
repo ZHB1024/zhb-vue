@@ -11,5 +11,10 @@ public class ServiceFactory {
     public static Object getBean(String beanId){
         return beanFac.getBean(beanId);
     }
+    
+    public static VerificationCodeInfoService getVerificationCodeInfoService() {
+        VerificationCodeInfoService verificationCodeInfoService = beanFac.getBean("verificationCodeInfoServiceImpl", VerificationCodeInfoService.class);
+        return verificationCodeInfoService;
+    }
 
 }

@@ -11,5 +11,7 @@ public interface VerificationCodeInfoDao {
     void saveOrUpdate(VerificationCodeInfoData data);
     
     List<VerificationCodeInfoData> getVerificationCodes(VerificationCodeInfoParam param,List<OrderVO> orderVos);
+    
+    void delete(VerificationCodeInfoData data);
 
 }

@@ -10,11 +10,28 @@
         <param-value>classpath:applicationContext.xml</param-value>
     </context-param>
     
+    <!-- 每隔2分钟执行一次定时任务 -->
+    <context-param>
+		<param-name>deleteVerificationCodePerTime</param-name>
+		<param-value>2</param-value>
+	</context-param>
+	
+	<!-- 删除4分钟前的验证码 -->
+    <context-param>
+		<param-name>deleteVerificationCodeBeforeTime</param-name>
+		<param-value>-4</param-value>
+	</context-param>
+    
     
     <!-- 该监听器将在Web容器启动时激活Spring -->
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    
+    <!-- 定时任务 -->
+	<listener>
+		<listener-class>com.zhb.vue.web.timertask.listener.DeleteVerificationCodeListener</listener-class>
+	</listener>
     
     <filter>
 		<filter-name>encodingFilter</filter-name>

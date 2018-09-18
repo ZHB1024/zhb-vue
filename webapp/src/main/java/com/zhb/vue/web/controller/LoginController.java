@@ -248,6 +248,7 @@ public class LoginController {
         userInfoService.saveOrUpdate(userInfoData);
         
         verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+        verificationCodeInfoData.setUpdateTime(Calendar.getInstance());
         verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
         
         
@@ -316,6 +317,7 @@ public class LoginController {
         userInfoService.saveOrUpdate(userInfoData);
         
         verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+        verificationCodeInfoData.setUpdateTime(Calendar.getInstance());
         verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
         
         

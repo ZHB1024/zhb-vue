@@ -94,6 +94,7 @@ create table verification_code_info
   remark           VARCHAR(50),
   delete_flag             int(1) not null,
   create_time         DATETIME not null,
+  update_time         DATETIME ,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

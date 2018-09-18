@@ -24,6 +24,7 @@ public class VerificationCodeInfoData {
     private Integer deleteFlag;
     private String remark;
     private Calendar createTime;
+    private Calendar updateTime;
 
     public VerificationCodeInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
@@ -103,6 +104,15 @@ public class VerificationCodeInfoData {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(name = "update_time")
+    public Calendar getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Calendar updateTime) {
+        this.updateTime = updateTime;
     }
     
 }
