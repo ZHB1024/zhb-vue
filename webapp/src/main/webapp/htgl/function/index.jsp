@@ -5,7 +5,7 @@ String ctxPath = request.getContextPath();
 <div id="app_content" v-cloak style="height: 100%">
     <Layout :style="{padding: '0 20px 20px'}"> 
         <Breadcrumb :style="{margin: '24px 0'}"> 
-            <breadcrumb-item>首页</breadcrumb-item> 
+            <breadcrumb-item><a href="<%=ctxPath%>/"><Icon type="md-home"></Icon></a></breadcrumb-item>
             <breadcrumb-item>功能管理</breadcrumb-item> 
             <breadcrumb-item>功能信息</breadcrumb-item> 
         </Breadcrumb> 
