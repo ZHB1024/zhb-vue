@@ -21,7 +21,7 @@ li {list-style-type:none;}
                 <i-button type="success" class="add-btn" to="/htgl/userinfocontroller/toadd">新增用户</i-button>
             </div>
         	
-        	<i-table border :columns="columns1" :data="tableDatas"></i-table> 
+        	<i-table border :columns="columns1" :data="tableDatas" ></i-table> 
         </i-content>
         
     </Layout>
@@ -46,7 +46,21 @@ var myVue = new Vue({
             {
                 title: '用户名',
                 key: 'userName',
-                minWidth: 100
+                minWidth: 100,
+                render: (h, params) => {
+                	return h('div', [
+                		h('a', {
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: () => {
+                                	  myVue.showinfo(params)
+                                }
+                            }
+                        }, params.row.userName)
+                    ]);
+                }
             },
             {
                 title: '姓名',
@@ -197,7 +211,42 @@ var myVue = new Vue({
             }
          });
         
+       },
+       /*0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）*/
+       /*弹出层*/
+       showinfo:function(data){
+    	   var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
+
+    	   showContent += generatorValue("用户名",data.row.userName);
+    	   showContent += generatorValue("姓名",data.row.realName);
+    	   showContent += generatorValue("性别",data.row.sex);
+    	   showContent += generatorValue("身份证号",data.row.identityCard);
+    	   showContent += generatorValue("出生日期",data.row.birthday);
+    	   showContent += generatorValue("国家/地区",data.row.country);
+    	   showContent += generatorValue("民族",data.row.nation);
+    	   showContent += generatorValue("毕业院校",data.row.byyx);
+    	   showContent += generatorValue("手机号",data.row.mobilePhone);
+    	   showContent += generatorValue("电子邮箱",data.row.email);
+    	   
+    	   showContent += '</table>';
+    	   
+    	   layer.open({
+    	        title: data.row.userName,
+    	        type: 1,
+    	        //skin: 'layui-layer-rim', //加上边框
+    	        area: ['500px', '500px'], //宽高
+    	        content: showContent, 
+    	        btn: ['确定'],
+    	        success: function(layero, index){
+    	        },
+    	        yes: function(index, layero){
+    	            layer.closeAll();
+    	        }
+    	    });
        }
     }
 });
+function generatorValue(name,value){
+    return '<tr><th>' + name + '：</th><td>' + value + '</td></tr>'; 
+}
 </script>
