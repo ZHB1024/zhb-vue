@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhb.forever.framework.page.Page;
+import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.VerificationCodeInfoDao;
 import com.zhb.vue.params.VerificationCodeInfoParam;
@@ -19,6 +21,7 @@ public class VerificationCodeInfoServiceImpl implements VerificationCodeInfoServ
     private VerificationCodeInfoDao verificationCodeInfoDao;
     
     @Override
+    @Transactional
     public void saveOrUpdate(VerificationCodeInfoData data) {
         verificationCodeInfoDao.saveOrUpdate(data);
     }
@@ -38,6 +41,23 @@ public class VerificationCodeInfoServiceImpl implements VerificationCodeInfoServ
                 verificationCodeInfoDao.delete(verificationCodeInfoData);
             }
         }
+    }
+
+    @Override
+    public Page<VerificationCodeInfoData> getVerificationCodeInfosPage(VerificationCodeInfoParam param,
+            List<OrderVO> orderVos) {
+        long total = verificationCodeInfoDao.getVerificationCodesPageCount(param);
+        if (total > 0 ) {
+            List<VerificationCodeInfoData> verificationCodeInfoDatas = verificationCodeInfoDao.getVerificationCodesPage(param,orderVos);
+            //上一页可能有数据
+            if ((null == verificationCodeInfoDatas || verificationCodeInfoDatas.size() == 0) && param.getCurrentPage() > 1) {
+                param.setStart(param.getPageSize() * (param.getCurrentPage()-2));
+                verificationCodeInfoDatas = verificationCodeInfoDao.getVerificationCodesPage(param,orderVos);
+            }
+            Page<VerificationCodeInfoData> page = PageUtil.getPage(verificationCodeInfoDatas.iterator(), param.getStart(), param.getPageSize(), total);
+            return page;
+        }
+        return null;
     }
     
     

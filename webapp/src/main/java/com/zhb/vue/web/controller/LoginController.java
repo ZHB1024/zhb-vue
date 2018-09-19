@@ -247,7 +247,7 @@ public class LoginController {
         userInfoData.setPassword(PasswordUtil.encrypt(param.getUserName(), param.getPassword(), PasswordUtil.generateSalt(salt)));
         userInfoService.saveOrUpdate(userInfoData);
         
-        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.FINISH.getIndex());
         verificationCodeInfoData.setUpdateTime(Calendar.getInstance());
         verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
         
@@ -316,7 +316,7 @@ public class LoginController {
         userInfoData.setUpdateTime(Calendar.getInstance());
         userInfoService.saveOrUpdate(userInfoData);
         
-        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+        verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.FINISH.getIndex());
         verificationCodeInfoData.setUpdateTime(Calendar.getInstance());
         verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
         

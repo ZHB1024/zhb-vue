@@ -13,11 +13,13 @@ import com.zhb.forever.framework.util.ComparatorVOComparator;
 import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.vo.ComparatorVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
+import com.zhb.vue.dic.VerificationCodeTypeEnum;
 import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.IconInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.pojo.VerificationCodeInfoData;
 
 public class Data2JSONUtil {
     
@@ -364,6 +366,47 @@ public class Data2JSONUtil {
                 jsonArray.add(object);
             }
         }
+        return jsonArray;
+    }
+    
+    public static JSONObject verificationCodeInfoData2JSONObject(VerificationCodeInfoData data) {
+        if (null == data ) {
+            return null;
+        }
+        JSONObject object = new JSONObject();
+        object.put("id", data.getId());
+        object.put("email", data.getEmail());
+        object.put("mobilePhone", data.getMobilePhone());
+        object.put("type", VerificationCodeTypeEnum.getName(data.getType()));
+        object.put("code", data.getCode());
+        object.put("remark", data.getRemark());
+        object.put("deleteFlag", data.getDeleteFlag());
+        object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
+        object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        object.put("updateTime", DateTimeUtil.getDateTime(data.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+        return object;
+    }
+    
+    public static JSONArray verificationCodeInfoDatas2JSONArray(List<VerificationCodeInfoData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        for (VerificationCodeInfoData data : datas) {
+            JSONObject object = new JSONObject();
+            object.put("id", data.getId());
+            object.put("email", data.getEmail());
+            object.put("mobilePhone", data.getMobilePhone());
+            object.put("type", VerificationCodeTypeEnum.getName(data.getType()));
+            object.put("code", data.getCode());
+            object.put("remark", data.getRemark());
+            object.put("deleteFlag", data.getDeleteFlag());
+            object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
+            object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            object.put("updateTime", DateTimeUtil.getDateTime(data.getUpdateTime(), "yyyy-MM-dd HH:mm:ss"));
+            jsonArray.add(object);
+        }
+        
         return jsonArray;
     }
 

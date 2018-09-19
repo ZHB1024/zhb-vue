@@ -88,4 +88,104 @@ public class VerificationCodeInfoDaoImpl implements VerificationCodeInfoDao {
         sessionFactory.getCurrentSession().delete(data);
     }
 
+    @Override
+    public Long getVerificationCodesPageCount(VerificationCodeInfoParam param) {
+        if (null == param) {
+            return 0l;
+        }
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<VerificationCodeInfoData> root = criteriaQuery.from(VerificationCodeInfoData.class);
+        
+        criteriaQuery.select(criteriaBuilder.count(root.get("id")));
+        
+        List<Predicate> conditions = new ArrayList<>();
+        if (StringUtil.isNotBlank(param.getId())) {
+            conditions.add(criteriaBuilder.equal(root.get("id"), param.getId()));
+        }
+        if (StringUtil.isNotBlank(param.getEmail())) {
+            conditions.add(criteriaBuilder.like(root.get("email"), "%" + param.getEmail() + "%" ));
+        }
+        
+        if (StringUtil.isNotBlank(param.getMobilePhone())) {
+            conditions.add(criteriaBuilder.equal(root.get("mobilePhone"), param.getMobilePhone()));
+        }
+        
+        if (null != param.getType()) {
+            conditions.add(criteriaBuilder.equal(root.get("type"), param.getType()));
+        }
+        
+        if (StringUtil.isNotBlank(param.getCode())) {
+            conditions.add(criteriaBuilder.equal(root.get("code"), "%" + param.getCode() + "%"));
+        }
+        
+        if (null != param.getDeleteFlag()) {
+            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
+        }
+        
+        if (conditions.size() > 0 ) {
+            criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
+        }
+        
+        return session.createQuery(criteriaQuery).getSingleResult();
+    }
+
+    @Override
+    public List<VerificationCodeInfoData> getVerificationCodesPage(VerificationCodeInfoParam param,
+            List<OrderVO> orderVos) {
+        if (null == param) {
+            return null;
+        }
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<VerificationCodeInfoData> criteriaQuery = criteriaBuilder.createQuery(VerificationCodeInfoData.class);
+        Root<VerificationCodeInfoData> root = criteriaQuery.from(VerificationCodeInfoData.class);
+        
+        List<Predicate> conditions = new ArrayList<>();
+        if (StringUtil.isNotBlank(param.getId())) {
+            conditions.add(criteriaBuilder.equal(root.get("id"), param.getId()));
+        }
+        if (StringUtil.isNotBlank(param.getEmail())) {
+            conditions.add(criteriaBuilder.like(root.get("email"), "%" + param.getEmail() + "%"));
+        }
+        
+        if (StringUtil.isNotBlank(param.getMobilePhone())) {
+            conditions.add(criteriaBuilder.equal(root.get("mobilePhone"), param.getMobilePhone()));
+        }
+        
+        if (null != param.getType()) {
+            conditions.add(criteriaBuilder.equal(root.get("type"), param.getType()));
+        }
+        
+        if (StringUtil.isNotBlank(param.getCode())) {
+            conditions.add(criteriaBuilder.equal(root.get("code"),"%" + param.getCode() + "%"));
+        }
+        
+        if (null != param.getDeleteFlag()) {
+            conditions.add(criteriaBuilder.equal(root.get("deleteFlag"), param.getDeleteFlag()));
+        }
+        
+        if (conditions.size() > 0 ) {
+            criteriaQuery.where(conditions.toArray(new Predicate[conditions.size()]));
+        }
+        
+        if (null != orderVos && orderVos.size() > 0) {
+            DaoUtil.addOrders(criteriaBuilder, criteriaQuery, root, orderVos);
+        }
+        
+        
+        Query<VerificationCodeInfoData> query = session.createQuery(criteriaQuery);
+        if (null != param.getPageSize()) {
+            query.setMaxResults(param.getPageSize());
+        }
+        
+        if (null != param.getStart()) {
+            query.setFirstResult(param.getStart());
+        }
+        return query.list();
+    }
+
 }

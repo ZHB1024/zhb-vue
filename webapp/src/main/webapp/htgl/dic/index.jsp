@@ -205,7 +205,7 @@ var myVue = new Vue({
     				  flushPage(response.data.data);
     				  myVue.$forceUpdate();
                   }else{
-                	  myVue.$Message.info({
+                	  myVue.$Message.error({
                           content: response.data.errorMessages,
                           duration: 3,
                           closable: true
@@ -228,7 +228,7 @@ var myVue = new Vue({
     				  flushPage(response.data.data);
     				  myVue.$forceUpdate();
                   }else{
-                	  myVue.$Message.info({
+                	  myVue.$Message.error({
                           content: response.data.errorMessages,
                           duration: 3,
                           closable: true

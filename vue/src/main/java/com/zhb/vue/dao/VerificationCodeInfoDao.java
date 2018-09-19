@@ -12,6 +12,10 @@ public interface VerificationCodeInfoDao {
     
     List<VerificationCodeInfoData> getVerificationCodes(VerificationCodeInfoParam param,List<OrderVO> orderVos);
     
+    Long getVerificationCodesPageCount(VerificationCodeInfoParam param);
+
+    List<VerificationCodeInfoData> getVerificationCodesPage(VerificationCodeInfoParam param,List<OrderVO> orderVos);
+    
     void delete(VerificationCodeInfoData data);
 
 }

@@ -36,8 +36,12 @@ public class DeleteVerificationCodeTask implements Runnable {
             param.setCreateTime(now);
             List<VerificationCodeInfoData> datas = verificationCodeInfoService.getVerificationCodes(param, null);
             if (null != datas && datas.size() > 0) {
-                logger.info("---delete VerificationCodeInfoData--" + datas.size() + "个");
-                verificationCodeInfoService.delete(datas);
+                logger.info("*******delete VerificationCode*******" + datas.size() + "个");
+                for (VerificationCodeInfoData verificationCodeInfoData : datas) {
+                    verificationCodeInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+                    verificationCodeInfoData.setUpdateTime(Calendar.getInstance());
+                    verificationCodeInfoService.saveOrUpdate(verificationCodeInfoData);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
