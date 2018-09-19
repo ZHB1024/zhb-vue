@@ -5,6 +5,12 @@
   String ctxPath = request.getContextPath();
 %>
 
+<style>
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
+</style>
+
 	<!-- 雪花背景 -->
 	<div class="snow-container"></div>
 	<!-- 登录控件 -->

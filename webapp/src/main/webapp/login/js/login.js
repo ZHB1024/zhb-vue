@@ -61,7 +61,6 @@ function login() {
 		  .then(function (response) {
 			  if(response.data.flag){
 				var redirectUrl = $("input[name='redirectUrl']").val().trim();
-				debugger;
 				if(null == redirectUrl || "" == redirectUrl){
 					window.location.href='/htgl/indexcontroller/index';
 			    }else{
@@ -121,11 +120,17 @@ function sendCode(type){
 		param.append("type",0);
 		param.append("email",registerEmail);
 	}
+	
+	//等待动画，用户不可编辑
+	myVue.$Spin.show();
+	
 	axios.post('/logincontroller/sendverificationcode/api', param)
 		  .then(function (response) {
+			  //结束动画
+			  myVue.$Spin.hide();
 			  if(response.data.flag){
 				  myVue.$Message.success({
-	                  content: "发送成功，请查收",
+	                  content: "发送成功，请登录邮箱查收",
 	                  duration: 3,
 	                  closable: true
 	              });

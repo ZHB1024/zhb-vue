@@ -22,24 +22,25 @@ String ctxPath = request.getContextPath();
 			          </a>
 			          
                       <Row>
-                        <i-col span="12">
-                          <p>用户名：{{userInfo.userName}}</p>
-                          <p>姓名：{{userInfo.realName}}</p>
-                          <p>身份证号：{{userInfo.identityCard}}</p>
-                          <p>性别：{{userInfo.sex}}</p>
-                          <p>出生日期：{{userInfo.birthday}}</p>
-                          <p>国家/地区：{{userInfo.country}}</p>
-                          <p>民族：{{userInfo.nation}}</p>
-                          <p>毕业院校：{{userInfo.byyx}}</p>
-                          <p>电话：{{userInfo.mobilePhone}}</p>
-                          <p>邮箱：{{userInfo.email}}</p>
-                          <p>lobId：{{userInfo.lobId}}</p>
+                        <i-col span="15">
+                          <p>用户名： {{userInfo.userName}}</p>
+                          <p>姓名： {{userInfo.realName}}</p>
+                          <p>身份证号： {{userInfo.identityCard}}</p>
+                          <p>性别： {{userInfo.sex}}</p>
+                          <p>出生日期： {{userInfo.birthday}}</p>
+                          <p>国家/地区： {{userInfo.country}}</p>
+                          <p>民族： {{userInfo.nation}}</p>
+                          <p>毕业院校： {{userInfo.byyx}}</p>
+                          <p>电话： {{userInfo.mobilePhone}}</p>
+                          <p>邮箱： {{userInfo.email}}</p>
+                          <p>lobId： {{userInfo.lobId}}</p>
                         </i-col>
-                        <i-col offset='6' span="6">
-                          <!-- <Icon type="md-person" size='80'/> -->
-                          <div><img :src="userInfo.lobId"/><div>
-                          <div><i-button type="primary" to="/htgl/userinfocontroller/toadd">修改照片</i-button> <div>
+                        
+                        <i-col span="5">
+                          <p><img :src="userInfo.lobId"/></p>
+                          <p><i-button type="primary" to="/htgl/userinfocontroller/toadd">修改照片</i-button></p>
                         </i-col>
+                        
                       </Row>
                   </Card>
               </i-col>
