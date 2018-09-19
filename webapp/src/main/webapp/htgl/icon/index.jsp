@@ -49,6 +49,20 @@ var myVue = new Vue({
                 minWidth: 100
             },
             {
+                title: '图标样式',
+                minWidth: 100,
+                render: (h, params) => {
+                	return h('div', [
+                		h('Icon', {
+                			props: {
+                                type: params.row.value,
+                                size:20
+                            }
+                        }, '')
+                    ]);
+                }
+            },
+            {
                 title: '状态',
                 key: 'deleteFlagName',
                 minWidth: 100
