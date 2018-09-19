@@ -197,7 +197,9 @@ var myVue = new Vue({
     	  let param = new URLSearchParams(); 
     	  param.append("category",myVue.formParm.category); 
     	  param.append("name",myVue.formParm.name); 
-    	  param.append("type",myVue.formParm.type); 
+    	  param.append("type",myVue.formParm.type);
+    	  param.append("pageSize",myVue.pageParm.pageCount); 
+   	   	  param.append("currentPage",1); 
     	  axios.post('<%=ctxPath %>/htgl/dicinfocontroller/getdicinfopage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){

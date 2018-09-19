@@ -163,7 +163,9 @@ var myVue = new Vue({
        search:function () {
     	  let param = new URLSearchParams(); 
     	  param.append("userId",myVue.formParm.userId); 
-    	  param.append("functionId",myVue.formParm.functionId); 
+    	  param.append("functionId",myVue.formParm.functionId);
+    	  param.append("pageSize",myVue.pageParm.pageCount); 
+   	   	  param.append("currentPage",1); 
     	  axios.post('<%=ctxPath %>/htgl/authoritycontroller/getauthoritypage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){

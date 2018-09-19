@@ -133,6 +133,8 @@ var myVue = new Vue({
     		  myVue.formParm.type = "";
     	  }
     	  param.append("type",myVue.formParm.type); 
+    	  param.append("pageSize",myVue.pageParm.pageCount); 
+   	   	  param.append("currentPage",1); 
     	  axios.post('<%=ctxPath %>/htgl/verificationcodeinfocontroller/getverificationcodeinfopage/api', param)
     		  .then(function (response) {
     			  if(response.data.flag){
