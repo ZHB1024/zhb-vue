@@ -90,7 +90,7 @@ var myVue = new Vue({
             	          },
                           on: {
                               click: () => {
-                              	  myVue.showinfo(params)
+                              	  myVue.showOriginal(params)
                               }
                           }
             	        }),
@@ -274,8 +274,8 @@ var myVue = new Vue({
     		  })
       },
       /*0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）*/
-      /*弹出层*/
-      showinfo:function(data){
+      /*弹出原图*/
+      showOriginal:function(data){
    	   var showContent = '<div align="center"><img src="' + data.row.originalUrl  +'"/>';
    	   showContent += '</div>';
    	   debugger;
