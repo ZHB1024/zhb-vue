@@ -1,15 +1,17 @@
 
-
+html {height:100%;}
 
 /* ------------------------header -----------------------*/
 #header {
     height:60px;
     width: 100%;
+    overflow:hidden;
 }
 
 /* ------------------------body -------------------------- */
 #body {
     width: 100%;
+    overflow:hidden;
 }
 
 /* ------------------------footer-------------------------- */
@@ -21,4 +23,5 @@
     color:white;
     font-size:20px;
     padding: 20px 0 25px 0;   
+    overflow:hidden;
 }

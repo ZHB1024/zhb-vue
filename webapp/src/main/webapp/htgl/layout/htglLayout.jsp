@@ -41,8 +41,8 @@ String ctxPath = request.getContextPath();
         <tiles:insertAttribute name="header" />
     </div>
     <div id="body">
-        <tiles:insertAttribute name="left" />
-        <tiles:insertAttribute name="body" />
+    	<tiles:insertAttribute name="left" />
+    	<tiles:insertAttribute name="body" />
     </div>
     <div id="footer">
         <tiles:insertAttribute name="footer" />
