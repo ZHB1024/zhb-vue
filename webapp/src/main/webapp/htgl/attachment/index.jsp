@@ -103,7 +103,7 @@ var myVue = new Vue({
                 key: 'type',
                 minWidth: 100
             },
-            {
+            /* {
                 title: '内容类型',
                 key: 'contentType',
                 minWidth: 100
@@ -118,7 +118,7 @@ var myVue = new Vue({
                 title: '附件路径',
                 key: 'filePath',
                 minWidth: 150
-            },
+            }, */
             {
                 title: '创建时间',
                 key: 'createTime',
