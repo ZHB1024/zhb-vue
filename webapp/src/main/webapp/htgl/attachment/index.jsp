@@ -101,7 +101,21 @@ var myVue = new Vue({
                 title: '附件名称',
                 key: 'fileName',
                 minWidth: 100,
-                sortable:true
+                sortable:true,
+                render: (h, params) => {
+                	return h('div', [
+                		h('a', {
+                            style: {
+                                marginRight: '5px'
+                            },
+                            on: {
+                                click: () => {
+                                	  myVue.showinfo(params)
+                                }
+                            }
+                        }, params.row.fileName)
+                    ]);
+                }
             },
             {
                 title: '附件类型',
@@ -278,12 +292,39 @@ var myVue = new Vue({
       showOriginal:function(data){
    	   var showContent = '<div align="center"><img src="' + data.row.originalUrl  +'"/>';
    	   showContent += '</div>';
-   	   debugger;
    	   layer.open({
    	        title: data.row.fileName,
    	        type: 1,
    	        //skin: 'layui-layer-rim', //加上边框
    	        area: ['600px', '600px'], //宽高
+   	        content: showContent, 
+   	        btn: ['确定'],
+   	        success: function(layero, index){
+   	        },
+   	        yes: function(index, layero){
+   	            layer.closeAll();
+   	        }
+   	    });
+      },
+      /*弹出附件详细信息*/
+      showinfo:function(data){
+   	   var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
+
+   	   showContent += generatorValue("附件名称",data.row.fileName);
+   	   showContent += generatorValue("附件类型",data.row.type);
+   	   showContent += generatorValue("附件大小",data.row.fileSize);
+   	   showContent += generatorValue("内容类型",data.row.contentType);
+   	   showContent += generatorValue("附件路径",data.row.filePath);
+   	   showContent += generatorValue("创建时间",data.row.createTime);
+   	   showContent += generatorValue("状态",data.row.deleteFlagName);
+   	   
+   	   showContent += '</table>';
+   	   
+   	   layer.open({
+   	        title: data.row.fileName,
+   	        type: 1,
+   	        //skin: 'layui-layer-rim', //加上边框
+   	        area: ['500px', '500px'], //宽高
    	        content: showContent, 
    	        btn: ['确定'],
    	        success: function(layero, index){
@@ -302,4 +343,7 @@ function flushPage(page){
 	myVue.pageParm.pageCount = page.pageCount;
 	myVue.pageParm.currentPage = page.currentPage;
 };
+function generatorValue(name,value){
+    return '<tr><th>' + name + '：</th><td>' + value + '</td></tr>'; 
+}
 </script>
