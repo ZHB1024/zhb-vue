@@ -44,15 +44,6 @@
             <version>${jackson.version}</version>
         </dependency>
 		
-
-<!--servlet -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.3</version>
-			<scope>provided</scope>
-		</dependency>
-		
 <!--jsp-jstl -->		
 		<dependency>
 			<groupId>jstl</groupId>

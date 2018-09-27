@@ -89,6 +89,14 @@
         <put-attribute name="body" value="/htgl/dic/upload.jsp" />
     </definition>
     
+    <!-- attachment -->
+    <definition name="htgl.attachment.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/attachment/index.jsp" />
+    </definition>
+    <definition name="htgl.attachment.upload" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/attachment/upload.jsp" />
+    </definition>
+    
     <!-- verification code -->
     <definition name="htgl.verification.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/verification/index.jsp" />

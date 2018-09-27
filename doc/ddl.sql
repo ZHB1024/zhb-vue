@@ -98,3 +98,17 @@ create table verification_code_info
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*附件表 */
+create table attachment_info
+(
+  id                 VARCHAR(16) not null,
+  file_name           VARCHAR(50) not null,
+  file_size           VARCHAR(10) not null,
+  content_type         VARCHAR(50) not null,  
+  file_path           VARCHAR(100) not null,
+  type           	int(1) not null,  
+  delete_flag             int(1) not null,
+  create_time         DATETIME not null,
+  PRIMARY KEY (id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

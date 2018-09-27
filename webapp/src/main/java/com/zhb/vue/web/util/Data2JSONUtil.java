@@ -9,11 +9,13 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
+import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.util.ComparatorVOComparator;
 import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.vo.ComparatorVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.dic.VerificationCodeTypeEnum;
+import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.IconInfoData;
@@ -407,6 +409,46 @@ public class Data2JSONUtil {
             jsonArray.add(object);
         }
         
+        return jsonArray;
+    }
+    
+    public static JSONObject attachmentInfoData2JSONObject(AttachmentInfoData data) {
+        if (null == data ) {
+            return null;
+        }
+        JSONObject object = new JSONObject();
+        object.put("id", data.getId());
+        object.put("fileName", data.getFileName());
+        object.put("filePath", data.getFilePath());
+        object.put("fileSize", data.getFileSize());
+        object.put("type", AttachmentTypeEnum.getName(data.getType()));
+        object.put("contentType", data.getContentType());
+        object.put("deleteFlag", data.getDeleteFlag());
+        object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
+        object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        object.put("fileUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+        return object;
+    }
+    
+    public static JSONArray attachmentInfoDatas2JSONArray(List<AttachmentInfoData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        for (AttachmentInfoData data : datas) {
+            JSONObject object = new JSONObject();
+            object.put("id", data.getId());
+            object.put("fileName", data.getFileName());
+            object.put("filePath", data.getFilePath());
+            object.put("fileSize", data.getFileSize());
+            object.put("type", AttachmentTypeEnum.getName(data.getType()));
+            object.put("contentType", data.getContentType());
+            object.put("deleteFlag", data.getDeleteFlag());
+            object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
+            object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            object.put("fileUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+            jsonArray.add(object);
+        }
         return jsonArray;
     }
 

@@ -56,5 +56,9 @@ public class WebAppUtil {
         }
         return request.getHeader("x-forwarded-for");
     }
+    
+    public static String getRootPath(HttpServletRequest request){
+        return request.getSession().getServletContext().getRealPath("/");
+    }
 
 }
