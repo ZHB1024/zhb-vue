@@ -20,6 +20,7 @@ public class AttachmentInfoData {
     private String fileName;
     private String fileSize;
     private String filePath;
+    private String thumbnailPath;
     private String contentType;
     private Integer type;
     private Integer deleteFlag;
@@ -67,6 +68,15 @@ public class AttachmentInfoData {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @Column(name = "thumbnail_path")
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 
     @Column(name = "content_type")

@@ -106,6 +106,7 @@ create table attachment_info
   file_size           VARCHAR(10) not null,
   content_type         VARCHAR(50) not null,  
   file_path           VARCHAR(100) not null,
+  thumbnail_path           VARCHAR(100) ,
   type           	int(1) not null,  
   delete_flag             int(1) not null,
   create_time         DATETIME not null,
