@@ -75,7 +75,6 @@
     <spring.version>5.0.8.RELEASE</spring.version>
     <spring-security.version>5.0.7.RELEASE</spring-security.version>
     <mysql-connectort-java.version>8.0.11</mysql-connectort-java.version>
-    <!-- <com-oracle-ojdbc14.version>10.2.0.3.0</com-oracle-ojdbc14.version> -->
     <hibernate-core.version>5.3.5.Final</hibernate-core.version>
     <hibernate-jpa.version>1.0.2.Final</hibernate-jpa.version>
     <aspectjweaver.version>1.9.1</aspectjweaver.version>
@@ -84,30 +83,6 @@
     <jackson.version>2.9.6</jackson.version>
     <jstl.version>1.2</jstl.version>
     <standard.version>1.1.2</standard.version>
-    
-    <!-- 
-    <hibernate-commons-annotations.version>4.0.1.Final</hibernate-commons-annotations.version>
-    <jboss-logging.version>3.1.0.GA</jboss-logging.version>
-    <jboss-transaction-api_1.1_spec.version>1.0.0.Final</jboss-transaction-api_1.1_spec.version>
-    <commons-logging.version>1.1.1</commons-logging.version>
-    <commons-lang3.version>3.1</commons-lang3.version>
-    <commons-io.version>2.0.1</commons-io.version>
-    <commons-fileupload.version>1.2</commons-fileupload.version>
-    <commons-codec.version>1.11</commons-codec.version>
-    <antlr.version>2.7.7</antlr.version>
-    <aopalliance.version>1.0</aopalliance.version>
-    <dom4j.version>1.6.1</dom4j.version>
-    <javassist.version>3.15.0-GA</javassist.version>
-    <slf4j-api.version>1.7.5</slf4j-api.version>
-    <slf4j-simple.version>1.5.5</slf4j-simple.version>
-    <slf4j-log4j12.version>1.7.5</slf4j-log4j12.version>
-    <mongo-java-driver.version>3.4.2</mongo-java-driver.version>
-    <jxl.version>2.4.2</jxl.version>
-    <lucene.version>7.0.1</lucene.version>
-    <deeplearning4j.version>0.8.0</deeplearning4j.version>
-    <thumbnailator.version>0.4.8</thumbnailator.version>
-    <itext.version>2.0.8</itext.version> -->
-<!--     <deeplearning4j.version>1.0.0-alpha</deeplearning4j.version> -->
     
   </properties>
 </project>

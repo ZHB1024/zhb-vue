@@ -2,6 +2,7 @@ package com.zhb.vue.web.controller;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.sanselan.ImageReadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +38,10 @@ import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.util.DownloadUtil;
+import com.zhb.forever.framework.util.ImageUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.util.UploadUtil;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.AttachmentInfoParam;
@@ -122,14 +126,20 @@ public class AttachmentInfoController {
             return WriteJSUtil.writeJS("请选择待上传的附件", response);
         }
         
+        //文件大小
         Long fileSize = multipartFile.getSize();
         if (fileSize > Constants.FILE_MAX_SIZE) {
-            return WriteJSUtil.writeJS("文件大小不能超过20M", response);
+            return WriteJSUtil.writeJS("文件大小不能超过" + Constants.FILE_MAX_SIZE_MB, response);
         }
+        //文件内容类型
         String contentType = multipartFile.getContentType();
+        //文件名字
         String fileName = multipartFile.getOriginalFilename();
+        Integer type = AttachmentTypeEnum.geTypeEnum(fileName).getIndex();
         
+        //原始文件保存路径
         String filePath = PropertyUtil.getUploadPath();
+        
         File fileUpload = new File(filePath);
         if (!fileUpload.exists()) {
             fileUpload.mkdirs();
@@ -138,51 +148,123 @@ public class AttachmentInfoController {
         String uploadPath = fileUpload + File.separator + fileTempName;
         
         File file = new File(uploadPath);
-        
-        InputStream is = null;
-        OutputStream licOutput = null;
         try {
-            is = multipartFile.getInputStream();
-            licOutput = new FileOutputStream(file);
-            byte[] b = new byte[1024];
-            int len;
-            while ((len = is.read(b)) != -1) {
-                licOutput.write(b, 0, len);
-            }
-            licOutput.flush();
-            AttachmentInfoData fileInfoData = new AttachmentInfoData();
-            fileInfoData.setFileName(fileName);
-            fileInfoData.setFilePath(uploadPath);
-            fileInfoData.setFileSize(String.valueOf(fileSize));
-            fileInfoData.setContentType(contentType);
-            fileInfoData.setType(AttachmentTypeEnum.geTypeEnum(fileName).getIndex());
-            attachmentInfoService.saveOrUpdate(fileInfoData);
+            UploadUtil.inputStream2File(multipartFile.getInputStream(), file);
         } catch (IOException e) {
             e.printStackTrace();
-            return WriteJSUtil.writeJS("上传异常", response);
-        }finally {
-            if (null != licOutput) {
+        }
+        
+        String uploadThumbnailPath = null;
+        if (1 ==  type) {//图片时，才有缩略图
+            String fileThumbnailPath = PropertyUtil.getUploadThumbnailPath();//缩略图路径
+            File fileThumbnailUpload = new File(fileThumbnailPath);
+            if (!fileThumbnailUpload.exists()) {
+                fileThumbnailUpload.mkdirs();
+            }
+            uploadThumbnailPath = fileThumbnailPath + File.separator + fileTempName;
+            
+            File thumbnailFile = new File(uploadThumbnailPath);
+            
+            if (fileSize > Constants.SMALL_IMAGE_SIZE) {
                 try {
-                    licOutput.close();
+                    byte[] bytes = ImageUtil.smallImage(multipartFile.getInputStream(), ImageUtil.getImageSuffix(file),fileSize, Constants.SMALL_IMAGE_SIZE);
+                    InputStream is = new ByteArrayInputStream(bytes);
+                    UploadUtil.inputStream2File(is, thumbnailFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                uploadThumbnailPath = uploadPath;
+            }
+        }
+        
+        AttachmentInfoData fileInfoData = new AttachmentInfoData();
+        fileInfoData.setFileName(fileName);
+        fileInfoData.setFilePath(uploadPath);
+        fileInfoData.setThumbnailPath(uploadThumbnailPath);
+        fileInfoData.setFileSize(String.valueOf(fileSize));
+        fileInfoData.setContentType(contentType);
+        fileInfoData.setType(AttachmentTypeEnum.geTypeEnum(fileName).getIndex());
+        attachmentInfoService.saveOrUpdate(fileInfoData);
+        return "htgl.attachment.index";
+    }
+    
+    //获取附件
+    @RequestMapping(value = "/downloadattachmentinfo")
+    @Transactional
+    public void downloadAttachmentInfo(HttpServletRequest request,HttpServletResponse response,String id) {
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            return;
+        }
+        
+        if(StringUtil.isBlank(id)) {
+            return;
+        }
+        
+        AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(id);
+        if (null == data ){
+            return;
+        }
+        try {
+            DownloadUtil.processBeforeDownload(request, response, data.getContentType(), data.getFileName());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        File file = new File(data.getFilePath());
+        
+        FileInputStream fis = null;
+        ServletOutputStream sos = null;
+        BufferedInputStream bi = null;
+        BufferedOutputStream bo = null;
+        try {
+            fis = new FileInputStream(file);
+            bi = new BufferedInputStream(fis);
+            sos = response.getOutputStream();
+            bo = new BufferedOutputStream(sos);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
+                bo.write(buffer, 0, bytesRead);
+            }
+            bo.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (null != bo) {
+                try {
+                    bo.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            if (null != is) {
+            if (null != sos) {
                 try {
-                    is.close();
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (null != bi) {
+                try {
+                    bi.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (null != fis) {
+                try {
+                    fis.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return "htgl.attachment.index";
     }
     
-    //下载
-    @RequestMapping(value = "/downloadattachmentinfo")
+    //获取原图
+    @RequestMapping(value = "/getoriginalattachmentinfo")
     @Transactional
-    public void downloadAttachmentInfo(HttpServletRequest request,HttpServletResponse response,String id) {
+    public void getOriginalAttachmentInfo(HttpServletRequest request,HttpServletResponse response,String id) {
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
@@ -213,6 +295,90 @@ public class AttachmentInfoController {
             e1.printStackTrace();
         }
         File file = new File(data.getFilePath());
+        
+        FileInputStream fis = null;
+        ServletOutputStream sos = null;
+        BufferedInputStream bi = null;
+        BufferedOutputStream bo = null;
+        try {
+            fis = new FileInputStream(file);
+            bi = new BufferedInputStream(fis);
+            sos = response.getOutputStream();
+            bo = new BufferedOutputStream(sos);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
+                bo.write(buffer, 0, bytesRead);
+            }
+            bo.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (null != bo) {
+                try {
+                    bo.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (null != sos) {
+                try {
+                    sos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (null != bi) {
+                try {
+                    bi.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (null != fis) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    //获取缩略图
+    @RequestMapping(value = "/getthumbnailattachmentinfo")
+    @Transactional
+    public void getThumbnailAttachmentInfo(HttpServletRequest request,HttpServletResponse response,String id) {
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            String rootPath = WebAppUtil.getRootPath(request);
+            String imagePath = rootPath + "images" + File.separator + "loading.gif";
+            response.setContentType("image/jpeg");
+            DownloadUtil.downloadDefault(request, response, imagePath);
+            return;
+        }
+        
+        if(StringUtil.isBlank(id)) {
+            String rootPath = WebAppUtil.getRootPath(request);
+            String imagePath = rootPath + "images" + File.separator + "loading.gif";
+            response.setContentType("image/jpeg");
+            DownloadUtil.downloadDefault(request, response, imagePath);
+            return;
+        }
+        
+        AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(id);
+        if (null == data || AttachmentTypeEnum.IMAGE.getIndex() != data.getType()){
+            String rootPath = WebAppUtil.getRootPath(request);
+            String imagePath = rootPath + "images" + File.separator + "loading.gif";
+            response.setContentType("image/jpeg");
+            DownloadUtil.downloadDefault(request, response, imagePath);
+            return;
+        }
+        try {
+            DownloadUtil.processBeforeDownload(request, response, data.getContentType(), data.getFileName());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        File file = new File(data.getThumbnailPath());
         
         FileInputStream fis = null;
         ServletOutputStream sos = null;

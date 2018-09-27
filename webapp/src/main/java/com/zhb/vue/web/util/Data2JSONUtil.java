@@ -426,7 +426,9 @@ public class Data2JSONUtil {
         object.put("deleteFlag", data.getDeleteFlag());
         object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
         object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
-        object.put("fileUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+        object.put("attachmentUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+        object.put("originalUrl", "/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=" + data.getId());
+        object.put("thumbnailUrl", "/htgl/attachmentinfocontroller/getthumbnailattachmentinfo?id=" + data.getId());
         return object;
     }
     
@@ -446,7 +448,9 @@ public class Data2JSONUtil {
             object.put("deleteFlag", data.getDeleteFlag());
             object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
             object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
-            object.put("fileUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+            object.put("attachmentUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+            object.put("originalUrl", "/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=" + data.getId());
+            object.put("thumbnailUrl", "/htgl/attachmentinfocontroller/getthumbnailattachmentinfo?id=" + data.getId());
             jsonArray.add(object);
         }
         return jsonArray;

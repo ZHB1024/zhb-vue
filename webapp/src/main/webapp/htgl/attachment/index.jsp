@@ -72,7 +72,7 @@ var myVue = new Vue({
             },
             {
             	title: '附件', 
-            	key: 'fileUrl',
+            	key: 'thumbnailUrl',
             	render: (h, params) => {
             	    console.log(params.row)
             	    return h('div', {
@@ -86,7 +86,7 @@ var myVue = new Vue({
             	            size: 'small'
             	          },
             	          attrs: {
-            	            src: params.row.fileUrl, style: 'width: 40px;height: 40px;border-radius: 2px;'
+            	            src: params.row.thumbnailUrl, style: 'width: 40px;height: 40px;border-radius: 2px;'
             	          }
             	        }),
             	      ]);
