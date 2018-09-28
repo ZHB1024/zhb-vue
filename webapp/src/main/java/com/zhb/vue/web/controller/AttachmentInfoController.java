@@ -1,17 +1,12 @@
 package com.zhb.vue.web.controller;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +28,6 @@ import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
-import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.util.DownloadUtil;
 import com.zhb.forever.framework.util.ImageUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
@@ -46,7 +40,6 @@ import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
-import com.zhb.vue.web.util.WriteJSUtil;
 
 @Controller
 @RequestMapping("/htgl/attachmentinfocontroller")
@@ -93,6 +86,35 @@ public class AttachmentInfoController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
+        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        return ajaxData;
+    }
+    
+    //删除
+    @RequestMapping(value = "/deleteattachmentinfo/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData deleteAttachmentInfo(HttpServletRequest request,HttpServletResponse response,AttachmentInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getId())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请选择待删除的数据");
+            return ajaxData;
+        }
+        
+        AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(param.getId());
+        if (null == data) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("没有待删除的数据");
+            return ajaxData;
+        }
+        attachmentInfoService.deleteAttachmentInfo(data);
+        
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
@@ -215,55 +237,8 @@ public class AttachmentInfoController {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        File file = new File(data.getFilePath());
         
-        FileInputStream fis = null;
-        ServletOutputStream sos = null;
-        BufferedInputStream bi = null;
-        BufferedOutputStream bo = null;
-        try {
-            fis = new FileInputStream(file);
-            bi = new BufferedInputStream(fis);
-            sos = response.getOutputStream();
-            bo = new BufferedOutputStream(sos);
-            int bytesRead = 0;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
-                bo.write(buffer, 0, bytesRead);
-            }
-            bo.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (null != bo) {
-                try {
-                    bo.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != sos) {
-                try {
-                    sos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != bi) {
-                try {
-                    bi.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != fis) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DownloadUtil.downloadAttachment(request, response, data.getFilePath());
     }
     
     //获取原图
@@ -274,7 +249,7 @@ public class AttachmentInfoController {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
-            DownloadUtil.downloadDefault(request, response, imagePath);
+            DownloadUtil.downloadAttachment(request, response, imagePath);
             return;
         }
         
@@ -282,7 +257,7 @@ public class AttachmentInfoController {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
-            DownloadUtil.downloadDefault(request, response, imagePath);
+            DownloadUtil.downloadAttachment(request, response, imagePath);
             return;
         }
         
@@ -291,7 +266,7 @@ public class AttachmentInfoController {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
-            DownloadUtil.downloadDefault(request, response, imagePath);
+            DownloadUtil.downloadAttachment(request, response, imagePath);
             return;
         }
         
@@ -309,60 +284,10 @@ public class AttachmentInfoController {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        File file = new File(data.getFilePath());
         
-        FileInputStream fis = null;
-        ServletOutputStream sos = null;
-        BufferedInputStream bi = null;
-        BufferedOutputStream bo = null;
-        try {
-            fis = new FileInputStream(file);
-            sos = response.getOutputStream();
-            bi = new BufferedInputStream(fis);
-            bo = new BufferedOutputStream(sos);
-            if (data.getContentType().contains("gif")) {
-                int bytesRead = 0;
-                byte[] buffer = new byte[8192];
-                while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
-                    bo.write(buffer, 0, bytesRead);
-                }
-                bo.flush();
-            }else {
-                ImageUtil.pressText(bi, bo, 0.3f, 3, 3, new String[] { "zhb_vue" });
-            }
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (null != bo) {
-                try {
-                    bo.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != sos) {
-                try {
-                    sos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != bi) {
-                try {
-                    bi.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != fis) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        //加水印 下载
+        DownloadUtil.downloadAttachmentWithWaterPrint(request, response, data.getFilePath(), data.getContentType().contains("gif"));
+        
     }
     
     //获取缩略图
@@ -373,7 +298,7 @@ public class AttachmentInfoController {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
-            DownloadUtil.downloadDefault(request, response, imagePath);
+            DownloadUtil.downloadAttachment(request, response, imagePath);
             return;
         }
         
@@ -381,7 +306,7 @@ public class AttachmentInfoController {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
-            DownloadUtil.downloadDefault(request, response, imagePath);
+            DownloadUtil.downloadAttachment(request, response, imagePath);
             return;
         }
         
@@ -390,7 +315,7 @@ public class AttachmentInfoController {
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
-            DownloadUtil.downloadDefault(request, response, imagePath);
+            DownloadUtil.downloadAttachment(request, response, imagePath);
             return;
         }
         
@@ -407,55 +332,8 @@ public class AttachmentInfoController {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        File file = new File(data.getThumbnailPath());
         
-        FileInputStream fis = null;
-        ServletOutputStream sos = null;
-        BufferedInputStream bi = null;
-        BufferedOutputStream bo = null;
-        try {
-            fis = new FileInputStream(file);
-            bi = new BufferedInputStream(fis);
-            sos = response.getOutputStream();
-            bo = new BufferedOutputStream(sos);
-            int bytesRead = 0;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
-                bo.write(buffer, 0, bytesRead);
-            }
-            bo.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (null != bo) {
-                try {
-                    bo.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != sos) {
-                try {
-                    sos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != bi) {
-                try {
-                    bi.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (null != fis) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        DownloadUtil.downloadAttachment(request, response, data.getThumbnailPath());
     }
     
     //附件类型
@@ -481,7 +359,7 @@ public class AttachmentInfoController {
         if (null == param) {
             param = new AttachmentInfoParam();
         }
-        
+        param.setId(null);
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
         OrderVO vo = new OrderVO("category",true);
@@ -503,6 +381,7 @@ public class AttachmentInfoController {
         if (null == param) {
             param = new AttachmentInfoParam();
         }
+        param.setId(null);
         if ("undefined".equals(param.getType())) {
             param.setType(null);
         }

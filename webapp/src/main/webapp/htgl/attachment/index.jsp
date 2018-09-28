@@ -133,22 +133,6 @@ var myVue = new Vue({
                 key: 'type',
                 minWidth: 100
             },
-            /* {
-                title: '内容类型',
-                key: 'contentType',
-                minWidth: 100
-            },
-            {
-                title: '附件大小',
-                key: 'fileSize',
-                minWidth: 100,
-                sortable:true
-            },
-            {
-                title: '附件路径',
-                key: 'filePath',
-                minWidth: 150
-            }, */
             {
                 title: '创建时间',
                 key: 'createTime',
@@ -160,40 +144,18 @@ var myVue = new Vue({
                 key: 'deleteFlagName',
                 minWidth: 100,
                 sortable:true
-            }
-            /* ,
+            },
             {
                 title: '操作',
                 key: 'action',
                 width: 150,
                 align: 'center',
                 render: (h, params) => {
-                	var status = myVue.tableDatas[params.index].status,upFlag,delFlag;
-                	if(status != 1 && status != 0){
-                		upFlag = 'disabled';
-                		delFlag = 'disabled';
-                	}
                 	return h('div', [
                         h('i-button', {
                             props: {
-                                type: 'primary',
-                                size: 'small',
-                                disabled:upFlag
-                            },
-                            style: {
-                                marginRight: '5px'
-                            },
-                            on: {
-                                click: () => {
-                                	myVue.modify(params.index)
-                                }
-                            }
-                        }, '修改'),
-                        h('i-button', {
-                            props: {
                                 type: 'error',
-                                size: 'small',
-                                disabled:delFlag
+                                size: 'small'
                             },
                             on: {
                                 click: () => {
@@ -203,7 +165,7 @@ var myVue = new Vue({
                         }, '删除')
                     ]);
                 }
-            } */
+            } 
         ]
     },
     created: function () {
@@ -218,16 +180,37 @@ var myVue = new Vue({
     },
     methods: {
        remove: function (index) {
-        this.$Modal.confirm({
-            title: '提示',
-            content: '您确定要删除么？',
-            onOk:function(){
-            	window.location.href='<%=ctxPath%>/jb/worktime/delrecord?workRecordId='+myVue.tableDatas[index].id;
-            },
-            onCancel:function(){
-            }
-         });
-        
+    	   this.$Modal.confirm({
+               title: '提示',
+               content: '您确定要删除么？',
+               onOk:function(){
+               	let param = new URLSearchParams(); 
+             	    param.append("id",myVue.tableDatas[index].id); 
+             	    param.append("pageSize",myVue.pageParm.pageCount); 
+          	        param.append("currentPage",myVue.pageParm.currentPage);
+             	    axios.post('<%=ctxPath %>/htgl/attachmentinfocontroller/deleteattachmentinfo/api', param)
+       		         .then(function (response) {
+       			  		if(response.data.flag){
+       			  			myVue.$Message.success({
+                                   content: "删除成功",
+                                   duration: 3,
+                                   closable: true
+                               });
+       				 		 myVue.tableDatas = response.data.data.result;
+       				 		 flushPage(response.data.data);
+       				  		 myVue.$forceUpdate();
+                     		}else{
+                   	  		myVue.$Message.error({
+                             		content: response.data.errorMessages,
+                             		duration: 3,
+                             		closable: true
+                         		});
+                     		}
+       		  		})
+               },
+               onCancel:function(){
+               }
+            });
        },
        //查询按钮
        search:function () {
