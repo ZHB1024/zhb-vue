@@ -122,7 +122,7 @@ public class AttachmentInfoController {
         if (null == multipartFile) {
             return WriteJSUtil.writeJS("请选择待上传的附件", response);
         }
-        
+        logger.info(multipartFile.getOriginalFilename());
         //文件大小
         Long fileSize = multipartFile.getSize();
         if (fileSize > Constants.FILE_MAX_SIZE) {
@@ -141,7 +141,7 @@ public class AttachmentInfoController {
         if (!fileUpload.exists()) {
             fileUpload.mkdirs();
         }
-        String fileTempName = DateTimeUtil.getDateTime(Calendar.getInstance(), "yyyyMMddHHmmss") + fileName.substring(fileName.indexOf("."));
+        String fileTempName = DownloadUtil.randomName() + fileName.substring(fileName.indexOf("."));
         String uploadPath = fileUpload + File.separator + fileTempName;
         
         File file = new File(uploadPath);
