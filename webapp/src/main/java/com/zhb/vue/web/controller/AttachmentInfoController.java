@@ -109,10 +109,14 @@ public class AttachmentInfoController {
     
     //上传
     @RequestMapping(value = "/uploadattachmentinfo")
+    @ResponseBody
     @Transactional
-    public String uploadAttachmentInfo(HttpServletRequest request,HttpServletResponse response) {
+    public AjaxData uploadAttachmentInfo(HttpServletRequest request,HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
-            return WriteJSUtil.writeJS("请先登录", response);
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
         }
         
         // 转型为MultipartHttpRequest：
@@ -120,13 +124,16 @@ public class AttachmentInfoController {
         // 获得文件
         MultipartFile multipartFile = multipartRequest.getFile("upFile");
         if (null == multipartFile) {
-            return WriteJSUtil.writeJS("请选择待上传的附件", response);
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请选择待上传的附件");
+            return ajaxData;
         }
-        logger.info(multipartFile.getOriginalFilename());
         //文件大小
         Long fileSize = multipartFile.getSize();
         if (fileSize > Constants.FILE_MAX_SIZE) {
-            return WriteJSUtil.writeJS("文件大小不能超过" + Constants.FILE_MAX_SIZE_MB, response);
+            ajaxData.setFlag(false);
+            ajaxData.addMessage(multipartFile.getOriginalFilename() + " 文件大小不能超过" + Constants.FILE_MAX_SIZE_MB);
+            return ajaxData;
         }
         //文件内容类型
         String contentType = multipartFile.getContentType();
@@ -183,7 +190,8 @@ public class AttachmentInfoController {
         fileInfoData.setContentType(contentType);
         fileInfoData.setType(AttachmentTypeEnum.geTypeEnum(fileName).getIndex());
         attachmentInfoService.saveOrUpdate(fileInfoData);
-        return "htgl.attachment.index";
+        ajaxData.setFlag(true);
+        return ajaxData;
     }
     
     //获取附件
@@ -286,7 +294,17 @@ public class AttachmentInfoController {
             DownloadUtil.downloadDefault(request, response, imagePath);
             return;
         }
+        
+        // will return -1 if no header...(没缓存的照片时no header)
+        long clientLastModified = request.getDateHeader("If-Modified-Since");
+        if (clientLastModified != -1) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
+        
         try {
+            //在浏览器缓存30天
+            DownloadUtil.processExpiresTime(response);
             DownloadUtil.processBeforeDownload(request, response, data.getContentType(), data.getFileName());
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -302,13 +320,17 @@ public class AttachmentInfoController {
             sos = response.getOutputStream();
             bi = new BufferedInputStream(fis);
             bo = new BufferedOutputStream(sos);
-            /*int bytesRead = 0;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
-                bo.write(buffer, 0, bytesRead);
+            if (data.getContentType().contains("gif")) {
+                int bytesRead = 0;
+                byte[] buffer = new byte[8192];
+                while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
+                    bo.write(buffer, 0, bytesRead);
+                }
+                bo.flush();
+            }else {
+                ImageUtil.pressText(bi, bo, 0.3f, 3, 3, new String[] { "zhb_vue" });
             }
-            bo.flush();*/
-            ImageUtil.pressText(bi, bo, 0.3f, 3, 3, new String[] { "zhb_vue" });
+            
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
@@ -371,7 +393,16 @@ public class AttachmentInfoController {
             DownloadUtil.downloadDefault(request, response, imagePath);
             return;
         }
+        
+        long clientLastModified = request.getDateHeader("If-Modified-Since");
+        if (clientLastModified != -1) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
+        
         try {
+            //在浏览器缓存30天
+            DownloadUtil.processExpiresTime(response);
             DownloadUtil.processBeforeDownload(request, response, data.getContentType(), data.getFileName());
         } catch (IOException e1) {
             e1.printStackTrace();

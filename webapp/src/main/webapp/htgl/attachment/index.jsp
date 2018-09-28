@@ -73,18 +73,18 @@ var myVue = new Vue({
             {
             	title: '附件', 
             	key: 'thumbnailUrl',
+            	width: 100,
             	render: (h, params) => {
             	    console.log(params.row)
-            	    return h('div', {
-            	      	attrs: {
-            	        		style: 'width: 40px;height: 40px;'
-            	      		},
-            	    	}, [
+            	    return h('div',  [
             	        h('img', {
             	          props: {
             	            type: 'primary',
             	            size: 'small'
             	          },
+                          style: {
+                              marginRight: '10px'
+                          },
             	          attrs: {
             	            src: params.row.thumbnailUrl, style: 'width: 40px;height: 40px;border-radius: 2px;'
             	          },
@@ -94,6 +94,17 @@ var myVue = new Vue({
                               }
                           }
             	        }),
+            	        h('Icon', {
+              	          props: {
+              	            type: 'md-arrow-down',
+              	            color:'green'
+              	          },
+                            on: {
+                                click: () => {
+                                	  myVue.downAttachment(params)
+                                }
+                            }
+              	        })
             	      ]);
             	  }
             },
@@ -333,6 +344,10 @@ var myVue = new Vue({
    	            layer.closeAll();
    	        }
    	    });
+      },
+      //下载附件
+      downAttachment:function(data){
+    	  window.location.href='<%=ctxPath%>/htgl/attachmentinfocontroller/downloadattachmentinfo?id=' + data.row.id;
       }
       
     }

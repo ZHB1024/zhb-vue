@@ -112,4 +112,4 @@ create table attachment_info
   create_time         DATETIME not null,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+alter table attachment_info modify  content_type varchar(200);
