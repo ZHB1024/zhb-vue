@@ -299,15 +299,16 @@ public class AttachmentInfoController {
         BufferedOutputStream bo = null;
         try {
             fis = new FileInputStream(file);
-            bi = new BufferedInputStream(fis);
             sos = response.getOutputStream();
+            bi = new BufferedInputStream(fis);
             bo = new BufferedOutputStream(sos);
-            int bytesRead = 0;
+            /*int bytesRead = 0;
             byte[] buffer = new byte[8192];
             while ((bytesRead = bi.read(buffer, 0, buffer.length)) != -1) {
                 bo.write(buffer, 0, bytesRead);
             }
-            bo.flush();
+            bo.flush();*/
+            ImageUtil.pressText(bi, bo, 0.3f, 3, 3, new String[] { "zhb_vue" });
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
