@@ -113,6 +113,16 @@ public class AttachmentInfoController {
             ajaxData.addMessage("没有待删除的数据");
             return ajaxData;
         }
+        
+        File origin = new File(data.getFilePath());
+        if (origin.exists()) {
+            origin.delete();
+        }
+        
+        File thumbnail = new File(data.getThumbnailPath());
+        if (thumbnail.exists()) {
+            thumbnail.delete();
+        }
         attachmentInfoService.deleteAttachmentInfo(data);
         
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
