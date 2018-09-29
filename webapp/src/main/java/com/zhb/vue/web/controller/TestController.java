@@ -29,16 +29,32 @@ public class TestController {
     @RequestMapping(value = "/testredis")
     @Transactional
     public void testRedis(HttpServletRequest request,HttpServletResponse response) {
-        List<String> countries = new ArrayList<String>();
-        List<?> list = redisClient.getList("zhb-vue");
-        if (null != list && !list.isEmpty()) {
-            countries.addAll((List<String>) list);
-        } else {
-            countries.add("China");
-            countries.add("America");
+        /*List<String> countries = new ArrayList<String>();
+        countries.add("China");
+        countries.add("America");
+        
+        redisClient.set("hello", "hello world!123012");
+        Object value =redisClient.get("hello");
+        if (null != value) {
+            logger.info(value.toString());
         }
-        redisClient.addList("zhb-vue", countries);
-        List<?> result = redisClient.getList("zhb-vue");
+        
+        redisClient.set("hello", "hellosss");
+        value =redisClient.get("hello");
+        if (null != value) {
+            logger.info(value.toString());
+        }*/
+        
+        Set<?> setTemps2 = redisClient.getSet("number");
+        if (null != setTemps2) {
+            for (Object object : setTemps2) {
+                logger.info(object.toString());
+            }
+        }
+        
+        
+        /*redisClient.addList("zhb-vue-list", countries);
+        List<?> result = redisClient.getList("zhb-vue-list");
         if (null != result) {
             for (Object object : result) {
                 logger.info(object.toString());
@@ -51,18 +67,7 @@ public class TestController {
         sets.add("22");
         sets.add("22");
         redisClient.addSet("number", sets);
-        Set<?> setTemps = redisClient.getSet("number");
-        Set<?> setTemps2 = redisClient.getSet("number");
-        if (null != setTemps) {
-            for (Object object : setTemps) {
-                logger.info(object.toString());
-            }
-        }
-        if (null != setTemps2) {
-            for (Object object : setTemps2) {
-                logger.info(object.toString());
-            }
-        }
+        */
     }
 
 
