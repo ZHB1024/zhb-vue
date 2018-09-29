@@ -119,10 +119,13 @@ public class AttachmentInfoController {
             origin.delete();
         }
         
-        File thumbnail = new File(data.getThumbnailPath());
-        if (thumbnail.exists()) {
-            thumbnail.delete();
+        if (StringUtil.isNotBlank(data.getThumbnailPath())) {
+            File thumbnail = new File(data.getThumbnailPath());
+            if (thumbnail.exists()) {
+                thumbnail.delete();
+            }
         }
+        
         attachmentInfoService.deleteAttachmentInfo(data);
         
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
