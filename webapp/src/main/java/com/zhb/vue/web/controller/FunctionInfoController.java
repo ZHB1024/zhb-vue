@@ -1,6 +1,7 @@
 package com.zhb.vue.web.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -123,6 +124,7 @@ public class FunctionInfoController {
         
         FunctionInfoData data = new FunctionInfoData();
         Param2DataUtil.functionParam2Data(param, data);
+        data.setCreateUserId(WebAppUtil.getUserId(request));
         
         functionInfoService.saveOrUpdate(data);
         
@@ -204,6 +206,7 @@ public class FunctionInfoController {
         param.setDeleteFlag(data.getDeleteFlag());
         
         Param2DataUtil.functionParam2Data(param, data);
+        data.setUpdateTime(Calendar.getInstance());
         
         functionInfoService.saveOrUpdate(data);
         ajaxData.setFlag(true);

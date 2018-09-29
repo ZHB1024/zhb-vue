@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -31,11 +32,15 @@ public class FunctionInfoData {
     private IconInfoData iconInfoData;
     private FunctionInfoData parentFunctionInfo;
     private Integer deleteFlag;
+    private String createUserId;
+    private Calendar createTime;
+    private Calendar updateTime;
     
     private List<FunctionInfoData> childFunctionInfos;
     
     public FunctionInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
+        this.createTime = Calendar.getInstance();
     }
     
     @Id
@@ -116,6 +121,33 @@ public class FunctionInfoData {
     }
     public void setChildFunctionInfos(List<FunctionInfoData> childFunctionInfos) {
         this.childFunctionInfos = childFunctionInfos;
+    }
+    
+    @Column(name = "CREATE_USER_ID")
+    public String getCreateUserId() {
+        return createUserId;
+    }
+    
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
+    }
+
+    @Column(name="create_time")
+    public Calendar getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Calendar createTime) {
+        this.createTime = createTime;
+    }
+
+    @Column(name="update_time")
+    public Calendar getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Calendar updateTime) {
+        this.updateTime = updateTime;
     }
     
 }

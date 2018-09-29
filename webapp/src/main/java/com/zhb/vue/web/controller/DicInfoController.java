@@ -201,6 +201,8 @@ public class DicInfoController {
                     data.setDeleteFlag(Integer.valueOf(values[8]));
                 }
                 
+                data.setCreateUserId(WebAppUtil.getUserId(request));
+                
                 dicInfoDatas.add(data);
                 
             }

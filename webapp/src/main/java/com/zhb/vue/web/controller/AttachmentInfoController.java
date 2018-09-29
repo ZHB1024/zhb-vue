@@ -224,6 +224,7 @@ public class AttachmentInfoController {
         fileInfoData.setFileSize(String.valueOf(fileSize));
         fileInfoData.setContentType(contentType);
         fileInfoData.setType(AttachmentTypeEnum.geTypeEnum(fileName).getIndex());
+        fileInfoData.setCreateUserId(WebAppUtil.getUserId(request));
         attachmentInfoService.saveOrUpdate(fileInfoData);
         ajaxData.setFlag(true);
         return ajaxData;

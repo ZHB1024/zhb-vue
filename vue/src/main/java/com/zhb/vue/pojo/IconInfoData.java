@@ -22,6 +22,7 @@ public class IconInfoData {
     private Integer deleteFlag;
     private Calendar createTime;
     private Calendar updateTime;
+    private String createUserId;
     
     public IconInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
@@ -79,5 +80,14 @@ public class IconInfoData {
 
     public void setUpdateTime(Calendar updateTime) {
         this.updateTime = updateTime;
+    }
+    
+    @Column(name = "CREATE_USER_ID")
+    public String getCreateUserId() {
+        return createUserId;
+    }
+    
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
     }
 }

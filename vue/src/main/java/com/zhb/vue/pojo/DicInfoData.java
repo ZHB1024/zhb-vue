@@ -1,5 +1,7 @@
 package com.zhb.vue.pojo;
 
+import java.util.Calendar;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,9 +26,12 @@ public class DicInfoData {
     private Integer orderIndex;
     private String remark;
     private Integer deleteFlag;
+    private String createUserId;
+    private Calendar createTime;
     
     public DicInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
+        this.createTime = Calendar.getInstance();
     }
     
     @Id
@@ -112,5 +117,23 @@ public class DicInfoData {
         this.deleteFlag = deleteFlag;
     }
 
+    @Column(name = "CREATE_USER_ID")
+    public String getCreateUserId() {
+        return createUserId;
+    }
+    
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
+    }
 
+    @Column(name="create_time")
+    public Calendar getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Calendar createTime) {
+        this.createTime = createTime;
+    }
+    
+    
 }

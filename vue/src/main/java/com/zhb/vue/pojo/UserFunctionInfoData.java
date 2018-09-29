@@ -1,5 +1,7 @@
 package com.zhb.vue.pojo;
 
+import java.util.Calendar;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +20,11 @@ public class UserFunctionInfoData {
     private String id;
     private UserInfoData userInfoData;
     private FunctionInfoData functionInfoData;
+    private Calendar createTime;
+    
+    public UserFunctionInfoData() {
+        this.createTime = Calendar.getInstance();
+    }
     
     @Id
     @GeneratedValue(generator = "app_seq")
@@ -47,4 +54,13 @@ public class UserFunctionInfoData {
     public void setFunctionInfoData(FunctionInfoData functionInfoData) {
         this.functionInfoData = functionInfoData;
     }
+    
+    @Column(name="create_time")
+    public Calendar getCreateTime() {
+        return createTime;
+    }
+    public void setCreateTime(Calendar createTime) {
+        this.createTime = createTime;
+    }
+    
 }

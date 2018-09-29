@@ -24,6 +24,7 @@ import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
 import com.zhb.vue.service.IconInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
+import com.zhb.vue.web.util.WebAppUtil;
 import com.zhb.vue.web.util.WriteJSUtil;
 
 @Controller
@@ -85,6 +86,7 @@ public class IconInfoController {
         IconInfoData data = new IconInfoData();
         data.setName(param.getName());
         data.setValue(param.getValue());
+        data.setCreateUserId(WebAppUtil.getUserId(request));
         iconInfoService.saveOrUpdate(data);
         
         ajaxData.setFlag(true);

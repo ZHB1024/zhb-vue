@@ -25,6 +25,7 @@ public class AttachmentInfoData {
     private Integer type;
     private Integer deleteFlag;
     private Calendar createTime;
+    private String createUserId;
 
     public AttachmentInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
@@ -113,6 +114,15 @@ public class AttachmentInfoData {
 
     public void setCreateTime(Calendar createTime) {
         this.createTime = createTime;
+    }
+
+    @Column(name = "CREATE_USER_ID")
+    public String getCreateUserId() {
+        return createUserId;
+    }
+    
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
     }
 
 }

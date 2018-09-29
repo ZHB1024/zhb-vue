@@ -1,5 +1,4 @@
 
-
 /*用户表 */
 create table user_info
 (
@@ -39,6 +38,9 @@ create table function_info
   icon_id			 VARCHAR(16) ,
   parent_id			 VARCHAR(16) ,
   delete_flag             int(1) not null,
+  create_user_id	 VARCHAR(16) not null,
+  create_time         DATETIME not null,
+  update_time         DATETIME,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -49,6 +51,8 @@ create table user_function_info
   id                 VARCHAR(16) not null,
   user_id			 VARCHAR(16) not null,
   function_id	     VARCHAR(16) not null,
+  create_time         DATETIME not null,
+  update_time         DATETIME,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -61,6 +65,9 @@ create table icon_info
   name			     VARCHAR(20) not null,
   value              VARCHAR(50) not null,
   delete_flag             int(1) not null,
+  create_user_id	 VARCHAR(16) not null,
+  create_time         DATETIME not null,
+  update_time         DATETIME,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -79,6 +86,9 @@ create table dic_info
   order_index        int(5) not null,  
   remark           VARCHAR(50),
   delete_flag             int(1) not null,
+  create_user_id	 VARCHAR(16) not null,
+  create_time         DATETIME not null,
+  update_time         DATETIME,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -104,12 +114,28 @@ create table attachment_info
   id                 VARCHAR(16) not null,
   file_name           VARCHAR(50) not null,
   file_size           VARCHAR(10) not null,
-  content_type         VARCHAR(50) not null,  
+  content_type         VARCHAR(200) not null,  
   file_path           VARCHAR(100) not null,
   thumbnail_path           VARCHAR(100) ,
   type           	int(1) not null,  
   delete_flag             int(1) not null,
+  create_user_id	 VARCHAR(16) not null,
   create_time         DATETIME not null,
+  update_time         DATETIME,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-alter table attachment_info modify  content_type varchar(200);
+
+
+
+
+/*新增user_id */
+alter table attachment_info add CREATE_USER_ID	VARCHAR(16);
+alter table dic_info add CREATE_USER_ID	VARCHAR(16);
+alter table icon_info add CREATE_USER_ID	VARCHAR(16);
+alter table function_info add CREATE_USER_ID	VARCHAR(16);
+
+alter table dic_info add create_time	DATETIME;
+alter table user_function_info add create_time	DATETIME;
+
+alter table function_info add upate_time	DATETIME;
+

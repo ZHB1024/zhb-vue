@@ -1,6 +1,7 @@
 package com.zhb.vue.web.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,6 +132,7 @@ public class AuthorityController {
                 if (opt) {//新增
                     UserFunctionInfoData data = new UserFunctionInfoData();
                     Param2DataUtil.userFunctionParam2Data(param, data);
+                    data.setCreateTime(Calendar.getInstance());
                     functionInfoService.saveOrUpdate(data);
                 }
             }else {
