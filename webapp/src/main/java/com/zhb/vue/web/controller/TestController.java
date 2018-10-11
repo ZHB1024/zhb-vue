@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zhb.forever.framework.util.CheckAgentUtil;
+import com.zhb.forever.framework.util.IPUtil;
 import com.zhb.forever.redis.client.RedisClient;
 import com.zhb.forever.redis.client.RedisClientFactory;
 
@@ -66,6 +68,24 @@ public class TestController {
         redisClient.addSet("number", sets);
         */
     }
+    
+    @RequestMapping(value = "/checkagent")
+    @Transactional
+    public void checkIsMobile(HttpServletRequest request,HttpServletResponse response) {
+        String userAgent = request.getHeader("user-agent");
+        boolean flag = CheckAgentUtil.checkAgentIsMobile(userAgent);
+        logger.info(userAgent);
+        logger.info(flag + "");
+        
+    }
+    
+    @RequestMapping(value = "/ip")
+    @Transactional
+    public void ip(HttpServletRequest request,HttpServletResponse response) {
+        String ip = IPUtil.getIp(request);
+        logger.info(ip);
+    }
+
 
 
 }
