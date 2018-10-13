@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
@@ -20,6 +21,7 @@ public class AttachmentInfoServiceImpl implements AttachmentInfoService{
     private AttachmentInfoDao attachmentInfoDao;
 
     @Override
+    @Transactional
     public void saveOrUpdate(AttachmentInfoData data) {
         attachmentInfoDao.saveOrUpdate(data);
     }

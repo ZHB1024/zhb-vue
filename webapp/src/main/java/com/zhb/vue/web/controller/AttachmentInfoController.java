@@ -29,6 +29,7 @@ import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.DownloadUtil;
+import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.ImageUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.forever.framework.util.StringUtil;
@@ -183,7 +184,7 @@ public class AttachmentInfoController {
         if (!fileUpload.exists()) {
             fileUpload.mkdirs();
         }
-        String fileTempName = DownloadUtil.randomName() + fileName.substring(fileName.indexOf("."));
+        String fileTempName = FileUtil.randomName() + fileName.substring(fileName.indexOf("."));
         String uploadPath = fileUpload + File.separator + fileTempName;
         
         File file = new File(uploadPath);
@@ -195,22 +196,12 @@ public class AttachmentInfoController {
         
         String uploadThumbnailPath = null;
         if (1 ==  type) {//图片时，才有缩略图
-            String fileThumbnailPath = PropertyUtil.getUploadThumbnailPath();//缩略图路径
-            File fileThumbnailUpload = new File(fileThumbnailPath);
-            if (!fileThumbnailUpload.exists()) {
-                fileThumbnailUpload.mkdirs();
-            }
-            uploadThumbnailPath = fileThumbnailPath + File.separator + fileTempName;
-            
-            File thumbnailFile = new File(uploadThumbnailPath);
-            
             if (fileSize > Constants.SMALL_IMAGE_SIZE) {
                 try {
-                    byte[] bytes = ImageUtil.smallImage(multipartFile.getInputStream(), ImageUtil.getImageSuffix(file),fileSize, Constants.SMALL_IMAGE_SIZE);
-                    InputStream is = new ByteArrayInputStream(bytes);
-                    UploadUtil.inputStream2File(is, thumbnailFile);
-                } catch (Exception e) {
+                    uploadThumbnailPath = UploadUtil.uploadThumbmail(multipartFile.getInputStream(), fileTempName, ImageUtil.getImageSuffix(file), fileSize);
+                } catch (IOException e) {
                     e.printStackTrace();
+                    uploadThumbnailPath = uploadPath;
                 }
             }else {
                 uploadThumbnailPath = uploadPath;
@@ -276,7 +267,7 @@ public class AttachmentInfoController {
         }
         
         AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(id);
-        if (null == data || AttachmentTypeEnum.IMAGE.getIndex() != data.getType()){
+        if (null == data || (AttachmentTypeEnum.IMAGE.getIndex() != data.getType() && AttachmentTypeEnum.YELLOW.getIndex() != data.getType())){
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
@@ -325,7 +316,7 @@ public class AttachmentInfoController {
         }
         
         AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(id);
-        if (null == data || AttachmentTypeEnum.IMAGE.getIndex() != data.getType()){
+        if (null == data || (AttachmentTypeEnum.IMAGE.getIndex() != data.getType()&& AttachmentTypeEnum.YELLOW.getIndex() != data.getType())){
             String rootPath = WebAppUtil.getRootPath(request);
             String imagePath = rootPath + "images" + File.separator + "loading.gif";
             response.setContentType("image/jpeg");
@@ -427,5 +418,5 @@ public class AttachmentInfoController {
         ajaxData.setData(jsonObject);
         return ajaxData;
     }
-
+    
 }

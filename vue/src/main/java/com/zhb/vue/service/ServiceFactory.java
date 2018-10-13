@@ -16,5 +16,10 @@ public class ServiceFactory {
         VerificationCodeInfoService verificationCodeInfoService = beanFac.getBean("verificationCodeInfoServiceImpl", VerificationCodeInfoService.class);
         return verificationCodeInfoService;
     }
+    
+    public static AttachmentInfoService getAttachmentInfoService() {
+        AttachmentInfoService attachmentInfoService = beanFac.getBean("attachmentInfoServiceImpl", AttachmentInfoService.class);
+        return attachmentInfoService;
+    }
 
 }

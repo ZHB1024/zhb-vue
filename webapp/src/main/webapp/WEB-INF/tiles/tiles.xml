@@ -102,6 +102,11 @@
         <put-attribute name="body" value="/htgl/verification/index.jsp" />
     </definition>
     
+    <!-- spider -->
+    <definition name="htgl.spider.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/spider/index.jsp" />
+    </definition>
+    
     
 <!-- htgl end--> 
     
