@@ -290,7 +290,7 @@ var myVue = new Vue({
    	        title: data.row.fileName,
    	        type: 1,
    	        //skin: 'layui-layer-rim', //加上边框
-   	        area: ['600px', '600px'], //宽高
+   	        area: ['900px', '900px'], //宽高
    	        content: showContent, 
    	        btn: ['确定'],
    	        success: function(layero, index){
@@ -318,7 +318,7 @@ var myVue = new Vue({
    	        title: data.row.fileName,
    	        type: 1,
    	        //skin: 'layui-layer-rim', //加上边框
-   	        area: ['500px', '500px'], //宽高
+   	        area: ['700px', '700px'], //宽高
    	        content: showContent, 
    	        btn: ['确定'],
    	        success: function(layero, index){
