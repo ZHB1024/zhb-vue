@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zhb.forever.framework.util.AjaxData;
@@ -15,7 +17,8 @@ import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.util.JsoupUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.vue.thread.spider.DownloadFromQueueRunnable;
-import com.zhb.vue.thread.spider.ReadUrlToQueueRunnable;
+import com.zhb.vue.thread.spider.ReadBeginUrlToQueueRunnable;
+import com.zhb.vue.thread.spider.ReadEndUrlToQueueRunnable;
 import com.zhb.vue.web.util.JsoupSpiderRunnableUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -62,10 +65,15 @@ public class JsoupSpiderController {
         String url = PropertyUtil.getSpiderUrl();
         String urlTarget = PropertyUtil.getSpiderUrlTarget();
         Integer totalPage = PropertyUtil.getSpiderTotalPage();
-        ArrayBlockingQueue<String> resources = new ArrayBlockingQueue<String>(100000);
+        ArrayBlockingQueue<JSONObject> resources = new ArrayBlockingQueue<JSONObject>(100000);
 
-        ExecutorService es = Executors.newFixedThreadPool(2);
-        es.execute(new ReadUrlToQueueRunnable(url,urlTarget,totalPage,resources));
+        AtomicInteger beginPage = new AtomicInteger(0);
+        AtomicInteger endPage = new AtomicInteger(totalPage);
+        AtomicInteger totalCount = new AtomicInteger(0);
+        ExecutorService es = Executors.newFixedThreadPool(3);
+        es.execute(new ReadEndUrlToQueueRunnable(url,urlTarget,beginPage,endPage,totalCount,resources));
+        //es.execute(new ReadBeginUrlToQueueRunnable(url,urlTarget,beginPage,endPage,totalCount,resources));
+        
         es.execute(new DownloadFromQueueRunnable(resources,userId));
         
         es.shutdown();

@@ -1,6 +1,8 @@
 package com.zhb.vue.thread.spider;
 
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jsoup.nodes.Document;
@@ -9,36 +11,42 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
+import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.JsoupUtil;
 import com.zhb.forever.framework.util.StringUtil;
 
-public class ReadUrlToQueueRunnable implements Runnable {
+public class ReadEndUrlToQueueRunnable implements Runnable {
     
-    private Logger logger = LoggerFactory.getLogger(ReadUrlToQueueRunnable.class);
+    private Logger logger = LoggerFactory.getLogger(ReadEndUrlToQueueRunnable.class);
     
     private String url;
     private String urlTarget;
-    private Integer totalPage;
-    private ArrayBlockingQueue<String> resources ;
+    private ArrayBlockingQueue<JSONObject> resources ;
     
-    private AtomicInteger page ;
-    private AtomicInteger totalCount = new AtomicInteger(0);
+    private AtomicInteger endPage ;
+    private AtomicInteger beginPage ;
+    private AtomicInteger totalCount;
     
-    public ReadUrlToQueueRunnable(String url,String urlTarget,Integer totalPage,ArrayBlockingQueue<String> resources) {
+    public ReadEndUrlToQueueRunnable(String url,String urlTarget,AtomicInteger beginPage,AtomicInteger endPage,AtomicInteger totalCount,ArrayBlockingQueue<JSONObject> resources) {
         this.url = url;
         this.urlTarget = urlTarget;
-        this.totalPage = totalPage;
         this.resources = resources;
-        page = new AtomicInteger(totalPage);
+        this.endPage = endPage;
+        this.beginPage = beginPage;
+        this.totalCount = totalCount;
     }
 
     @Override
     public void run() {
-        while(page.get() > 0) {
-            String targetUrl = url + urlTarget + page.get() + ".html";
+        logger.info("--Read-EndUrlThread--------------------------开始-------");
+        while(endPage.get() > beginPage.get()) {
+            String targetUrl = url + urlTarget + endPage.get() + ".html";
             addChildPageImagePath(targetUrl);
-            page.decrementAndGet();
+            endPage.decrementAndGet();
         }
+        
+        logger.info("--Read-EndUrlThread--------------------------结束-------");
 
     }
     
@@ -76,6 +84,9 @@ public class ReadUrlToQueueRunnable implements Runnable {
             if (null == main) {
                 return;
             }
+            
+            String name = FileUtil.randomName();
+            int i = 0;
             for (Element link : main) {
                 Elements hrefs = link.select("img[src]");
                 if (null == hrefs) {
@@ -85,8 +96,15 @@ public class ReadUrlToQueueRunnable implements Runnable {
                     if (null == element) {
                         return ;
                     }
-                    while (!resources.offer(element.attr("abs:file"))) {
-                        logger.info("队列已满------等待-------");
+                    i++;
+                    StringBuilder fileName = new StringBuilder(name);
+                    fileName.append("-"+i);
+                    fileName.append(".jpg");
+                    JSONObject object = new JSONObject();
+                    object.put("name", fileName);
+                    object.put("url", element.attr("abs:file"));
+                    while (!resources.offer(object)) {
+                        logger.info("--队列已满------等待消费-------");
                         try {
                             Thread.currentThread().sleep(10);
                         } catch (InterruptedException e) {
@@ -94,7 +112,7 @@ public class ReadUrlToQueueRunnable implements Runnable {
                             logger.error("向队列里添加url异常");
                         }
                     }
-                    logger.info("向队列里添加成功----------------第 " + totalCount.incrementAndGet() + " 个");
+                    logger.info("--向队列里添加成功----第 " + endPage.get() + " 页------第 " + totalCount.incrementAndGet() + " 个");
                 }
             }
         }

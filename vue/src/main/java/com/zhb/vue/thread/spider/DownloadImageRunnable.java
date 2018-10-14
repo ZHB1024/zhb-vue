@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.Constants;
 import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.util.DownloadUtil;
@@ -23,12 +24,12 @@ public class DownloadImageRunnable implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(DownloadImageRunnable.class);
     
-    private String url ;
+    private JSONObject url ;
     private String creatorId;
     private Integer count ;
     private AttachmentInfoService attachmentInfoService = ServiceFactory.getAttachmentInfoService();
     
-    public DownloadImageRunnable(String url,String creatorId,Integer count) {
+    public DownloadImageRunnable(JSONObject url,String creatorId,Integer count) {
         this.url = url;
         this.creatorId = creatorId;
         this.count = count;
@@ -36,14 +37,14 @@ public class DownloadImageRunnable implements Runnable {
     
     @Override
     public void run() {
-        if (StringUtil.isBlank(url)) {
+        if (null ==url) {
             return;
         }
         String uploadPath = PropertyUtil.getUploadPath();
         String thumbnailPath = null;
-        String fileName = FileUtil.randomName() + ".jpg";
+        String fileName = url.getString("name");
         try {
-            DownloadUtil.downLoadFromUrl(url, fileName, uploadPath);
+            DownloadUtil.downLoadFromUrl(url.getString("url"), fileName, uploadPath);
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -70,7 +71,7 @@ public class DownloadImageRunnable implements Runnable {
         fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
         fileInfoData.setCreateUserId(creatorId);
         attachmentInfoService.saveOrUpdate(fileInfoData);
-        logger.info("下载成功---第 " + count + " 个---");
+        logger.info("--下载成功---第 " + count + " 个---");
     }
 
 }
