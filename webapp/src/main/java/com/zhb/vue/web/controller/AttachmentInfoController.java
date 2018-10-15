@@ -392,7 +392,7 @@ public class AttachmentInfoController {
         }
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
-        OrderVO vo = new OrderVO("createTime",false);
+        OrderVO vo = new OrderVO("fileName",true);
         orderVos.add(vo);
         OrderVO vo2 = new OrderVO("type",true);
         orderVos.add(vo2);
