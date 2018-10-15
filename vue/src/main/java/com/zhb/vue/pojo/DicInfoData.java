@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -14,7 +15,12 @@ import com.zhb.forever.framework.dic.DeleteFlagEnum;
 
 @Entity
 @Table(name="dic_info")
-public class DicInfoData {
+public class DicInfoData implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4164132705619933482L;
     
     private String id;
     private String category;

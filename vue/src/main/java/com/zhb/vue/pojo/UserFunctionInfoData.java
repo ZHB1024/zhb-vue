@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -15,7 +16,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name="user_function_info")
-public class UserFunctionInfoData {
+public class UserFunctionInfoData implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -300563950912009408L;
     
     private String id;
     private UserInfoData userInfoData;

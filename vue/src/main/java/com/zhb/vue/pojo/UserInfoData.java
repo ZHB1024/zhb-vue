@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -14,7 +15,12 @@ import com.zhb.forever.framework.dic.DeleteFlagEnum;
 
 @Entity
 @Table(name="user_info")
-public class UserInfoData {
+public class UserInfoData implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8723796548579948339L;
     
     private String id;
     private String userName;

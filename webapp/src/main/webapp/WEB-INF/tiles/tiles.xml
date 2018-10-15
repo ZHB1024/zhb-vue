@@ -107,6 +107,11 @@
         <put-attribute name="body" value="/htgl/spider/index.jsp" />
     </definition>
     
+    <!-- 刷新redis -->
+    <definition name="htgl.flushredis.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/flushredis/index.jsp" />
+    </definition>
+    
     
 <!-- htgl end--> 
     

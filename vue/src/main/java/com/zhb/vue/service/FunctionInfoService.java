@@ -16,7 +16,7 @@ public interface FunctionInfoService {
      * *新增或修改功能
      * @param data
      */
-    void saveOrUpdate(FunctionInfoData data);
+    FunctionInfoData saveOrUpdateFunctionInfoData(FunctionInfoData data);
     
     /**
      * *删除 功能
@@ -28,7 +28,7 @@ public interface FunctionInfoService {
      * *新增或修改 人员功能关系
      * @param data
      */
-    void saveOrUpdate(UserFunctionInfoData data);
+    UserFunctionInfoData saveOrUpdateUserFunctionInfoData(UserFunctionInfoData data);
     
     /**
      * *删除 人员功能关系
@@ -43,6 +43,13 @@ public interface FunctionInfoService {
      * @return
      */
     List<FunctionInfoData> getFunctions(FunctionInfoParam param,List<OrderVO> orderVos);
+    
+    /**
+     * *获取所有的功能
+     * @param param
+     * @return
+     */
+    List<FunctionInfoData> getAllFunctions(List<OrderVO> orderVos);
     
     /**
      * *获取功能,根据id

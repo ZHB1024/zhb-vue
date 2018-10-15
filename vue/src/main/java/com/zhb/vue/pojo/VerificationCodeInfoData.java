@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -14,7 +15,12 @@ import com.zhb.forever.framework.dic.DeleteFlagEnum;
 
 @Entity
 @Table(name="verification_code_info")
-public class VerificationCodeInfoData {
+public class VerificationCodeInfoData implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -410934302290091246L;
     
     private String id;
     private String email;

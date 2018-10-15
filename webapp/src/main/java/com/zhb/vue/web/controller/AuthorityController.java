@@ -133,7 +133,7 @@ public class AuthorityController {
                     UserFunctionInfoData data = new UserFunctionInfoData();
                     Param2DataUtil.userFunctionParam2Data(param, data);
                     data.setCreateTime(Calendar.getInstance());
-                    functionInfoService.saveOrUpdate(data);
+                    functionInfoService.saveOrUpdateUserFunctionInfoData(data);
                 }
             }else {
                 if (!opt) {//删除

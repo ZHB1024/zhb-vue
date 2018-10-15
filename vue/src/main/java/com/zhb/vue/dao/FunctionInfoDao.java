@@ -28,6 +28,13 @@ public interface FunctionInfoDao {
     List<FunctionInfoData> getFunctions(FunctionInfoParam param,List<OrderVO> orderVos);
     
     /**
+     * *获取所有的功能
+     * @param param
+     * @return
+     */
+    List<FunctionInfoData> getAllFunctions(List<OrderVO> orderVos);
+    
+    /**
      * *获取功能,根据id
      * @param id
      * @return

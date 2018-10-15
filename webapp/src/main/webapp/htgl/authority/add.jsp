@@ -82,7 +82,7 @@ var myVue =  new Vue({
 	  },
 	  created: function () {
 		  axios.all([
-	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getuserinfo/api'),
+	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getalluserinfo/api'),
 	    	    axios.get('<%=ctxPath %>/htgl/functioninfocontroller/getchildfunctions/api')
 	    	  ]).then(axios.spread(function (userResp,functionResp) {
 	    		  myVue.userParm = userResp.data.data;

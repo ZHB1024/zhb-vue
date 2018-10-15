@@ -62,6 +62,27 @@ public class UserInfoController {
         return ajaxData;
     }
     
+    //获取所有的用户
+    @RequestMapping(value="/getalluserinfo/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getAllUserInfo(HttpServletRequest request,HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("deleteFlag",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("createTime",false);
+        orderVos.add(vo2);
+        
+        List<UserInfoData> datas = userInfoService.getAllUserInfos(orderVos);
+        if (null != datas) {
+            ajaxData.setData(Data2JSONUtil.userInfoDatas2JSONArray(datas));
+        }
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
     //to用户个人信息
     @RequestMapping(value="/toselfinfo",method=RequestMethod.GET)
     @Transactional
@@ -136,22 +157,20 @@ public class UserInfoController {
             return ajaxData;
         }
         
-        UserInfoParam userInfoParam = new UserInfoParam();
-        userInfoParam.setUserName(param.getUserName());
-        List<UserInfoData> datas = userInfoService.getUserInfos(userInfoParam,null);
-        if (null != datas && datas.size() > 0 ) {
-            ajaxData.setFlag(false);
-            ajaxData.addMessage("此用户名已存在，请更换用户名");
-            return ajaxData;
-        }
-        
-        UserInfoParam userInfoParam2 = new UserInfoParam();
-        userInfoParam2.setEmail(param.getEmail());
-        List<UserInfoData> datas2 = userInfoService.getUserInfos(userInfoParam2,null);
-        if (null != datas2 && datas2.size() > 0 ) {
-            ajaxData.setFlag(false);
-            ajaxData.addMessage("此邮箱已被别人使用，请更换邮箱");
-            return ajaxData;
+        List<UserInfoData> datas = userInfoService.getAllUserInfos(null);
+        if (null != datas) {
+            for (UserInfoData userInfoData : datas) {
+                if (userInfoData.getUserName().equals(param.getUserName())) {
+                    ajaxData.setFlag(false);
+                    ajaxData.addMessage("此用户名已存在，请更换用户名");
+                    return ajaxData;
+                }
+                if (userInfoData.getEmail().equals(param.getEmail())) {
+                    ajaxData.setFlag(false);
+                    ajaxData.addMessage("此邮箱已被别人使用，请更换邮箱");
+                    return ajaxData;
+                }
+            }
         }
         
         UserInfoData userInfoData = new UserInfoData();

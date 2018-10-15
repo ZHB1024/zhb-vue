@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -14,7 +15,12 @@ import com.zhb.forever.framework.dic.DeleteFlagEnum;
 
 @Entity
 @Table(name="attachment_info")
-public class AttachmentInfoData {
+public class AttachmentInfoData implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1623149768430404368L;
     
     private String id;
     private String fileName;
