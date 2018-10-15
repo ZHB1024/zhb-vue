@@ -53,7 +53,7 @@ public class FunctionInfoServiceTest extends BaseTest {
         
         data.setIconInfoData(datas.get(0));*/
         
-        functionInfoService.saveOrUpdate(data);
+        functionInfoService.saveOrUpdateFunctionInfoData(data);
     }
     
     @Test
@@ -101,7 +101,7 @@ public class FunctionInfoServiceTest extends BaseTest {
         
         data.setUserInfoData(datas2.get(0));
         
-        functionInfoService.saveOrUpdate(data);
+        functionInfoService.saveOrUpdateUserFunctionInfoData(data);
     }
     
     

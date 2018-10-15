@@ -1,5 +1,6 @@
 package com.zhb.vue.pojo;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
@@ -22,7 +23,12 @@ import com.zhb.forever.framework.dic.DeleteFlagEnum;
 
 @Entity
 @Table(name="function_info")
-public class FunctionInfoData {
+public class FunctionInfoData implements Serializable{
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 3918928846538541402L;
     
     private String id;
     private String name;

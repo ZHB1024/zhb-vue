@@ -355,7 +355,7 @@ public class LoginController {
             root.setPath("userinfocontroller");
             root.setIconInfoData(iconInfoData);
             root.setOrder(1);
-            functionInfoService.saveOrUpdate(root);
+            functionInfoService.saveOrUpdateFunctionInfoData(root);
             
             FunctionInfoData children = new FunctionInfoData();
             children.setName("个人信息");
@@ -363,13 +363,13 @@ public class LoginController {
             children.setPath("/htgl/userinfocontroller/searchuserinfo");
             children.setOrder(2);
             children.setParentFunctionInfo(root);
-            functionInfoService.saveOrUpdate(children);
+            functionInfoService.saveOrUpdateFunctionInfoData(children);
             
             //人员功能关系
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setUserInfoData(data);
             userFunctionInfoData.setFunctionInfoData(children);
-            functionInfoService.saveOrUpdate(userFunctionInfoData);
+            functionInfoService.saveOrUpdateUserFunctionInfoData(userFunctionInfoData);
             
             
             WriteJSUtil.writeJS("init root success", response);

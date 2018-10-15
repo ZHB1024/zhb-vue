@@ -62,6 +62,23 @@ public class UserInfoDaoImpl implements UserInfoDao {
         Query<UserInfoData> query = session.createQuery(cq);
         return query.list();
     }
+    
+    @Override
+    public List<UserInfoData> getAllUserInfos(List<OrderVO> orderVos){
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<UserInfoData> cq = cb.createQuery(UserInfoData.class);
+        Root<UserInfoData> root = cq.from(UserInfoData.class);
+        
+        //排序
+        if (null != orderVos && orderVos.size() > 0) {
+            DaoUtil.addOrders(cb, cq, root, orderVos);
+        }
+        
+        Query<UserInfoData> query = session.createQuery(cq);
+        return query.list();
+    }
 
     @Override
     public UserInfoData getUserInfoById(String id) {

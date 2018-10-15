@@ -89,6 +89,27 @@ public class FunctionInfoDaoImpl implements FunctionInfoDao {
         Query<FunctionInfoData> query = session.createQuery(criteriaQuery);
         return query.list();
     }
+    
+    @Override
+    public List<FunctionInfoData> getAllFunctions(List<OrderVO> orderVos) {
+        Session session = sessionFactory.getCurrentSession();
+        
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<FunctionInfoData> criteriaQuery = criteriaBuilder.createQuery(FunctionInfoData.class);
+        Root<FunctionInfoData> root = criteriaQuery.from(FunctionInfoData.class);
+        
+        List<Predicate> conditions = new ArrayList<>();
+        conditions.add(criteriaBuilder.equal(root.get("type"), 1));
+        
+        criteriaQuery.where(criteriaBuilder.and(conditions.toArray(new Predicate[conditions.size()])));
+        
+        if (null != orderVos && orderVos.size() > 0) {
+            DaoUtil.addOrders(criteriaBuilder, criteriaQuery, root, orderVos);
+        }
+        
+        Query<FunctionInfoData> query = session.createQuery(criteriaQuery);
+        return query.list();
+    }
 
 
     @Override

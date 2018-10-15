@@ -1,20 +1,25 @@
 package com.zhb.vue.web.controller;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.util.CheckAgentUtil;
 import com.zhb.forever.framework.util.IPUtil;
-import com.zhb.forever.redis.client.RedisClient;
-import com.zhb.forever.redis.client.RedisClientFactory;
+import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.web.util.WebAppUtil;
 
 @Controller
 @RequestMapping("/htgl/testcontroller")
@@ -22,12 +27,35 @@ public class TestController {
     
     private Logger logger = LoggerFactory.getLogger(TestController.class);
     
+    //private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
     
-    private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
+    @Autowired
+    private UserInfoService userInfoService;
     
     @RequestMapping(value = "/testredis")
     @Transactional
     public void testRedis(HttpServletRequest request,HttpServletResponse response) {
+        
+        UserInfoData data = userInfoService.getUserInfoById(WebAppUtil.getUserId(request));
+        
+        RedisImplUtil.del("hello".getBytes());
+        
+        List<UserInfoData> lists = new ArrayList<>();
+        lists.add(data);
+        
+        ListTranscoder<UserInfoData> listTranscoder = new ListTranscoder<UserInfoData>();
+        byte[] bytes = listTranscoder.serialize(lists);
+        
+        RedisImplUtil.set("hello".getBytes(), bytes);
+        byte[] ress = RedisImplUtil.get("hello".getBytes());
+        List<UserInfoData> res = listTranscoder.deserialize(ress);
+        if (null != res) {
+            for (UserInfoData userInfoData : res) {
+                System.out.println(userInfoData.getRealName());
+            }
+        }
+        
+        
         /*List<String> countries = new ArrayList<String>();
         countries.add("China");
         countries.add("America");
@@ -36,20 +64,20 @@ public class TestController {
         Object value =redisClient.get("hello");
         if (null != value) {
             logger.info(value.toString());
-        }
+        }*/
         
-        redisClient.set("hello", "hellosss");
+        /*redisClient.set("hello", "hellosss");
         value =redisClient.get("hello");
         if (null != value) {
             logger.info(value.toString());
         }*/
         
-        Set<?> setTemps2 = redisClient.getSet("number");
+        /*Set<?> setTemps2 = redisClient.getSet("number");
         if (null != setTemps2) {
             for (Object object : setTemps2) {
                 logger.info(object.toString());
             }
-        }
+        }*/
         
         
         /*redisClient.addList("zhb-vue-list", countries);

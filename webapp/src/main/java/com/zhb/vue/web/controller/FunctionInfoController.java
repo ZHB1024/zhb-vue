@@ -70,6 +70,23 @@ public class FunctionInfoController {
         return ajaxData;
     }
     
+    //查询所有的功能
+    @RequestMapping("/getallfunctions/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData getAllFunctions(HttpServletRequest request,HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo2 = new OrderVO("order",true);
+        orderVos.add(vo2);
+        List<FunctionInfoData> functionInfos = functionInfoService.getAllFunctions(orderVos);
+        if (null != functionInfos) {
+            //ajaxData.setData(Data2JSONUtil.functionInfoDatas2JSONArray(functionInfos));
+        }
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
     //toadd
     @RequestMapping(value="/toadd",method=RequestMethod.GET)
     @Transactional
@@ -126,7 +143,7 @@ public class FunctionInfoController {
         Param2DataUtil.functionParam2Data(param, data);
         data.setCreateUserId(WebAppUtil.getUserId(request));
         
-        functionInfoService.saveOrUpdate(data);
+        functionInfoService.saveOrUpdateFunctionInfoData(data);
         
         //将功能授权给管理员
         if (data.getType() == 1) {
@@ -134,7 +151,7 @@ public class FunctionInfoController {
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setFunctionInfoData(data);
             userFunctionInfoData.setUserInfoData(userInfoData);
-            functionInfoService.saveOrUpdate(userFunctionInfoData);
+            functionInfoService.saveOrUpdateUserFunctionInfoData(userFunctionInfoData);
         }
         
         ajaxData.setFlag(true);
@@ -208,7 +225,7 @@ public class FunctionInfoController {
         Param2DataUtil.functionParam2Data(param, data);
         data.setUpdateTime(Calendar.getInstance());
         
-        functionInfoService.saveOrUpdate(data);
+        functionInfoService.saveOrUpdateFunctionInfoData(data);
         ajaxData.setFlag(true);
         return ajaxData;
     }
@@ -242,13 +259,13 @@ public class FunctionInfoController {
             }
             //删除子功能
             data.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
-            functionInfoService.saveOrUpdate(data);
+            functionInfoService.saveOrUpdateFunctionInfoData(data);
             
             FunctionInfoData parent = data.getParentFunctionInfo();
             if (parent.getChildFunctionInfos().size() == 1) {
                 //删除父功能
                 parent.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
-                functionInfoService.saveOrUpdate(parent);
+                functionInfoService.saveOrUpdateFunctionInfoData(parent);
             }
         }else {//父功能
             //获取子功能
@@ -264,11 +281,11 @@ public class FunctionInfoController {
                 }
                 //删除子功能
                 functionInfoData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
-                functionInfoService.saveOrUpdate(functionInfoData);
+                functionInfoService.saveOrUpdateFunctionInfoData(functionInfoData);
             }
             //删除父功能
             data.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
-            functionInfoService.saveOrUpdate(data);
+            functionInfoService.saveOrUpdateFunctionInfoData(data);
         }
         param.setType(0);
         ajaxData = searchFunctionInfo2AjaxData(param, request);
@@ -296,35 +313,35 @@ public class FunctionInfoController {
         if (data.getType() == 1) {//子功能
             //恢复子功能
             data.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
-            functionInfoService.saveOrUpdate(data);
+            functionInfoService.saveOrUpdateFunctionInfoData(data);
             FunctionInfoData parent = data.getParentFunctionInfo();
             //恢复子功能
             parent.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
-            functionInfoService.saveOrUpdate(parent);
+            functionInfoService.saveOrUpdateFunctionInfoData(parent);
             
             //将功能授权给管理员
             UserInfoData userInfoData = userInfoService.getUserInfoById("WebAppUtil.getUserId(request)");
             UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
             userFunctionInfoData.setFunctionInfoData(data);
             userFunctionInfoData.setUserInfoData(userInfoData);
-            functionInfoService.saveOrUpdate(userFunctionInfoData);
+            functionInfoService.saveOrUpdateUserFunctionInfoData(userFunctionInfoData);
         }else {//父功能
             //获取子功能
             List<FunctionInfoData> datas = data.getChildFunctionInfos();
             for (FunctionInfoData functionInfoData : datas) {
                 //恢复子功能
                 functionInfoData.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
-                functionInfoService.saveOrUpdate(functionInfoData);
+                functionInfoService.saveOrUpdateFunctionInfoData(functionInfoData);
                 //将功能授权给管理员
                 UserInfoData userInfoData = userInfoService.getUserInfoById("WebAppUtil.getUserId(request)");
                 UserFunctionInfoData userFunctionInfoData = new UserFunctionInfoData();
                 userFunctionInfoData.setFunctionInfoData(functionInfoData);
                 userFunctionInfoData.setUserInfoData(userInfoData);
-                functionInfoService.saveOrUpdate(userFunctionInfoData);
+                functionInfoService.saveOrUpdateUserFunctionInfoData(userFunctionInfoData);
             }
             //恢复父功能
             data.setDeleteFlag(DeleteFlagEnum.UDEL.getIndex());
-            functionInfoService.saveOrUpdate(data);
+            functionInfoService.saveOrUpdateFunctionInfoData(data);
         }
         param.setType(0);
         ajaxData = searchFunctionInfo2AjaxData(param, request);

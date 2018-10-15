@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
+import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.vo.OrderVO;
+import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.vue.Constant;
 import com.zhb.vue.dao.FunctionInfoDao;
 import com.zhb.vue.dao.UserFunctionInfoDao;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.params.UserFunctionInfoParam;
-import com.zhb.vue.pojo.DicInfoData;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
@@ -28,13 +30,21 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     private UserFunctionInfoDao userFunctionInfoDao;
 
     @Override
-    public void saveOrUpdate(FunctionInfoData data) {
+    public FunctionInfoData saveOrUpdateFunctionInfoData(FunctionInfoData data) {
+        if (null == data) {
+            return null;
+        }
         functionInfoDao.saveOrUpdate(data);
+        return data;
     }
 
     @Override
-    public void saveOrUpdate(UserFunctionInfoData data) {
+    public UserFunctionInfoData saveOrUpdateUserFunctionInfoData(UserFunctionInfoData data) {
+        if (null == data) {
+            return null;
+        }
         userFunctionInfoDao.saveOrUpdate(data);
+        return data;
     }
     
     @Override
@@ -50,6 +60,24 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     @Override
     public List<FunctionInfoData> getFunctions(FunctionInfoParam param,List<OrderVO> orderVos) {
         return functionInfoDao.getFunctions(param,orderVos);
+    }
+    
+    @Override
+    public List<FunctionInfoData> getAllFunctions(List<OrderVO> orderVos) {
+        byte[] bytes = RedisImplUtil.get(Constant.FUNCTION_INFO_DATAS.getBytes());
+        if (null != bytes) {
+            ListTranscoder<FunctionInfoData> listTranscoder = new ListTranscoder<>();
+            List<FunctionInfoData> datas = listTranscoder.deserialize(bytes);
+            return datas;
+        }
+        
+        List<FunctionInfoData> datas = functionInfoDao.getAllFunctions(orderVos);
+        if (null != datas && datas.size() > 0) {
+            ListTranscoder<FunctionInfoData> listTranscoder = new ListTranscoder<>();
+            bytes = listTranscoder.serialize(datas);
+            RedisImplUtil.set(Constant.FUNCTION_INFO_DATAS.getBytes(), bytes);
+        }
+        return datas;
     }
     
     @Override

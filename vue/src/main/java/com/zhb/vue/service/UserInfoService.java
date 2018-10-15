@@ -12,13 +12,19 @@ public interface UserInfoService {
      * *新增或修改用户
      * @param data
      */
-    void saveOrUpdate(UserInfoData data);
+    UserInfoData saveOrUpdate(UserInfoData data);
     
     /**
      ** 获取用户
      * @param userInfoParam
      */
     List<UserInfoData> getUserInfos(UserInfoParam userInfoParam,List<OrderVO> orderVos);
+    
+    /**
+     ** 获取所有的用户
+     * @param orderVos
+     */
+    List<UserInfoData> getAllUserInfos(List<OrderVO> orderVos);
 
     /**
      ** 获取用户,根据id
