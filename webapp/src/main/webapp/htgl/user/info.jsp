@@ -2,6 +2,12 @@
 <%
 String ctxPath = request.getContextPath();
 %>
+<style> 
+p{
+margin-top:20px;
+margin-left:30px;
+}
+</style>
 
 <div id="app_content" style="height: 100%">
     <Layout :style="{padding: '0 24px 24px', height: '100%'}"> 
@@ -33,12 +39,16 @@ String ctxPath = request.getContextPath();
                           <p>毕业院校： {{userInfo.byyx}}</p>
                           <p>电话： {{userInfo.mobilePhone}}</p>
                           <p>邮箱： {{userInfo.email}}</p>
-                          <p>lobId： {{userInfo.lobId}}</p>
+                          <p>密码：*********
+                          	<a  href="<%=ctxPath%>/htgl/userinfocontroller/tomodifypassword">
+                          		<Icon type="ios-create" />
+                          	</a>
+                          </p>
                         </i-col>
                         
                         <i-col span="5">
-                          <p><img :src="userInfo.lobId"/></p>
-                          <p><i-button type="primary" to="/htgl/userinfocontroller/toadd">修改照片</i-button></p>
+                          <p style="margin-top:50px"><img :src="userInfo.lobId"/></p>
+                          <p style="margin-top:50px"><i-button type="primary" v-bind:id="userInfo.id" onclick="updateHead(this)" >上传新头像</i-button></p>
                         </i-col>
                         
                       </Row>
@@ -83,4 +93,32 @@ var myVue =  new Vue({
 		
 	  }
 });
+/*0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）*/
+/*弹出层*/
+function updateHead(data){
+	var id = data.getAttribute("id");
+	var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
+
+	showContent += generatorValue("id",id);
+	   
+	showContent += '</table>';
+	layer.open({
+        title: '修改头像',
+        type: 1,
+        //skin: 'layui-layer-rim', //加上边框
+        area: ['600px', '600px'], //宽高
+        content: showContent, 
+        btn: ['确定'],
+        success: function(layero, index){
+        },
+        yes: function(index, layero){
+        	debugger;
+            layer.closeAll();
+        }
+    });
+}
+
+function generatorValue(name,value){
+    return '<tr><th>' + name + '：</th><td>' + value + '</td></tr>'; 
+}
 </script>

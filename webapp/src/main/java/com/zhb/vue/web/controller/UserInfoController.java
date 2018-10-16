@@ -243,6 +243,80 @@ public class UserInfoController {
         return ajaxData;
     }
     
+    //to修改密码
+    @RequestMapping(value="/tomodifypassword",method=RequestMethod.GET)
+    @Transactional
+    public String toModifyPassword(HttpServletRequest request,HttpServletResponse response) {
+        UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
+        if (null == vo) {
+            return "login.index";
+        }
+        return "htgl.user.update.password";
+    }
+    
+    //修改密码
+    @RequestMapping(value="/updatepassword/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData updatePassword(HttpServletRequest request,HttpServletResponse response,UserInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        String userId = WebAppUtil.getUserId(request);
+        if (StringUtil.isBlank(userId)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        
+        if (StringUtil.isBlank(param.getUserName())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写用户名");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写原密码");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getNewPassword()) || StringUtil.isBlank(param.getConfirmPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请填写新密码或确认密码");
+            return ajaxData;
+        }
+        
+        if (!param.getNewPassword().equals(param.getConfirmPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("新密码与确认密码不一致，请重新输入");
+            return ajaxData;
+        }
+        
+        UserInfoData data = userInfoService.getUserInfoById(userId);
+        if (null == data) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("不存在这个用户");
+            return ajaxData;
+        }
+        
+        if (!data.getUserName().equals(param.getUserName())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("越权操作");
+            return ajaxData;
+        }
+        
+        String oldPassword = PasswordUtil.encrypt(param.getUserName(), param.getPassword(), PasswordUtil.generateSalt(data.getSalt()));
+        if (!oldPassword.equals(data.getPassword())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("您输入的原密码不正确");
+            return ajaxData;
+        }
+        
+        String newPassword = PasswordUtil.encrypt(data.getUserName(), param.getNewPassword(), PasswordUtil.generateSalt(data.getSalt()));
+        data.setPassword(newPassword);
+        userInfoService.saveOrUpdate(data);
+        
+        ajaxData.setFlag(true);
+        return ajaxData;
+    }
+    
     
     //获取真实姓名
     @RequestMapping(value="/getrealname/api")

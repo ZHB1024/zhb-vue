@@ -52,6 +52,9 @@
 	<definition name="htgl.user.update" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/user/update.jsp" />
     </definition>
+	<definition name="htgl.user.update.password" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/user/modify_password.jsp" />
+    </definition>
     
     <!-- function -->
 	<definition name="htgl.function.index" extends="htgl.main.layout">
