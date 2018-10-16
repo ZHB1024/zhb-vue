@@ -47,8 +47,24 @@ margin-left:30px;
                         </i-col>
                         
                         <i-col span="5">
-                          <p style="margin-top:50px"><img :src="userInfo.lobId"/></p>
-                          <p style="margin-top:50px"><i-button type="primary" v-bind:id="userInfo.id" onclick="updateHead(this)" >上传新头像</i-button></p>
+                          <p style="margin-top:50px;margin-left: 100px;"><img :src="userInfo.lobId"/></p>
+                          <p style="margin-top:50px">
+                          	<Upload 
+            					ref="upload" 
+            					type="drag" 
+            					name="upFile" 
+            					:max-size="20480" 
+            					:show-upload-list="false" 
+            					:on-format-error="handleFormatError"
+            					:on-exceeded-size="handleSizeError"
+            					:on-success="uploadResponse"
+            					:userId="userInfo.id"
+            					action="<%=ctxPath%>/htgl/attachmentinfocontroller/uploadattachmentinfo">
+        						<i-button type="primary" v-bind:userId="userInfo.id" id="updateHead">
+                          			上传新头像
+                          		</i-button>
+    						</Upload>
+                          </p>
                         </i-col>
                         
                       </Row>
@@ -87,12 +103,91 @@ var myVue =  new Vue({
 	    	  }));
 	 },
 	  methods:{
-		   handleSubmit:function (name) {
-			   
-		   }
+		// 上传文件格式不正确
+          handleFormatError:function (file) {
+              myVue.$Message.error({
+            		content: file.name + " 的文件格式不允许",
+            		duration: 4,
+            		closable: true
+        		});
+              return false;
+          },
+          // 上传文件大小超出限制
+          handleSizeError:function (file) {
+       	   myVue.$Message.error({
+           		content: file.name + " 的文件大小超出20MB限制",
+           		duration: 4,
+           		closable: true
+       		});
+             return false;
+          },
+          /* delectFile:function (keyID) { // 删除文件
+       	   this.file = this.file.filter(item => {
+                  return item.keyID != keyID
+              });
+              this.uploadFile = this.uploadFile.filter(item => {
+                  return item.keyID != keyID
+              });
+          },
+          upload:function () { // 上传文件
+       	   this.loadingStatus = true;
+              if(this.uploadFile.length === 0 ) {
+                  this.$Message.error('未选择上传文件') 
+                  return false
+              }
+              var size = this.uploadFile.length;
+              for (var i = size-1; i >= 0; i--) {
+                  let fileItem = this.file[i];
+                  this.$refs.upload.post(fileItem);
+                  
+                  this.file = this.file.filter(item => {
+                  		return item.keyID != fileItem.keyID
+              	   });
+              	   this.uploadFile = this.uploadFile.filter(item => {
+                  		return item.keyID != fileItem.keyID
+              	   });
+              }
+              if(this.uploadFile.length == 0){
+           	   this.loadingStatus = false;
+                  this.$Message.success('Success');
+              } 
+          }, */
+          // 文件上传结果回调 
+          uploadResponse:function (response, file, fileList) { 
+       	   if(!response.flag){
+       		   myVue.$Message.error({
+               		content: response.errorMessages,
+               		duration: 4,
+               		closable: true
+           		});
+       		   this.$refs.upload.fileList = this.$refs.upload.fileList.filter(item => {
+                		return item.uid != file.uid
+            	   });
+       	   }
+          }
 		
 	  }
 });
+
+/* layui.use('upload', function(){
+    var $ = layui.jquery;
+    var upload = layui.upload;
+
+    //修改头像
+    var uploadInst = upload.render({
+        elem: '#updateHead',
+        auto: false,
+        size: 500 ,//限制文件大小，单位 KB
+        choose: function(obj){
+            //读取本地文件
+            obj.preview(function(index, file, result){
+                console.log(result);
+            });
+        },
+        error: function(){
+        }
+    });
+}); */
 /*0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）*/
 /*弹出层*/
 function updateHead(data){

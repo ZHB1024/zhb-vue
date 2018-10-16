@@ -24,6 +24,7 @@ String ctxPath = request.getContextPath();
     <script src="/js/axios.min.js"></script>
     <script src="/js/jquery-3.3.1.js"></script>
     <script src="/js/layui/layer.js"></script>
+    <script src="/js/layui/layui.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/my.css">
 
