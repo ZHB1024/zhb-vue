@@ -23,6 +23,7 @@ public class IconInfoServiceTest extends BaseTest {
         IconInfoData data = new IconInfoData();
         data.setName("授权管理");
         data.setValue("logo-designernews");
+        data.setCreateUserId("8cjyg3qe735dtdcf");
         iconInfoService.saveOrUpdate(data);
     }
     
