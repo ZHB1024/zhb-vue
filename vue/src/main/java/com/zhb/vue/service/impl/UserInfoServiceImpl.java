@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.vo.OrderVO;
-import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.forever.redis.client.RedisClient;
+import com.zhb.forever.redis.client.RedisClientFactory;
 import com.zhb.vue.Constant;
 import com.zhb.vue.dao.UserInfoDao;
 import com.zhb.vue.params.UserInfoParam;
@@ -19,6 +20,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     
     @Autowired
     private UserInfoDao userInfoDao;
+    
+    private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
 
     @Override
     public UserInfoData saveOrUpdate(UserInfoData data) {
@@ -36,7 +39,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     
     @Override
     public List<UserInfoData> getAllUserInfos(List<OrderVO> orderVos){
-        byte[] bytes = RedisImplUtil.get(Constant.USER_INFO_DATAS.getBytes());
+        byte[] bytes = redisClient.get(Constant.USER_INFO_DATAS.getBytes());
         if (null != bytes) {
             ListTranscoder<UserInfoData> listTranscoder = new ListTranscoder<>();
             List<UserInfoData> datas = listTranscoder.deserialize(bytes);
@@ -46,7 +49,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         if (null != datas && datas.size() > 0) {
             ListTranscoder<UserInfoData> listTranscoder = new ListTranscoder<>();
             bytes = listTranscoder.serialize(datas);
-            RedisImplUtil.set(Constant.USER_INFO_DATAS.getBytes(), bytes);
+            redisClient.set(Constant.USER_INFO_DATAS.getBytes(), bytes);
         }
         return datas;
     }

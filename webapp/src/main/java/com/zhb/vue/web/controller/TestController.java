@@ -14,9 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.zhb.forever.framework.serialize.impl.ListTranscoder;
+import com.zhb.forever.framework.serialize.impl.ObjectTranscoder;
 import com.zhb.forever.framework.util.CheckAgentUtil;
 import com.zhb.forever.framework.util.IPUtil;
-import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.redis.client.RedisClient;
+import com.zhb.forever.redis.client.RedisClientFactory;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.web.util.WebAppUtil;
@@ -32,11 +35,13 @@ public class TestController {
     @Autowired
     private UserInfoService userInfoService;
     
+    private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
+    
     @RequestMapping(value = "/testredis")
     @Transactional
     public void testRedis(HttpServletRequest request,HttpServletResponse response) {
         
-        UserInfoData data = userInfoService.getUserInfoById(WebAppUtil.getUserId(request));
+        /*UserInfoData data = userInfoService.getUserInfoById(WebAppUtil.getUserId(request));
         
         RedisImplUtil.del("hello".getBytes());
         
@@ -53,8 +58,7 @@ public class TestController {
             for (UserInfoData userInfoData : res) {
                 System.out.println(userInfoData.getRealName());
             }
-        }
-        
+        }*/
         
         /*List<String> countries = new ArrayList<String>();
         countries.add("China");

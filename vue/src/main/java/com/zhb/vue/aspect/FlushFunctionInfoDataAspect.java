@@ -10,16 +10,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.forever.redis.client.RedisClient;
+import com.zhb.forever.redis.client.RedisClientFactory;
 import com.zhb.vue.Constant;
 import com.zhb.vue.pojo.FunctionInfoData;
-import com.zhb.vue.pojo.UserInfoData;
 
 @Aspect
 @Component
 public class FlushFunctionInfoDataAspect {
 
     private Logger logger = LoggerFactory.getLogger(FlushFunctionInfoDataAspect.class);
+    
+    private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
 
     @Pointcut("execution(public * com.zhb.vue.service.impl.FunctionInfoServiceImpl.saveOrUpdateFunctionInfoData(..))")
     public void flush(){
@@ -36,9 +38,9 @@ public class FlushFunctionInfoDataAspect {
     @AfterReturning(returning="object",pointcut="flush()")
     public void doAfterReturning(Object object){
         if (null != object) {
-            RedisImplUtil.del(Constant.FUNCTION_INFO_DATAS.getBytes());
+            redisClient.del(Constant.FUNCTION_INFO_DATAS.getBytes());
             FunctionInfoData data = (FunctionInfoData)object;
-            RedisImplUtil.del(data.getId().getBytes());
+            redisClient.del(data.getId().getBytes());
             logger.info("delete functionIndoDatas and " + data.getName() + " redis cache...");
         }
     }

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.UserInfoVO;
-import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.forever.redis.client.RedisClient;
+import com.zhb.forever.redis.client.RedisClientFactory;
 import com.zhb.vue.Constant;
 import com.zhb.vue.web.util.WebAppUtil;
 import com.zhb.vue.web.util.WriteJSUtil;
@@ -24,6 +25,8 @@ import com.zhb.vue.web.util.WriteJSUtil;
 public class FlushRedisCacheController {
     
     private Logger logger = LoggerFactory.getLogger(FlushRedisCacheController.class);
+    
+    private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
     
     //toindex
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
@@ -57,8 +60,8 @@ public class FlushRedisCacheController {
             return ajaxData;
         }
         
-        RedisImplUtil.del(Constant.USER_INFO_DATAS.getBytes());
-        RedisImplUtil.del(Constant.FUNCTION_INFO_DATAS.getBytes());
+        redisClient.del(Constant.USER_INFO_DATAS.getBytes());
+        redisClient.del(Constant.FUNCTION_INFO_DATAS.getBytes());
         
         ajaxData.setFlag(true);
         return ajaxData;

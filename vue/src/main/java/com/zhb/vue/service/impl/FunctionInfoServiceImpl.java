@@ -9,7 +9,8 @@ import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.vo.OrderVO;
-import com.zhb.forever.redis.util.RedisImplUtil;
+import com.zhb.forever.redis.client.RedisClient;
+import com.zhb.forever.redis.client.RedisClientFactory;
 import com.zhb.vue.Constant;
 import com.zhb.vue.dao.FunctionInfoDao;
 import com.zhb.vue.dao.UserFunctionInfoDao;
@@ -28,6 +29,8 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     
     @Autowired
     private UserFunctionInfoDao userFunctionInfoDao;
+    
+    private RedisClient redisClient = RedisClientFactory.getRedisClientBean();
 
     @Override
     public FunctionInfoData saveOrUpdateFunctionInfoData(FunctionInfoData data) {
@@ -64,7 +67,7 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
     
     @Override
     public List<FunctionInfoData> getAllFunctions(List<OrderVO> orderVos) {
-        byte[] bytes = RedisImplUtil.get(Constant.FUNCTION_INFO_DATAS.getBytes());
+        byte[] bytes = redisClient.get(Constant.FUNCTION_INFO_DATAS.getBytes());
         if (null != bytes) {
             ListTranscoder<FunctionInfoData> listTranscoder = new ListTranscoder<>();
             List<FunctionInfoData> datas = listTranscoder.deserialize(bytes);
@@ -75,7 +78,7 @@ public class FunctionInfoServiceImpl implements FunctionInfoService {
         if (null != datas && datas.size() > 0) {
             ListTranscoder<FunctionInfoData> listTranscoder = new ListTranscoder<>();
             bytes = listTranscoder.serialize(datas);
-            RedisImplUtil.set(Constant.FUNCTION_INFO_DATAS.getBytes(), bytes);
+            redisClient.set(Constant.FUNCTION_INFO_DATAS.getBytes(), bytes);
         }
         return datas;
     }
