@@ -47,7 +47,9 @@ margin-left:30px;
                         </i-col>
                         
                         <i-col span="5">
-                          <p style="margin-top:50px;margin-left: 100px;"><img :src="userInfo.lobId"/></p>
+                          <p style="margin-top:50px;margin-left: 50px;">
+                          	<img :src="userInfo.headSrc" width="150" height="150"/>
+                          </p>
                           <p style="margin-top:50px">
                           	<Upload 
             					ref="upload" 
@@ -91,7 +93,7 @@ var myVue =  new Vue({
 			  byyx:'',
 			  mobilePhone:'',
 			  email:'',
-			  lobId:''
+			  headSrc:''
 		  },
 	  },
 	  created: function () {
@@ -99,7 +101,7 @@ var myVue =  new Vue({
 	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getselfinfo/api')
 	    	  ]).then(axios.spread(function (userInfoResp) {
 	    		  myVue.userInfo = userInfoResp.data.data;
-	    		  myVue.userInfo.lobId = '/images/loading.gif';
+	    		  myVue.userInfo.headSrc = '<%=ctxPath%>/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=' + userInfoResp.data.data.lobId;
 	    	  }));
 	 },
 	  methods:{

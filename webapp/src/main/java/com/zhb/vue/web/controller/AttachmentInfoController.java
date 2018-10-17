@@ -47,7 +47,9 @@ import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
 import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.Data2JSONUtil;
+import com.zhb.vue.web.util.FlushSessionUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
 @Controller
@@ -510,6 +512,18 @@ public class AttachmentInfoController {
         fileInfoData.setType(AttachmentTypeEnum.IMAGE.getIndex());
         fileInfoData.setCreateUserId(userId);
         attachmentInfoService.saveOrUpdate(fileInfoData);
+        
+        if (StringUtil.isNotBlank(userInfoData.getLobId())) {
+            AttachmentInfoData oldData = attachmentInfoService.getAttachmentInfoById(userInfoData.getLobId());
+            if (null != oldData) {
+                attachmentInfoService.deleteAttachmentInfo(oldData);
+            }
+        }
+        userInfoData.setLobId(fileInfoData.getId());
+        userInfoService.saveOrUpdate(userInfoData);
+        
+        //刷新用户缓存
+        FlushSessionUtil.flushWebAppUserInfo(request,Data2VO.userInfoDat2VO(userInfoData));
         
         ajaxData.setFlag(true);
         return ajaxData;
