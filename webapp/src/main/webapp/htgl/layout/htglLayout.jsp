@@ -25,6 +25,10 @@ String ctxPath = request.getContextPath();
     <script src="/js/jquery-3.3.1.js"></script>
     <script src="/js/layui/layer.js"></script>
     <!-- <script src="/js/layui/layui.js"></script> -->
+    
+    <!-- 裁剪照片 -->
+    <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/cropper/cropper.css" />
+	<script type="text/javascript" src="<%=ctxPath%>/js/cropper/cropper.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/my.css">
 

@@ -1,13 +1,19 @@
 package com.zhb.vue.web.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +42,9 @@ import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
+import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
+import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -48,6 +56,8 @@ public class AttachmentInfoController {
     
     @Autowired
     private AttachmentInfoService attachmentInfoService;
+    @Autowired
+    private UserInfoService userInfoService;
     
     //toindex
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
@@ -337,6 +347,155 @@ public class AttachmentInfoController {
         }
         
         DownloadUtil.downloadAttachment(request, response, data.getThumbnailPath());
+    }
+    
+    //上传头像 获取layer
+    @RequestMapping("/getlayercontent/api")
+    @Transactional
+    @ResponseBody
+    public AjaxData layerContent(HttpServletRequest request, HttpServletResponse response,String image,String id) {
+        AjaxData ajaxData = new AjaxData();
+
+        /*可以将以下内容 整理到jsp中*/
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div class=\"box\">");
+        sb.append(      image);
+        sb.append(     "<input id=\"userId\" type=\"hidden\" value='" + id + "' >");
+        sb.append("</div>");
+        sb.append("<div align=\"center\" style=\"margin-top:20px;\" > ");
+        sb.append(     "<button id=\"cut_upload\" type=\"button\" class=\"layui-btn\" >");
+        sb.append(     "上传</button>");
+        sb.append(     "<button id=\"cut_cancle\" type=\"button\" class=\"layui-btn\" >");
+        sb.append(     "取消</button>");
+        sb.append("</div>");
+        sb.append("<script type=\"text/javascript\">");
+        sb.append("     $('#new_me_image').cropper({");
+        sb.append("             aspectRatio: 1 / 1,");
+        sb.append("             viewMode:1,");
+        sb.append("             crop: function (e) {");
+        sb.append("                 ");
+        sb.append("             }");
+        sb.append("     });");
+        sb.append("     $(\"#cut_upload\").on(\"click\", function () {");
+        sb.append("          var image_target = $('#new_me_image').cropper('getData', true); ");
+        sb.append("          var image_content = $('#new_me_image').attr('src');");
+        sb.append("          var userId = $('#userId').val();");
+        sb.append("          var data = {");
+        sb.append("                         'id':userId,");
+        sb.append("                         'image_content':image_content,");
+        sb.append("                         'image_target':image_target,");
+        sb.append("                         'x':image_target.x,");
+        sb.append("                         'y':image_target.y,");
+        sb.append("                         'width':image_target.width,");
+        sb.append("                         'height':image_target.height");
+        sb.append("          };");
+
+        sb.append("          $.ajax({");
+        sb.append("             url: '/htgl/attachmentinfocontroller/uploadHeadPhoto/api',");
+        sb.append("             type: 'POST',");
+        sb.append("             data:data,");
+        sb.append("             success: function (result) { ");
+        sb.append("                 layer.closeAll(); ");
+        sb.append("                 window.location.reload() ; ");
+        sb.append("             }, ");
+        sb.append("             error: function (result) {");
+        sb.append("                 layer.closeAll(); ");
+        sb.append("             }");
+        sb.append("          });");
+
+        sb.append("     });");
+        sb.append("     $(\"#cut_cancle\").on(\"click\", function () {");
+        sb.append("          layer.closeAll(); ");
+        sb.append("          window.location.reload() ; ");
+        sb.append("     });");
+        sb.append("</script>");
+
+        ajaxData.setFlag(true);
+        ajaxData.setData(sb.toString());
+        return ajaxData;
+    }
+    
+    @RequestMapping("/uploadHeadPhoto/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData uploadHeadPhoto(HttpServletRequest request, HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        
+        String id = request.getParameter("id");
+        String x = request.getParameter("x");
+        String y = request.getParameter("y");
+        String width = request.getParameter("width");
+        String height = request.getParameter("height");
+        String image_content = request.getParameter("image_content");
+        
+
+        Base64 decoder = new Base64();
+        String image_value = image_content.replaceAll("data:image/jpeg;base64,","");
+        byte[] decodedBytes = null;
+        try {
+            // 将字符串格式的imagedata转为二进制流（byte[])的decodedBytes
+            decodedBytes = decoder.decodeBase64(image_value);
+            for(int i=0;i<decodedBytes.length;++i){
+                if(decodedBytes[i]<0) {
+                    //调整异常数据
+                    decodedBytes[i]+=256;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        decodedBytes = ImageUtil
+            .equimultipleConvertToByte(Integer.parseInt(x),Integer.parseInt(y),Integer.parseInt(width),Integer.parseInt(height),decodedBytes );
+
+        String userId = WebAppUtil.getUserId(request);
+        
+        UserInfoData userInfoData = userInfoService.getUserInfoById(userId);
+        if (null == userInfoData) {
+            return ajaxData;
+        }
+        
+        //文件保存路径
+        String filePath = PropertyUtil.getUploadPath();
+        
+        File fileUpload = new File(filePath);
+        if (!fileUpload.exists()) {
+            fileUpload.mkdirs();
+        }
+        String fileName = userInfoData.getUserName() + "_" + FileUtil.randomName() + ".jpg";
+        String uploadPath = fileUpload + File.separator + fileName;
+        
+        File file = new File(uploadPath);
+        OutputStream licOutput = null;
+        try {
+            licOutput = new FileOutputStream(file);
+            licOutput.write(decodedBytes);
+            licOutput.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if (null != licOutput) {
+                try {
+                    licOutput.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        
+        AttachmentInfoData fileInfoData = new AttachmentInfoData();
+        fileInfoData.setFileName(fileName);
+        fileInfoData.setFilePath(uploadPath);
+        fileInfoData.setThumbnailPath(uploadPath);
+        fileInfoData.setFileSize(String.valueOf(decodedBytes.length));
+        fileInfoData.setContentType("image/jpeg");
+        fileInfoData.setType(AttachmentTypeEnum.IMAGE.getIndex());
+        fileInfoData.setCreateUserId(userId);
+        attachmentInfoService.saveOrUpdate(fileInfoData);
+        
+        ajaxData.setFlag(true);
+        return ajaxData;
     }
     
     //附件类型
