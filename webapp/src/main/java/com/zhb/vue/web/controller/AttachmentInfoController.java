@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.zhb.forever.framework.util.ImageUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.util.UploadUtil;
+import com.zhb.forever.framework.vo.ImageVO;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.AttachmentInfoParam;
@@ -421,35 +423,50 @@ public class AttachmentInfoController {
     public AjaxData uploadHeadPhoto(HttpServletRequest request, HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         
-        String id = request.getParameter("id");
+        String userId = request.getParameter("userId");
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request)) || StringUtil.isBlank(userId) || !userId.equals(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法访问");
+            return ajaxData;
+        }
+        
+       // 转型为MultipartHttpRequest：
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        // 获得文件
+        MultipartFile multipartFile = multipartRequest.getFile("upFile");
+        if (null == multipartFile) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请选择待上传的附件");
+            return ajaxData;
+        }
+        //文件内容类型
+        String contentType = multipartFile.getContentType();
+        //文件名字
+        String originalFileName = multipartFile.getOriginalFilename();
+        
+        
         String x = request.getParameter("x");
         String y = request.getParameter("y");
         String width = request.getParameter("width");
         String height = request.getParameter("height");
-        String image_content = request.getParameter("image_content");
+        ImageVO imageVO = new ImageVO(Integer.valueOf(x), Integer.valueOf(y), Integer.valueOf(width), Integer.valueOf(height), 0);
+        imageVO.setSuffix(originalFileName.substring(originalFileName.indexOf(".")+1));
         
+        logger.info(x + "--" + y + "--" + width + "--" + height + "--" + imageVO.getSuffix());
+        logger.info(contentType);
 
-        Base64 decoder = new Base64();
-        String image_value = image_content.replaceAll("data:image/jpeg;base64,","");
         byte[] decodedBytes = null;
+        
         try {
-            // 将字符串格式的imagedata转为二进制流（byte[])的decodedBytes
-            decodedBytes = decoder.decodeBase64(image_value);
-            for(int i=0;i<decodedBytes.length;++i){
-                if(decodedBytes[i]<0) {
-                    //调整异常数据
-                    decodedBytes[i]+=256;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            InputStream is = multipartFile.getInputStream();
+            decodedBytes = FileUtil.readInputStreamAsBytes(is);
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
 
         decodedBytes = ImageUtil
-            .equimultipleConvertToByte(Integer.parseInt(x),Integer.parseInt(y),Integer.parseInt(width),Integer.parseInt(height),decodedBytes );
+            .getCropPhotoBytes(imageVO,new ByteArrayInputStream(decodedBytes) );
 
-        String userId = WebAppUtil.getUserId(request);
-        
         UserInfoData userInfoData = userInfoService.getUserInfoById(userId);
         if (null == userInfoData) {
             return ajaxData;
@@ -462,7 +479,7 @@ public class AttachmentInfoController {
         if (!fileUpload.exists()) {
             fileUpload.mkdirs();
         }
-        String fileName = userInfoData.getUserName() + "_" + FileUtil.randomName() + ".jpg";
+        String fileName = userInfoData.getUserName() + "_" + FileUtil.randomName() + originalFileName.substring(originalFileName.indexOf("."));
         String uploadPath = fileUpload + File.separator + fileName;
         
         File file = new File(uploadPath);
@@ -489,7 +506,7 @@ public class AttachmentInfoController {
         fileInfoData.setFilePath(uploadPath);
         fileInfoData.setThumbnailPath(uploadPath);
         fileInfoData.setFileSize(String.valueOf(decodedBytes.length));
-        fileInfoData.setContentType("image/jpeg");
+        fileInfoData.setContentType(contentType);
         fileInfoData.setType(AttachmentTypeEnum.IMAGE.getIndex());
         fileInfoData.setCreateUserId(userId);
         attachmentInfoService.saveOrUpdate(fileInfoData);

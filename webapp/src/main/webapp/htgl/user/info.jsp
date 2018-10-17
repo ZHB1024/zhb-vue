@@ -78,6 +78,7 @@ margin-left:30px;
 var myVue =  new Vue({
 	  el: '#app_content',
 	  data:{
+		  files: [],
 		  userInfo:{
 			  id:'',
 			  userName:'',
@@ -103,12 +104,13 @@ var myVue =  new Vue({
 	 },
 	  methods:{
 		  beforeUpload:function (file) {
-			  console.log(file);
+			  myVue.files = file;
 			  var url = getObjectURL(file);
 			  
-			  var me_image = generatorImage(url);
-		      
-		      let param = new URLSearchParams(); 
+			  var me_image = generatorLayerContent(url);
+			  popup(me_image);
+			  
+		      <%-- let param = new URLSearchParams(); 
 	    	  param.append("image",me_image); 
 	    	  param.append("id",myVue.userInfo.id); 
 	    	  axios.post('<%=ctxPath %>/htgl/attachmentinfocontroller/getlayercontent/api', param)
@@ -122,7 +124,7 @@ var myVue =  new Vue({
 	                          closable: true
 	                      });
 	                  }
-	    		  })
+	    		  }) --%>
          	 return false;// 返回 falsa 停止自动上传 我们需要手动上传
          }
 	  }
@@ -131,6 +133,66 @@ var myVue =  new Vue({
 function generatorImage(data) {
     var str = '<img id="new_me_image" src="' + data + '">';
     return str;
+}
+
+function generatorLayerContent(img) {
+	var sb ='';
+	sb += '<div class="box">';
+    sb +=   '<img id="new_me_image" src="' + img + '">';
+    sb += '</div>';
+    sb += '<div align="center" style="margin-top:20px;" > ';
+    sb +=      '<button id="cut_upload" type="button">';
+    sb +=      '上传</button>';
+    sb +=      '<button id="cut_cancle" type="button" >';
+    sb +=      '取消</button>';
+    sb += '</div>';
+    
+    sb += '<script type="text/javascript">';
+    /* https://blog.csdn.net/weixin_38023551/article/details/78792400 */
+    sb += '     $("#new_me_image").cropper({';
+    sb += '             aspectRatio: 3 / 2,';
+    sb += '             viewMode:3,';
+    sb += '             guides:false,';
+    sb += '             modal:false,';
+    sb += '             crop: function (e) {';
+    sb += '             }';
+    sb += '     });';
+    sb += '     $("#cut_upload").on("click", function () {';
+    sb += '          let formData = new FormData(); debugger;';
+    sb += '          var image_target = $("#new_me_image").cropper("getData", true); ';
+    sb += '          var image_content = $("#new_me_image").attr("src");';
+    sb += '          var userId = $("#userId").val();';
+    
+    sb += '          formData.append("userId", myVue.userInfo.id);';
+    sb += '          formData.append("upFile", myVue.files);';
+    sb += '          formData.append("image_content", image_content);';
+    sb += '          formData.append("x", image_target.x);';
+    sb += '          formData.append("y", image_target.y);';
+    sb += '          formData.append("width", image_target.width);';
+    sb += '          formData.append("height", image_target.height);';
+    
+    sb += '          $.ajax({';
+    sb += '             url: "/htgl/attachmentinfocontroller/uploadHeadPhoto/api",';
+    sb += '             type: "POST",';
+    sb += '             data:formData,';
+    sb += '             processData: false,';
+    sb += '             contentType: false,';
+    sb += '             success: function (result) { ';
+    sb += '                 layer.closeAll(); ';
+    sb += '                 window.location.reload() ; ';
+    sb += '             }, ';
+    sb += '             error: function (result) {';
+    sb += '                 layer.closeAll(); ';
+    sb += '             }';
+    sb += '          });';
+
+    sb += '     });';
+    sb += '     $("#cut_cancle").on("click", function () {';
+    sb += '          layer.closeAll(); ';
+    sb += '          window.location.reload() ; ';
+    sb += '     });';
+    sb += '</scr'+'ipt>';
+    return sb;
 }
 
 function getObjectURL (file) {
@@ -150,7 +212,7 @@ function popup(content) {
         title: '上传新头像',
         type: 1,
         skin: 'layui-layer-rim', //加上边框
-        area: ['60%', '80%'], //宽高
+        area: ['70%', '90%'], //宽高
         content: content,
         //btn: ['确定','取消'],
         success: function(layero, index){
