@@ -21,11 +21,13 @@ margin-left:30px;
             <Row style="background:#eee;padding:20px">
               <i-col span="20">
                   <Card :bordered="false">
-                      <p slot="title">个人信息</p>
+                      <p slot="title">
+                      个人信息
                       <a href="<%=ctxPath%>/htgl/userinfocontroller/toupdate" slot="extra" >
-			            <Icon type="ios-loop-strong"></Icon>
-			            修改
+			            <Icon type="ios-create" size="24"/>
 			          </a>
+                      </p>
+                      
 			          
                       <Row>
                         <i-col span="15">
@@ -41,7 +43,7 @@ margin-left:30px;
                           <p>邮箱： {{userInfo.email}}</p>
                           <p>密码：*********
                           	<a  href="<%=ctxPath%>/htgl/userinfocontroller/tomodifypassword">
-                          		<Icon type="ios-create" />
+                          		<Icon type="ios-create" size="15"/>
                           	</a>
                           </p>
                         </i-col>
