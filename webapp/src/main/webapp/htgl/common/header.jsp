@@ -18,11 +18,15 @@
 <script>
 new Vue({
 	el: '#app_header',
-    data:{
-    	personalinfo:'<%=ctxPath%>/htgl/userinfocontroller/toselfinfo',
-    	loginout:'<%=ctxPath%>/htgl/userinfocontroller/exit',
-    	realname:'',
-    	headUrl:''
+    data:function (){
+    	return {
+    		personalinfo:'<%=ctxPath%>/htgl/userinfocontroller/toselfinfo',
+        	loginout:'<%=ctxPath%>/htgl/userinfocontroller/exit',
+        	realname:'',
+        	headUrl:''
+    	}
+    },
+    mounted: function () {
     },
     beforeCreate: function(){
   	  axios({
@@ -35,11 +39,6 @@ new Vue({
   		});
     },
     created: function () {
-    	<%-- axios.all([
-    	    axios.get('<%=ctxPath%>/htgl/userinfocontroller/realname/api')
-    	  ]).then(axios.spread(function (realNameResp) {
-    		  this.realname = realNameResp.data.data;
-    	  })); --%>
     }
 });
 </script>
