@@ -30,6 +30,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.Constants;
 import com.zhb.forever.framework.dic.AttachmentTypeEnum;
+import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
@@ -419,6 +420,7 @@ public class AttachmentInfoController {
         return ajaxData;
     }
     
+    //上传头像
     @RequestMapping("/uploadHeadPhoto/api")
     @ResponseBody
     @Transactional
@@ -514,7 +516,8 @@ public class AttachmentInfoController {
         if (StringUtil.isNotBlank(userInfoData.getLobId())) {
             AttachmentInfoData oldData = attachmentInfoService.getAttachmentInfoById(userInfoData.getLobId());
             if (null != oldData) {
-                attachmentInfoService.deleteAttachmentInfo(oldData);
+                oldData.setDeleteFlag(DeleteFlagEnum.DEL.getIndex());
+                attachmentInfoService.saveOrUpdate(oldData);
             }
         }
         userInfoData.setLobId(fileInfoData.getId());
