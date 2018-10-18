@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
-<%@ page import="com.forever.zhb.utils.TimeUtil"%>
-<%@ page import="com.forever.zhb.Constants"%>
+<%@ page import="com.zhb.forever.framework.util.DateTimeUtil"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 String ctxPath = request.getContextPath();
@@ -12,10 +11,10 @@ String ctxPath = request.getContextPath();
 <body>
 <table width="760" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
-        <td style="background-image:url(/images/error/error.jpg); background-position:center; background-repeat:no-repeat; color:#FF0000;font-weight:600;font-size:20px; letter-spacing:2px; font-family:'楷体_utf-8'" height="400" align="center" valign="middle">
+        <td style=" background-position:center; background-repeat:no-repeat; color:#FF0000;font-weight:600;font-size:20px; letter-spacing:2px; font-family:'楷体_utf-8'" height="400" align="center" valign="middle">
 	        <%
-	        String message = (String)request.getAttribute(Constants.REQUEST_ERROR);
-	        if(null != message){
+	        String message = (String)request.getAttribute("errorMessage");
+	        if(null != message && !"".equals(message)){
 	            out.print(message);
 	        } else {
 	        %>
@@ -31,7 +30,7 @@ String ctxPath = request.getContextPath();
         	<br /><br />
 	        <span style="font-size:15;padding-right:14px;">
 	        <%
-	        String currentTime = TimeUtil.getTime("yyyy-MM-dd HH:mm:ss");
+	        String currentTime = DateTimeUtil.getCurrentTime("yyyy-MM-dd HH:mm:ss");
 	        out.println(currentTime);
 	        %>
 	        </span>

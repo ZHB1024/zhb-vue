@@ -19,13 +19,20 @@
         <put-attribute name="body" value="CHANGE-ME"/>
         <put-attribute name="footer" value="/htgl/common/footer.jsp" />
     </definition>
+    
+    <definition name="error.main.layout" template="/layout/errorLayout.jsp">
+        <put-attribute name="title" value="清风舞明月" />
+        <put-attribute name="header" value="/common/header.jsp" />
+        <put-attribute name="body" value="CHANGE-ME"/>
+        <put-attribute name="footer" value="/common/footer.jsp" />
+    </definition>
 
 <!-- layout end-->
 
 
 <!-- error -->
-    <definition name="error.index" extends="login.main.layout">
-        <put-attribute name="main" value="/error/error.jsp" />
+    <definition name="global.error.index" extends="error.main.layout">
+        <put-attribute name="body" value="/error/index.jsp" />
     </definition>
 
     
