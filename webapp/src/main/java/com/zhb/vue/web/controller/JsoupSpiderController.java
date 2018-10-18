@@ -19,6 +19,8 @@ import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.vue.thread.spider.DownloadFromQueueRunnable;
 import com.zhb.vue.thread.spider.ReadBeginUrlToQueueRunnable;
 import com.zhb.vue.thread.spider.ReadEndUrlToQueueRunnable;
+import com.zhb.vue.thread.spider.qbl.DownloadQBLFromQueueRunnable;
+import com.zhb.vue.thread.spider.qbl.ReadUrlToQueueRunnable;
 import com.zhb.vue.web.util.JsoupSpiderRunnableUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -42,20 +44,26 @@ public class JsoupSpiderController {
     
     @RequestMapping(value="/toIndex",method=RequestMethod.GET)
     public String toSpider(HttpServletRequest request,HttpServletResponse response){
-        /*Document doc = JsoupUtil.getDocumentByUrl("http://www.mtl018.com/thread-1996-1-156.html");
-        if (null == doc) {
-        }
-        Elements main = doc.getElementsByClass("t_f");
-        for (Element link : main) {
-            Elements hrefs = link.select("img[src]");
-            for (Element element : hrefs) {
-                System.out.println(element.attr("abs:file"));
+        Document doc = JsoupUtil.getDocumentByUrl("http://111av.org/html/tupian/siwa/index_2.html");
+        if (null != doc) {
+            Elements divs = doc.getElementsByClass("art");
+            if (null != divs) {
+                for (Element element : divs) {
+                    Elements hrefs = element.select("a[href]");
+                    if (null == hrefs) {
+                        continue;
+                    }
+                    for (Element a : hrefs) {
+                        String href = a.attr("abs:href");
+                        System.out.println(href);
+                    }
+                }
             }
-                
-        }*/
+        }
         return "htgl.spider.index";
     }
 
+    //http://www.mtl018.com/forum-58-1.html
     @RequestMapping(value="/spideryellow",method=RequestMethod.POST)
     @ResponseBody
     @Transactional
@@ -82,52 +90,30 @@ public class JsoupSpiderController {
         return ajaxData;
     }
     
-    @RequestMapping(value="/spider2",method=RequestMethod.POST)
-    public String spider2(HttpServletRequest request,HttpServletResponse response){
-        String url = JsoupUtil.getUrl();
-        String basePath = JsoupUtil.getBaseSavePath();
-        String personalizedPath = JsoupUtil.getPersonalizedSavePath();
-        String targetSavePath = basePath + personalizedPath + DateTimeUtil.TODAY_FORMAT;
+    //http://111av.org/html/tupian/siwa/index.html
+    @RequestMapping(value="/spideryellow2",method=RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData spiderYellow2(HttpServletRequest request,HttpServletResponse response){
+        AjaxData ajaxData = new AjaxData();
+        String userId = WebAppUtil.getUserId(request);
+        String url = PropertyUtil.getSpiderUrl();
+        Integer totalPage = PropertyUtil.getSpiderTotalPage();
+        ArrayBlockingQueue<JSONObject> resources = new ArrayBlockingQueue<JSONObject>(100000);
 
-        int totalPage = Integer.valueOf(JsoupUtil.getTotalPage());
-        int totalThread = Integer.valueOf(JsoupUtil.getTotalThread());
-        int perPage = totalPage/totalThread;
-
-        ExecutorService es = Executors.newFixedThreadPool(totalThread);
-        int totalThreadIndex = totalThread-1;
-        for(int i=0 ;i < totalThread ;i++) {
-            if (i != totalThreadIndex) {
-                es.execute(new JsoupSpiderRunnableUtil(url,targetSavePath,i,i*totalThread+1,i*totalThread+perPage));
-            }else {
-                es.execute(new JsoupSpiderRunnableUtil(url,targetSavePath,i,i*totalThread+1,totalPage));
-            }
-
-        }
+        AtomicInteger beginPage = new AtomicInteger(2);
+        AtomicInteger endPage = new AtomicInteger(totalPage);
+        AtomicInteger totalCount = new AtomicInteger(0);
+        ExecutorService es = Executors.newFixedThreadPool(2);
+        
+        es.execute(new ReadUrlToQueueRunnable(url,beginPage,endPage,totalCount,resources));
+        es.execute(new DownloadQBLFromQueueRunnable(resources,userId));
+        
         es.shutdown();
         
-        /*String url = "https://movie.douban.com/explore#!type=movie&tag=热门&sort=rank&page_limit=20&page_start=0";
-        //Document doc = JsoupUtil.getDocumentByUrl(url);
+        ajaxData.setFlag(true);
 
-        *//**HtmlUnit请求web页面*//*
-        WebClient wc = new WebClient();
-        wc.getOptions().setJavaScriptEnabled(true); //启用JS解释器，默认为true
-        wc.getOptions().setCssEnabled(false); //禁用css支持
-        wc.getOptions().setThrowExceptionOnScriptError(false); //js运行错误时，是否抛出异常
-        wc.getOptions().setTimeout(10000); //设置连接超时时间 ，这里是10S。如果为0，则无限期等待
-        HtmlPage page = null;
-        try {
-            page = wc.getPage(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.info(e.getMessage());
-        }
-        String pageXml = page.asXml(); //以xml的形式获取响应文本
-
-        *//**jsoup解析文档*//*
-        Document doc = Jsoup.parse(pageXml);
-        System.out.println(doc);*/
-
-        return "htgl.spider.index";
+        return ajaxData;
     }
 
 }
