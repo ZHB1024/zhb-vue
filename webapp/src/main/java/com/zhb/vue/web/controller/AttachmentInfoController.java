@@ -454,9 +454,6 @@ public class AttachmentInfoController {
         ImageVO imageVO = new ImageVO(Integer.valueOf(x), Integer.valueOf(y), Integer.valueOf(width), Integer.valueOf(height), 0);
         imageVO.setSuffix(originalFileName.substring(originalFileName.indexOf(".")+1));
         
-        logger.info(x + "--" + y + "--" + width + "--" + height + "--" + imageVO.getSuffix());
-        logger.info(contentType);
-
         byte[] decodedBytes = null;
         
         try {
@@ -466,11 +463,12 @@ public class AttachmentInfoController {
             e1.printStackTrace();
         }
 
-        decodedBytes = ImageUtil
-            .getCropPhotoBytes(imageVO,new ByteArrayInputStream(decodedBytes) );
+        decodedBytes = ImageUtil.getCropPhotoBytes(imageVO,new ByteArrayInputStream(decodedBytes) );
 
         UserInfoData userInfoData = userInfoService.getUserInfoById(userId);
         if (null == userInfoData) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法访问");
             return ajaxData;
         }
         

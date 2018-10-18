@@ -50,7 +50,7 @@ margin-left:30px;
                         
                         <i-col span="5">
                           <p style="margin-top:50px;margin-left: 50px;">
-                          	<img :src="userInfo.headSrc" width="150" height="150"/>
+                          	<img :src="userInfo.headSrc" width="150" height="150" @click="showHead"/>
                           </p>
                           <p style="margin-top:50px">
                           	<Upload 
@@ -112,7 +112,7 @@ var myVue =  new Vue({
 			  var url = getObjectURL(file);
 			  
 			  var me_image = generatorLayerContent(url);
-			  popup(me_image);
+			  popup('上传新头像',me_image);
 			  
 		      <%-- let param = new URLSearchParams(); 
 	    	  param.append("image",me_image); 
@@ -130,25 +130,22 @@ var myVue =  new Vue({
 	                  }
 	    		  }) --%>
          	 return false;// 返回 falsa 停止自动上传 我们需要手动上传
+         },
+         showHead:function(){
+        	 var head_image = '<img id="head_image" src="' + myVue.userInfo.headSrc + '">';
+        	 popup('头像',head_image);
          }
 	  }
 });
-
-function generatorImage(data) {
-    var str = '<img id="new_me_image" src="' + data + '">';
-    return str;
-}
 
 function generatorLayerContent(img) {
 	var sb ='';
 	sb += '<div class="box">';
     sb +=   '<img id="new_me_image" src="' + img + '">';
     sb += '</div>';
-    sb += '<div align="center" style="margin-top:20px;" > ';
-    sb +=      '<button id="cut_upload" type="button">';
-    sb +=      '上传</button>';
-    sb +=      '<button id="cut_cancle" type="button" >';
-    sb +=      '取消</button>';
+    sb += '<div align="center" style="margin-top:20px;margin-bottom:20px;" > ';
+    sb +=      '<input type="button" id="cut_upload" value="上传"  style="width:100px;height:50px;" />';
+    sb +=      '<input type="button" id="cut_cancel" value="取消" style="width:100px;height:50px;" />';
     sb += '</div>';
     
     sb += '<script type="text/javascript">';
@@ -162,7 +159,7 @@ function generatorLayerContent(img) {
     sb += '             }';
     sb += '     });';
     sb += '     $("#cut_upload").on("click", function () {';
-    sb += '          let formData = new FormData(); debugger;';
+    sb += '          let formData = new FormData();';
     sb += '          var image_target = $("#new_me_image").cropper("getData", true); ';
     sb += '          var image_content = $("#new_me_image").attr("src");';
     sb += '          var userId = $("#userId").val();';
@@ -182,8 +179,12 @@ function generatorLayerContent(img) {
     sb += '             processData: false,';
     sb += '             contentType: false,';
     sb += '             success: function (result) { ';
-    sb += '                 layer.closeAll(); ';
-    sb += '                 window.location.reload() ; ';
+    sb += '                 if(result.flag){';
+    sb += '                 	layer.closeAll(); ';
+    sb += '                 	window.location.reload() ; ';
+    sb += '                 }else{';
+    sb += '                 	alert(result.errorMessages)';
+    sb += '                 }';
     sb += '             }, ';
     sb += '             error: function (result) {';
     sb += '                 layer.closeAll(); ';
@@ -191,7 +192,7 @@ function generatorLayerContent(img) {
     sb += '          });';
 
     sb += '     });';
-    sb += '     $("#cut_cancle").on("click", function () {';
+    sb += '     $("#cut_cancel").on("click", function () {';
     sb += '          layer.closeAll(); ';
     sb += '          window.location.reload() ; ';
     sb += '     });';
@@ -211,9 +212,9 @@ function getObjectURL (file) {
     return url ;
 }
  /*0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）*/
-function popup(content) {
+function popup(title,content) {
     layer.open({
-        title: '上传新头像',
+        title: title,
         type: 1,
         skin: 'layui-layer-rim', //加上边框
         area: ['70%', '90%'], //宽高
