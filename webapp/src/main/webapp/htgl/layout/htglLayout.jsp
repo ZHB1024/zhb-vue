@@ -26,9 +26,13 @@ String ctxPath = request.getContextPath();
     <script src="/js/layui/layer.js"></script>
     <!-- <script src="/js/layui/layui.js"></script> -->
     
-    <!-- 裁剪照片 -->
+    <!-- 裁剪图片 -->
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/cropper/cropper.css" />
 	<script type="text/javascript" src="<%=ctxPath%>/js/cropper/cropper.js"></script>
+	
+    <!-- 轮播图片 -->
+    <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/swiper/swiper-3.4.2.min.css" />
+	<script type="text/javascript" src="<%=ctxPath%>/js/swiper/swiper-3.4.2.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="/css/my.css">
 
