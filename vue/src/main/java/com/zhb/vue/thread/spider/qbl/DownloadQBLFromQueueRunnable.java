@@ -27,18 +27,18 @@ private Logger logger = LoggerFactory.getLogger(DownloadQBLFromQueueRunnable.cla
 
     @Override
     public void run() {
-        logger.info("--DownloadThread------开始----------");
+        logger.info("--------------------读取下载线程----开始");
         ExecutorService es = Executors.newCachedThreadPool();
         while(true) {
             JSONObject url = null;
             while(null == (url=resources.poll())){
                 int flag = shutdowmFlag.incrementAndGet();
-                if (flag > 5000) {
-                    logger.info("--队列已空-------下载线程-----------------------------------------------结束---");
+                if (flag > 10000) {//等待10秒后结束
+                    logger.info("^^^^^^^^^^^^^^^^^^^^^^队列已空--总共 "+ count.get() + " 个--读取下载线程--结束-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
                     es.shutdown();
                     return;
                 }
-                logger.info("--队列已空----等待添加----" + shutdowmFlag.get()+"---");
+                logger.info("^^^^^^^^^^^^^^^^^^^^^^队列已空--等待添加---" + shutdowmFlag.get());
                 try {
                     Thread.currentThread().sleep(10);
                 } catch (InterruptedException e) {
@@ -47,8 +47,8 @@ private Logger logger = LoggerFactory.getLogger(DownloadQBLFromQueueRunnable.cla
                 }
             }
             shutdowmFlag = new AtomicInteger(0);
-            es.execute(new DownloadImageRunnable(url,creatorId,count.incrementAndGet()));
-            
+            logger.info("--------------------从队列里取----第 " + count.incrementAndGet() + " 个");
+            es.execute(new DownloadImageRunnable(url,creatorId,count.get()));
         }
     }
 

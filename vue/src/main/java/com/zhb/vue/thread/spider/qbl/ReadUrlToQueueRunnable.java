@@ -18,33 +18,37 @@ public class ReadUrlToQueueRunnable implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(ReadUrlToQueueRunnable.class);
     
+    private String name;
     private String url;
-    private String urlTarget;
     private ArrayBlockingQueue<JSONObject> resources ;
     
-    private AtomicInteger endPage ;
-    private AtomicInteger beginPage ;
-    private AtomicInteger totalCount;
+    private int endPage ;
+    private int beginPage ;
+    private static AtomicInteger totalCount = new AtomicInteger(0);
     
-    public ReadUrlToQueueRunnable(String url,AtomicInteger beginPage,AtomicInteger endPage,AtomicInteger totalCount,ArrayBlockingQueue<JSONObject> resources) {
+    public ReadUrlToQueueRunnable(String name,String url,int beginPage,int endPage,ArrayBlockingQueue<JSONObject> resources) {
+        this.name = name;
         this.url = url;
         this.resources = resources;
         this.endPage = endPage;
         this.beginPage = beginPage;
-        this.totalCount = totalCount;
     }
 
     @Override
     public void run() {
-        logger.info("--Read---UrlThread--------------------------开始-------");
+        logger.info("******爬取网页链接线程" + name + "---开始");
         String targetUrl = "";
-        while(endPage.get() >= beginPage.get()) {
-            targetUrl = url + "_" + beginPage.get() + ".html";
+        while(endPage >= beginPage) {
+            if (beginPage == 1) {
+                targetUrl = url + ".html";
+            }else {
+                targetUrl = url + "_" + beginPage + ".html";
+            }
             addChildPageImagePath(targetUrl);
-            beginPage.incrementAndGet();
+            beginPage++;
         }
         
-        logger.info("--Read-EndUrlThread--------------------------结束-------");
+        logger.info("******爬取网页链接线程" + name + "---结束******************************************");
 
     }
     
@@ -100,7 +104,7 @@ public class ReadUrlToQueueRunnable implements Runnable {
                     object.put("name", fileName);
                     object.put("url", element.attr("abs:src"));
                     while (!resources.offer(object)) {
-                        logger.info("--队列已满------等待消费-------");
+                        logger.info("******队列已满--等待消费");
                         try {
                             Thread.currentThread().sleep(10);
                         } catch (InterruptedException e) {
@@ -108,7 +112,7 @@ public class ReadUrlToQueueRunnable implements Runnable {
                             logger.error("向队列里添加url异常");
                         }
                     }
-                    logger.info("--向队列里添加成功----第 " + beginPage.get() + " 页------第 " + totalCount.incrementAndGet() + " 个");
+                    logger.info("******向队列里添加成功---第 " + beginPage + " 页------第 " + totalCount.incrementAndGet() + " 个");
                 }
             }
         }

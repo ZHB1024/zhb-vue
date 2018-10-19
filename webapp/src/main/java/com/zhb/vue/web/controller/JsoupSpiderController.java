@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -99,14 +102,27 @@ public class JsoupSpiderController {
         String userId = WebAppUtil.getUserId(request);
         String url = PropertyUtil.getSpiderUrl();
         Integer totalPage = PropertyUtil.getSpiderTotalPage();
-        ArrayBlockingQueue<JSONObject> resources = new ArrayBlockingQueue<JSONObject>(100000);
-
-        AtomicInteger beginPage = new AtomicInteger(2);
-        AtomicInteger endPage = new AtomicInteger(totalPage);
-        AtomicInteger totalCount = new AtomicInteger(0);
-        ExecutorService es = Executors.newFixedThreadPool(2);
         
-        es.execute(new ReadUrlToQueueRunnable(url,beginPage,endPage,totalCount,resources));
+        ArrayBlockingQueue<JSONObject> resources = new ArrayBlockingQueue<JSONObject>(1000000);
+
+        int totalThread = 10;
+        int perPage = totalPage/totalThread;
+        
+        //ExecutorService es = Executors.newFixedThreadPool(totalThread+1);
+        ThreadPoolExecutor es = 
+                new ThreadPoolExecutor(totalThread+1, totalThread+1, 2000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+        
+        //启动10个线程爬取网页图片链接,放入队列中
+        for(int i=1 ;i <= totalThread ;i++) {
+            if (i != totalThread) {
+                es.execute(new ReadUrlToQueueRunnable(i+"",url,(i-1)*perPage+1,i*perPage,resources));
+            }else {
+                es.execute(new ReadUrlToQueueRunnable(i+"",url,(i-1)*perPage+1,totalPage,resources));
+            }
+
+        }
+        
+        //启动1个线程读取队列里的链接，并下载保存
         es.execute(new DownloadQBLFromQueueRunnable(resources,userId));
         
         es.shutdown();

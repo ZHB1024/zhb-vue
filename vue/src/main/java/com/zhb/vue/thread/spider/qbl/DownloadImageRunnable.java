@@ -44,6 +44,7 @@ private Logger logger = LoggerFactory.getLogger(DownloadImageRunnable.class);
         try {
             DownloadUtil.downLoadFromUrl(url.getString("url"), fileName, uploadPath);
         } catch (IOException e) {
+            logger.error("从网络地址下载图片失败.................");
             e.printStackTrace();
             return;
         }
@@ -69,7 +70,7 @@ private Logger logger = LoggerFactory.getLogger(DownloadImageRunnable.class);
         fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
         fileInfoData.setCreateUserId(creatorId);
         attachmentInfoService.saveOrUpdate(fileInfoData);
-        logger.info("--下载成功---第 " + count + " 个---");
+        logger.info("--------------------下载成功---第 " + count + " 个");
     }
 
 }
