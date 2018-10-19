@@ -3,6 +3,9 @@ package com.zhb.vue.thread.spider.qbl;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -28,7 +31,8 @@ private Logger logger = LoggerFactory.getLogger(DownloadQBLFromQueueRunnable.cla
     @Override
     public void run() {
         logger.info("--------------------读取下载线程----开始");
-        ExecutorService es = Executors.newCachedThreadPool();
+        ThreadPoolExecutor es = 
+                new ThreadPoolExecutor(100, 500, 2000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000));
         while(true) {
             JSONObject url = null;
             while(null == (url=resources.poll())){
