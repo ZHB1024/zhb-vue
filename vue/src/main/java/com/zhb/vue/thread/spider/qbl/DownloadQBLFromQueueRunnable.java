@@ -32,7 +32,7 @@ private Logger logger = LoggerFactory.getLogger(DownloadQBLFromQueueRunnable.cla
     public void run() {
         logger.info("--------------------读取下载线程----开始");
         ThreadPoolExecutor es = 
-                new ThreadPoolExecutor(100, 500, 2000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000));
+                new ThreadPoolExecutor(100, 500, 2000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(10000));
         while(true) {
             JSONObject url = null;
             while(null == (url=resources.poll())){
