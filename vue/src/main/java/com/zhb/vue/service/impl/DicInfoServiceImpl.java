@@ -7,10 +7,15 @@ import org.springframework.stereotype.Service;
 
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
+import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.vo.OrderVO;
+import com.zhb.forever.redis.client.RedisClient;
+import com.zhb.forever.redis.client.RedisClientFactory;
+import com.zhb.vue.Constant;
 import com.zhb.vue.dao.DicInfoDao;
 import com.zhb.vue.params.DicInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
+import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.DicInfoService;
 
 @Service
@@ -37,7 +42,20 @@ public class DicInfoServiceImpl implements DicInfoService {
 
     @Override
     public List<DicInfoData> getDicInfos(DicInfoParam param,List<OrderVO> orderVos) {
-        return dicInfoDao.getDicInfos(param,orderVos);
+        RedisClient redisClient = RedisClientFactory.getRedisClientBean();
+        byte[] bytes = redisClient.get(param.getCategory().getBytes());
+        if (null != bytes) {
+            ListTranscoder<DicInfoData> listTranscoder = new ListTranscoder<>();
+            List<DicInfoData> datas = listTranscoder.deserialize(bytes);
+            return datas;
+        }
+        List<DicInfoData> datas = dicInfoDao.getDicInfos(param,orderVos);
+        if (null != datas && datas.size() > 0) {
+            ListTranscoder<DicInfoData> listTranscoder = new ListTranscoder<>();
+            bytes = listTranscoder.serialize(datas);
+            redisClient.set(param.getCategory().getBytes(), bytes);
+        }
+        return datas;
     }
 
     @Override

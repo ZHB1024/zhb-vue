@@ -7,8 +7,8 @@ public class Constant {
     //redis cache
     public static final String USER_INFO_DATAS = "userInfoDatas";
     public static final String FUNCTION_INFO_DATAS = "functionInfoDatas";
-    public static final String GJDQ = "gjdq";//国家地区
-    public static final String MZ = "mz";//民族
-    public static final String BYYX = "byyx";//毕业院校
+    public static final String DIC_GJDQ = "gjmc";//国家地区
+    public static final String DIC_MZ = "mz";//民族
+    public static final String DIC_BYYX = "yx";//毕业院校
 
 }
