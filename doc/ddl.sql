@@ -99,10 +99,10 @@ create table verification_code_info
   id                 VARCHAR(16) not null,
   email           VARCHAR(50) ,
   mobile_phone           VARCHAR(11) ,
-  type         VARCHAR(1) not null,  
+  type         int not null,  
   code           VARCHAR(10) not null,
   remark           VARCHAR(50),
-  delete_flag             int(1) not null,
+  delete_flag             int not null,
   create_time         DATETIME not null,
   update_time         DATETIME ,
   PRIMARY KEY (id)
@@ -117,11 +117,10 @@ create table attachment_info
   content_type         VARCHAR(200) not null,  
   file_path           VARCHAR(100) not null,
   thumbnail_path           VARCHAR(100) ,
-  type           	int(1) not null,  
-  delete_flag             int(1) not null,
+  type           	int not null,  
+  delete_flag             int not null,
   create_user_id	 VARCHAR(16) not null,
   create_time         DATETIME not null,
-  update_time         DATETIME,
   PRIMARY KEY (id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

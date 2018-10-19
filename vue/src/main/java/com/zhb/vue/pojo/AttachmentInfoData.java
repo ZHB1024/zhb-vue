@@ -41,7 +41,7 @@ public class AttachmentInfoData implements Serializable{
     @Id
     @GeneratedValue(generator = "app_seq")
     @GenericGenerator(name = "app_seq", strategy = "com.zhb.vue.pojo.strategy.StringRandomGenerator")
-    @Column(name = "ID")
+    @Column(name = "ID",length=16,nullable=false)
     public String getId() {
         return id;
     }
@@ -50,7 +50,7 @@ public class AttachmentInfoData implements Serializable{
         this.id = id;
     }
 
-    @Column(name = "file_name")
+    @Column(name = "file_name",length=16,nullable=false)
     public String getFileName() {
         return fileName;
     }
@@ -59,7 +59,7 @@ public class AttachmentInfoData implements Serializable{
         this.fileName = fileName;
     }
 
-    @Column(name = "file_size")
+    @Column(name = "file_size",length=10,nullable=false)
     public String getFileSize() {
         return fileSize;
     }
@@ -68,7 +68,7 @@ public class AttachmentInfoData implements Serializable{
         this.fileSize = fileSize;
     }
 
-    @Column(name = "file_path")
+    @Column(name = "file_path",length=100,nullable=false)
     public String getFilePath() {
         return filePath;
     }
@@ -77,7 +77,7 @@ public class AttachmentInfoData implements Serializable{
         this.filePath = filePath;
     }
 
-    @Column(name = "thumbnail_path")
+    @Column(name = "thumbnail_path",length=100,nullable=true)
     public String getThumbnailPath() {
         return thumbnailPath;
     }
@@ -86,7 +86,7 @@ public class AttachmentInfoData implements Serializable{
         this.thumbnailPath = thumbnailPath;
     }
 
-    @Column(name = "content_type")
+    @Column(name = "content_type",length=200,nullable=false)
     public String getContentType() {
         return contentType;
     }
@@ -95,7 +95,7 @@ public class AttachmentInfoData implements Serializable{
         this.contentType = contentType;
     }
 
-    @Column(name = "type")
+    @Column(name = "type",nullable=false)
     public Integer getType() {
         return type;
     }
@@ -104,7 +104,7 @@ public class AttachmentInfoData implements Serializable{
         this.type = type;
     }
 
-    @Column(name = "delete_flag")
+    @Column(name = "delete_flag",nullable=false)
     public Integer getDeleteFlag() {
         return deleteFlag;
     }
@@ -113,7 +113,7 @@ public class AttachmentInfoData implements Serializable{
         this.deleteFlag = deleteFlag;
     }
 
-    @Column(name = "create_time")
+    @Column(name = "create_time",nullable=false)
     public Calendar getCreateTime() {
         return createTime;
     }
@@ -122,7 +122,7 @@ public class AttachmentInfoData implements Serializable{
         this.createTime = createTime;
     }
 
-    @Column(name = "CREATE_USER_ID")
+    @Column(name = "CREATE_USER_ID",length=16,nullable=false)
     public String getCreateUserId() {
         return createUserId;
     }

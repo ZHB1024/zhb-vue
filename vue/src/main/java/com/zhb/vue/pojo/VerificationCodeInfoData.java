@@ -40,7 +40,7 @@ public class VerificationCodeInfoData implements Serializable{
     @Id
     @GeneratedValue(generator = "app_seq")
     @GenericGenerator(name = "app_seq", strategy = "com.zhb.vue.pojo.strategy.StringRandomGenerator")
-    @Column(name = "ID")
+    @Column(name = "ID",length=16,nullable=false)
     public String getId() {
         return id;
     }
@@ -49,7 +49,7 @@ public class VerificationCodeInfoData implements Serializable{
         this.id = id;
     }
 
-    @Column(name = "email")
+    @Column(name = "email",length=50,nullable=true)
     public String getEmail() {
         return email;
     }
@@ -58,7 +58,7 @@ public class VerificationCodeInfoData implements Serializable{
         this.email = email;
     }
 
-    @Column(name = "mobile_phone")
+    @Column(name = "mobile_phone",length=11,nullable=true)
     public String getMobilePhone() {
         return mobilePhone;
     }
@@ -67,7 +67,7 @@ public class VerificationCodeInfoData implements Serializable{
         this.mobilePhone = mobilePhone;
     }
 
-    @Column(name = "type")
+    @Column(name = "type",nullable=false)
     public Integer getType() {
         return type;
     }
@@ -76,7 +76,7 @@ public class VerificationCodeInfoData implements Serializable{
         this.type = type;
     }
 
-    @Column(name = "code")
+    @Column(name = "code",length=10,nullable=false)
     public String getCode() {
         return code;
     }
@@ -84,26 +84,8 @@ public class VerificationCodeInfoData implements Serializable{
     public void setCode(String code) {
         this.code = code;
     }
-
-    @Column(name = "delete_flag")
-    public Integer getDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setDeleteFlag(Integer deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-
-    @Column(name = "create_time")
-    public Calendar getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Calendar createTime) {
-        this.createTime = createTime;
-    }
-
-    @Column(name = "remark")
+    
+    @Column(name = "remark",length=50,nullable=true)
     public String getRemark() {
         return remark;
     }
@@ -112,7 +94,26 @@ public class VerificationCodeInfoData implements Serializable{
         this.remark = remark;
     }
 
-    @Column(name = "update_time")
+    @Column(name = "delete_flag",nullable=false)
+    public Integer getDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(Integer deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
+    @Column(name = "create_time",nullable=false)
+    public Calendar getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Calendar createTime) {
+        this.createTime = createTime;
+    }
+
+
+    @Column(name = "update_time",nullable=true)
     public Calendar getUpdateTime() {
         return updateTime;
     }
