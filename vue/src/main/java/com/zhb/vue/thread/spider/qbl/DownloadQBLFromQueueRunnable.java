@@ -17,27 +17,29 @@ public class DownloadQBLFromQueueRunnable implements Runnable {
 
 private Logger logger = LoggerFactory.getLogger(DownloadQBLFromQueueRunnable.class);
     
-    private ArrayBlockingQueue<JSONObject> resources ;
+    private ArrayBlockingQueue<JSONObject> resources1 ;
+    private ArrayBlockingQueue<JSONObject> resources2 ;
     private String creatorId;
     private AtomicInteger count = new AtomicInteger(0);
     private AtomicInteger shutdowmFlag = new AtomicInteger(0);
     
     
-    public DownloadQBLFromQueueRunnable(ArrayBlockingQueue<JSONObject> resources,String creatorId) {
-        this.resources = resources;
+    public DownloadQBLFromQueueRunnable(ArrayBlockingQueue<JSONObject> resources1,ArrayBlockingQueue<JSONObject> resources2,String creatorId) {
+        this.resources1 = resources1;
+        this.resources2 = resources2;
         this.creatorId = creatorId;
     }
 
     @Override
     public void run() {
         logger.info("--------------------读取下载线程----开始");
-        ThreadPoolExecutor es = 
-                new ThreadPoolExecutor(100, 500, 2000, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(10000));
+        ExecutorService es = 
+                Executors.newCachedThreadPool();
         while(true) {
             JSONObject url = null;
-            while(null == (url=resources.poll())){
+            while(null == (url=resources1.poll()) && null == (url=resources2.poll())){
                 int flag = shutdowmFlag.incrementAndGet();
-                if (flag > 10000) {//等待10秒后结束
+                if (flag > 10000) {//等待后结束
                     logger.info("^^^^^^^^^^^^^^^^^^^^^^队列已空--总共 "+ count.get() + " 个--读取下载线程--结束-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
                     es.shutdown();
                     return;

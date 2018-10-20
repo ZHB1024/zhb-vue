@@ -1,5 +1,9 @@
 package com.zhb.vue.thread.spider.qbl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,28 +14,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zhb.forever.framework.Constants;
+import com.zhb.forever.framework.dic.AttachmentTypeEnum;
+import com.zhb.forever.framework.util.DownloadUtil;
 import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.JsoupUtil;
+import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.forever.framework.util.StringUtil;
+import com.zhb.forever.framework.util.UploadUtil;
+import com.zhb.vue.pojo.AttachmentInfoData;
+import com.zhb.vue.service.AttachmentInfoService;
+import com.zhb.vue.service.ServiceFactory;
 
 public class ReadUrlToQueueRunnable implements Runnable {
 
     private Logger logger = LoggerFactory.getLogger(ReadUrlToQueueRunnable.class);
     
+    private AttachmentInfoService attachmentInfoService = ServiceFactory.getAttachmentInfoService();
     private String name;
     private String url;
-    private ArrayBlockingQueue<JSONObject> resources ;
+    private String userId;
     
     private int endPage ;
     private int beginPage ;
-    private static AtomicInteger totalCount = new AtomicInteger(0);
+    public static AtomicInteger totalCount = new AtomicInteger(0);
     
-    public ReadUrlToQueueRunnable(String name,String url,int beginPage,int endPage,ArrayBlockingQueue<JSONObject> resources) {
+    public ReadUrlToQueueRunnable(String name,String url,int beginPage,int endPage,String userId) {
         this.name = name;
         this.url = url;
-        this.resources = resources;
         this.endPage = endPage;
         this.beginPage = beginPage;
+        this.userId = userId;
     }
 
     @Override
@@ -60,14 +73,10 @@ public class ReadUrlToQueueRunnable implements Runnable {
             }
             Elements divs = doc.getElementsByClass("art");
             if (null != divs) {
-                for (Element element : divs) {
-                    Elements hrefs = element.select("a[href]");
-                    if (null == hrefs) {
-                        continue;
-                    }
+                Elements hrefs = divs.get(0).select("a[href]");
+                if (null != hrefs) {
                     for (Element a : hrefs) {
-                        String href = a.attr("abs:href");
-                        addImagePath(href);
+                        addImagePath(a.attr("abs:href"));
                     }
                 }
             }
@@ -100,10 +109,8 @@ public class ReadUrlToQueueRunnable implements Runnable {
                     StringBuilder fileName = new StringBuilder(name);
                     fileName.append("_"+i);
                     fileName.append(".jpg");
-                    JSONObject object = new JSONObject();
-                    object.put("name", fileName);
-                    object.put("url", element.attr("abs:src"));
-                    while (!resources.offer(object)) {
+                    downloadImage(fileName.toString(), element.attr("abs:src"));
+                    /*while (!resources.offer(object)) {
                         logger.info("******队列已满--等待消费");
                         try {
                             Thread.currentThread().sleep(10);
@@ -111,11 +118,45 @@ public class ReadUrlToQueueRunnable implements Runnable {
                             e.printStackTrace();
                             logger.error("向队列里添加url异常");
                         }
-                    }
-                    logger.info("******向队列里添加成功---第 " + beginPage + " 页------第 " + totalCount.incrementAndGet() + " 个");
+                    }*/
                 }
             }
         }
+    }
+    
+    private void downloadImage(String fileName,String imagUrl) {
+        String uploadPath = PropertyUtil.getUploadPath();
+        String thumbnailPath = null;
+        try {
+            DownloadUtil.downLoadFromUrl(imagUrl, fileName, uploadPath);
+        } catch (IOException e) {
+            logger.error("从网络地址下载图片失败.................");
+            e.printStackTrace();
+            return;
+        }
+        
+        String filePath = uploadPath + File.separator + fileName;
+        File file = new File(filePath);
+        Long fileSize = file.length();
+        if (fileSize > Constants.SMALL_IMAGE_SIZE) {
+            try {
+                thumbnailPath = UploadUtil.uploadThumbmail(new FileInputStream(file), fileName, "jpg", fileSize);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                thumbnailPath = filePath;
+            }
+        }
+        
+        AttachmentInfoData fileInfoData = new AttachmentInfoData();
+        fileInfoData.setFileName(fileName);
+        fileInfoData.setFilePath(filePath);
+        fileInfoData.setThumbnailPath(thumbnailPath);
+        fileInfoData.setFileSize(String.valueOf(fileSize));
+        fileInfoData.setContentType("image/jpeg");
+        fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
+        fileInfoData.setCreateUserId(userId);
+        attachmentInfoService.saveOrUpdate(fileInfoData);
+        logger.info("------线程"+ name + "--------------下载成功---第 " + beginPage + " 页------第 " + totalCount.incrementAndGet() + " 个");
     }
 
 }

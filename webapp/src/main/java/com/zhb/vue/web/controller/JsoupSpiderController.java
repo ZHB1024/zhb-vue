@@ -47,7 +47,7 @@ public class JsoupSpiderController {
     
     @RequestMapping(value="/toIndex",method=RequestMethod.GET)
     public String toSpider(HttpServletRequest request,HttpServletResponse response){
-        Document doc = JsoupUtil.getDocumentByUrl("http://111av.org/html/tupian/siwa/index_2.html");
+        /*Document doc = JsoupUtil.getDocumentByUrl("http://111av.org/html/tupian/siwa/index_2.html");
         if (null != doc) {
             Elements divs = doc.getElementsByClass("art");
             if (null != divs) {
@@ -62,7 +62,7 @@ public class JsoupSpiderController {
                     }
                 }
             }
-        }
+        }*/
         return "htgl.spider.index";
     }
 
@@ -103,27 +103,28 @@ public class JsoupSpiderController {
         String url = PropertyUtil.getSpiderUrl();
         Integer totalPage = PropertyUtil.getSpiderTotalPage();
         
-        ArrayBlockingQueue<JSONObject> resources = new ArrayBlockingQueue<JSONObject>(1000000);
+        ArrayBlockingQueue<JSONObject> resources1 = new ArrayBlockingQueue<JSONObject>(1000000);
+        ArrayBlockingQueue<JSONObject> resources2 = new ArrayBlockingQueue<JSONObject>(1000000);
 
-        int totalThread = 10;
+        int totalThread = 100;
         int perPage = totalPage/totalThread;
         
         //ExecutorService es = Executors.newFixedThreadPool(totalThread+1);
         ThreadPoolExecutor es = 
-                new ThreadPoolExecutor(totalThread+1, totalThread+1, 2000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+                new ThreadPoolExecutor(totalThread, totalThread, 10000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
         
-        //启动10个线程爬取网页图片链接,放入队列中
+        //启动10个线程爬取网页图片链接
         for(int i=1 ;i <= totalThread ;i++) {
             if (i != totalThread) {
-                es.execute(new ReadUrlToQueueRunnable(i+"",url,(i-1)*perPage+1,i*perPage,resources));
+                es.execute(new ReadUrlToQueueRunnable(i+"",url,(i-1)*perPage+1,i*perPage,userId));
             }else {
-                es.execute(new ReadUrlToQueueRunnable(i+"",url,(i-1)*perPage+1,totalPage,resources));
+                es.execute(new ReadUrlToQueueRunnable(i+"",url,(i-1)*perPage+1,totalPage,userId));
             }
 
         }
         
         //启动1个线程读取队列里的链接，并下载保存
-        es.execute(new DownloadQBLFromQueueRunnable(resources,userId));
+        //es.execute(new DownloadQBLFromQueueRunnable(resources1,resources2,userId));
         
         es.shutdown();
         
