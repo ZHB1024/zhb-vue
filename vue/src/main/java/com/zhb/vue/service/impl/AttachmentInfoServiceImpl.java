@@ -13,9 +13,10 @@ import com.zhb.vue.dao.AttachmentInfoDao;
 import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
+import com.zhb.vue.service.base.impl.CommonServiceImpl;
 
 @Service
-public class AttachmentInfoServiceImpl implements AttachmentInfoService{
+public class AttachmentInfoServiceImpl extends CommonServiceImpl implements AttachmentInfoService{
     
     @Autowired
     private AttachmentInfoDao attachmentInfoDao;

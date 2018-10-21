@@ -147,7 +147,7 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         
-        AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(param.getId());
+        AttachmentInfoData data = attachmentInfoService.get(AttachmentInfoData.class, param.getId());
         if (null == data) {
             ajaxData.setFlag(false);
             ajaxData.addMessage("没有待删除的数据");
@@ -166,7 +166,7 @@ public class AttachmentInfoController {
             }
         }
         
-        attachmentInfoService.deleteAttachmentInfo(data);
+        attachmentInfoService.delete(data);
         
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;

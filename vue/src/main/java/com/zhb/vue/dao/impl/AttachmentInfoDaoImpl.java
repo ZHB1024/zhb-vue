@@ -17,15 +17,13 @@ import org.springframework.stereotype.Repository;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.AttachmentInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
 
 @Repository
-public class AttachmentInfoDaoImpl implements AttachmentInfoDao {
+public class AttachmentInfoDaoImpl extends CommonDao implements AttachmentInfoDao {
     
-    @Autowired
-    SessionFactory sessionFactory;
-
     @Override
     public void saveOrUpdate(AttachmentInfoData data) {
         sessionFactory.getCurrentSession().saveOrUpdate(data);
