@@ -638,9 +638,6 @@ public class AttachmentInfoController {
         }
         param.setId(null);
         param.setLikeDegree(null);
-        if ("undefined".equals(param.getType())) {
-            param.setType(null);
-        }
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
         OrderVO vo1 = new OrderVO("likeDegree",false);
