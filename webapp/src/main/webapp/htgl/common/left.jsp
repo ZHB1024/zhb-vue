@@ -19,7 +19,7 @@
 <i-menu active-name="childId" @on-select="selectMenu">
    <Menu-Group :title="parent.name" v-for="parent,index in menu">
         <Menu-Item v-bind:name="index+1+ '--' + child.id" v-for="child in parent.children" v-bind:to="child.path">
-            <Icon v-bind:type="parent.icon" /></Icon>
+            <Icon v-bind:type="child.icon" /></Icon>
             <span>{{ child.name }}</span>
         </Menu-Item>
    </Menu-Group>

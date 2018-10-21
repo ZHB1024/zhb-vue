@@ -27,11 +27,15 @@ String ctxPath = request.getContextPath();
       <span class="expand-key">功能名称: </span>
       <span class="expand-value">{{ record.name }}</span>
     </i-col>
-    <i-col span="10">
+    <i-col span="8">
       <span class="expand-key">访问路径: </span>
       <span class="expand-value">{{ record.path }}</span>
     </i-col>
     <i-col span="3">
+      <span class="expand-key">图标： </span>
+      <span class="expand-value">{{ record.icon }}</span>
+    </i-col>
+    <i-col span="2">
       <span class="expand-key">顺序: </span>
       <span class="expand-value">{{ record.order }}</span>
     </i-col>

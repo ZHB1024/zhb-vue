@@ -245,7 +245,7 @@ public class Data2JSONUtil {
             jsonObject.put("id", parent.getId());
             jsonObject.put("path", parent.getPath());
             jsonObject.put("name", parent.getName());
-            jsonObject.put("icon", parent.getIconInfoData().getName());
+            jsonObject.put("icon", null==parent.getIconInfoData()?"":parent.getIconInfoData().getName());
             jsonObject.put("order", parent.getOrder());
             jsonObject.put("deleteFlag", parent.getDeleteFlag());
             
@@ -255,7 +255,7 @@ public class Data2JSONUtil {
                 json.put("id", data.getId());
                 json.put("path", data.getPath());
                 json.put("name", data.getName());
-                json.put("icon", "");
+                json.put("icon", null==data.getIconInfoData()?"":data.getIconInfoData().getName());
                 json.put("order", data.getOrder());
                 json.put("deleteFlag", data.getDeleteFlag());
                 jbjlChildrenMenu.add(json);
@@ -300,13 +300,14 @@ public class Data2JSONUtil {
                 vo.setId(parent.getId());
                 vo.setName(parent.getName());
                 vo.setPath(parent.getPath());
-                vo.setIconName(parent.getIconInfoData().getValue());
+                vo.setIconName(null == parent.getIconInfoData()?"":parent.getIconInfoData().getValue());
                 List<ComparatorVO> childs = new ArrayList<>();
                 for(FunctionInfoData funData : childrens){
                     ComparatorVO child = new ComparatorVO(funData.getOrder());
                     child.setId(funData.getId());
                     child.setName(funData.getName());
                     child.setPath(funData.getPath());
+                    child.setIconName(null==funData.getIconInfoData()?"":funData.getIconInfoData().getValue());
                     childs.add(child);
                 }
                 //排序,对子菜单排序
@@ -332,6 +333,7 @@ public class Data2JSONUtil {
                     json.put("id", funData.getId());
                     json.put("path", funData.getPath());
                     json.put("name", funData.getName());
+                    json.put("icon", funData.getIconName());
                     jbjlChildrenMenu.add(json);
                 }
                 

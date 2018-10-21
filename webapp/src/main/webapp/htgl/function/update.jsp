@@ -35,7 +35,7 @@ String ctxPath = request.getContextPath();
                 	</form-item >
                 	
                 	<form-item label="功能图标" prop="iconId">
-                	  <i-select name="iconId" v-model="functionInfo.iconId" placeholder="请选择功能图标">
+                	  <i-select name="iconId" clearable v-model="functionInfo.iconId" placeholder="请选择功能图标">
                         	<i-option v-bind:value="item.id" v-for="item in icons">
                         		{{item.name}}
                         	</i-option>
