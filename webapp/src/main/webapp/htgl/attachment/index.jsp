@@ -151,16 +151,22 @@ var myVue = new Vue({
                 align: "center",
                 render: (h, params) => {
                 	var colorFlag = 'green';
+                	var leftEditorFlag,rightEditorFlag ;
+                	if('1' == params.row.likeDegree){
+                		leftEditorFlag = 'disabled';
+                	}
                 	if('2' == params.row.likeDegree){
                 		colorFlag = 'blue';
                 	}
                 	if('3' == params.row.likeDegree){
                 		colorFlag = 'red';
+                		rightEditorFlag = 'disabled';
                 	}
                 	return h('div', [
                         h('Button', {
                             props: {
-                              slot: 'append'
+                              slot: 'append',
+                              disabled:leftEditorFlag
                             },
                             class: "left-btn",
                             on: {
@@ -179,7 +185,8 @@ var myVue = new Vue({
                         }, ''),
                         h('Button', {
                             props: {
-                              slot: "prepend"
+                              slot: "prepend",
+                              disabled:rightEditorFlag
                             },
                             class: "right-btn",
                             on: {
