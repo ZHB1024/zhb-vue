@@ -13,6 +13,7 @@ import com.zhb.forever.framework.dic.LikeDgreeEnum;
 import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.util.ComparatorVOComparator;
 import com.zhb.forever.framework.util.DateTimeUtil;
+import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.vo.ComparatorVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.dic.VerificationCodeTypeEnum;
@@ -423,7 +424,7 @@ public class Data2JSONUtil {
         object.put("id", data.getId());
         object.put("fileName", data.getFileName());
         object.put("filePath", data.getFilePath());
-        object.put("fileSize", data.getFileSize());
+        object.put("fileSize", FileUtil.getFileSizeKB(Double.valueOf(data.getFileSize()), 2) + "KB");
         object.put("type", AttachmentTypeEnum.getName(data.getType()));
         object.put("contentType", data.getContentType());
         object.put("deleteFlag", data.getDeleteFlag());
@@ -445,7 +446,7 @@ public class Data2JSONUtil {
             object.put("id", data.getId());
             object.put("fileName", data.getFileName());
             object.put("filePath", data.getFilePath());
-            object.put("fileSize", data.getFileSize());
+            object.put("fileSize", FileUtil.getFileSizeKB(Double.valueOf(data.getFileSize()), 2) + "KB");
             object.put("type", AttachmentTypeEnum.getName(data.getType()));
             object.put("likeDegree", data.getLikeDegree());
             object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
