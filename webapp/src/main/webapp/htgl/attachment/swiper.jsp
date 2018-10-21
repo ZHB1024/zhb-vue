@@ -25,7 +25,7 @@ String ctxPath = request.getContextPath();
     	<i-content :style="{padding: '24px', background: '#fff'}">
     		<div class="swiper-container">
     			<div class="swiper-wrapper">
-    				<div class="swiper-slide" v-for="item in imgList" data-swiper-autoplay="1500" style="overflow-y:auto;">
+    				<div class="swiper-slide" v-for="item in imgList" data-swiper-autoplay="1000" style="overflow-y:auto;">
     			  			<img :src="item" >
     				</div>
     			</div>

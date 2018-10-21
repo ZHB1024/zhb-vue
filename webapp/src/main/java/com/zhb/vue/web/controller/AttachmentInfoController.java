@@ -74,7 +74,7 @@ public class AttachmentInfoController {
         return "htgl.attachment.index";
     }
     
-   //toswiper
+   //toswiper 浏览图片
     @RequestMapping(value = "/toswiper",method = RequestMethod.GET)
     @Transactional
     public String toSwiper(HttpServletRequest request,HttpServletResponse response) {
