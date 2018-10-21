@@ -74,6 +74,17 @@ public class AttachmentInfoController {
         return "htgl.attachment.index";
     }
     
+   //toswiper
+    @RequestMapping(value = "/toswiper",method = RequestMethod.GET)
+    @Transactional
+    public String toSwiper(HttpServletRequest request,HttpServletResponse response) {
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            return "login.index";
+        }
+        return "htgl.attachment.swiper";
+    }
+    
+    
     //查询
     @RequestMapping(value = "/getattachmentinfo/api")
     @ResponseBody
@@ -101,6 +112,21 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        return ajaxData;
+    }
+    
+    //浏览图片，分页
+    @RequestMapping(value = "/scanattachmentinfopage/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData scanAttachmentInfoPage(HttpServletRequest request,HttpServletResponse response,AttachmentInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        ajaxData = scanAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
     
@@ -599,6 +625,44 @@ public class AttachmentInfoController {
         JSONObject jsonObject = new JSONObject();
         if (null != page) {
             JSONArray jsonArray = Data2JSONUtil.attachmentInfoDatas2JSONArray(page.getList());
+            jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), jsonArray);
+        }else{
+            jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());
+        }
+        ajaxData.setFlag(true);
+        ajaxData.setData(jsonObject);
+        return ajaxData;
+    }
+    
+    //浏览图片，分页
+    private AjaxData scanAttachmentInfo2AjaxDataPage(AttachmentInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new AttachmentInfoParam();
+        }
+        param.setId(null);
+        param.setType(AttachmentTypeEnum.IMAGE.getIndex());
+        
+        //排序字段
+        List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo = new OrderVO("fileName",true);
+        orderVos.add(vo);
+        OrderVO vo2 = new OrderVO("type",true);
+        orderVos.add(vo2);
+        
+        //设置分页信息
+        if(null == param.getCurrentPage()){
+            param.setCurrentPage(1);
+        }
+        if(null == param.getPageSize()){
+            param.setPageSize(PageUtil.PAGE_SIZE);
+        }
+        param.setStart(param.getPageSize()*(param.getCurrentPage()-1));
+        
+        Page<AttachmentInfoData> page = attachmentInfoService.getAttachmentInfosPage(param,orderVos);
+        JSONObject jsonObject = new JSONObject();
+        if (null != page) {
+            JSONArray jsonArray = Data2JSONUtil.imageDatas2JSONArray(page.getList());
             jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), jsonArray);
         }else{
             jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());

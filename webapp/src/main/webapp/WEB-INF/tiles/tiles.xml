@@ -106,6 +106,9 @@
     <definition name="htgl.attachment.upload" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/attachment/upload.jsp" />
     </definition>
+    <definition name="htgl.attachment.swiper" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/attachment/swiper.jsp" />
+    </definition>
     
     <!-- verification code -->
     <definition name="htgl.verification.index" extends="htgl.main.layout">

@@ -455,5 +455,17 @@ public class Data2JSONUtil {
         }
         return jsonArray;
     }
+    
+    //浏览图片
+    public static JSONArray imageDatas2JSONArray(List<AttachmentInfoData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        for (AttachmentInfoData data : datas) {
+            jsonArray.add("/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+        }
+        return jsonArray;
+    }
 
 }
