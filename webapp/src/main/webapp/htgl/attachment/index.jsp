@@ -150,6 +150,13 @@ var myVue = new Vue({
                 minWidth: 150,
                 align: "center",
                 render: (h, params) => {
+                	var colorFlag = 'green';
+                	if('2' == params.row.likeDegree){
+                		colorFlag = 'blue';
+                	}
+                	if('3' == params.row.likeDegree){
+                		colorFlag = 'red';
+                	}
                 	return h('div', [
                         h('Button', {
                             props: {
@@ -162,9 +169,14 @@ var myVue = new Vue({
                               }
                             }
                         }, "-"),
-                        h('span',{
-                          class: "cbcs"
-                        }, params.row.likeDegree),
+                        h('Icon',{
+                          class: "cbcs",
+                          props: {
+                              type: params.row.likeDegreeName,
+                              color:colorFlag,
+                              size:20
+                          }
+                        }, ''),
                         h('Button', {
                             props: {
                               slot: "prepend"
@@ -389,7 +401,6 @@ var myVue = new Vue({
                     duration: 2,
                     closable: true
                 });
-            	this.myVue.tableDatas[index].likeDegree=likeDegreeNew;
             	myVue.tableDatas = response.data.data.result;
             	flushPage(response.data.data);
 				myVue.$forceUpdate();
