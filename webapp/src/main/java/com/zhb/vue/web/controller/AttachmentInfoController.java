@@ -2,8 +2,6 @@ package com.zhb.vue.web.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +12,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +28,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.Constants;
 import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
+import com.zhb.forever.framework.dic.LikeDgreeEnum;
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
@@ -127,6 +125,42 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         ajaxData = scanAttachmentInfo2AjaxDataPage(param);
+        return ajaxData;
+    }
+    
+    //修改
+    @RequestMapping(value = "/updateattachmentinfo/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData updateAttachmentInfo(HttpServletRequest request,HttpServletResponse response,AttachmentInfoParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        if (StringUtil.isBlank(param.getId())) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请选择数据");
+            return ajaxData;
+        }
+        
+        AttachmentInfoData data = attachmentInfoService.get(AttachmentInfoData.class, param.getId());
+        if (null == data) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("没有这个数据");
+            return ajaxData;
+        }
+        
+        if (null == param.getLikeDegree()) {
+            param.setLikeDegree(LikeDgreeEnum.LIKE.getIndex());
+        }
+        
+        data.setLikeDegree(param.getLikeDegree());
+        
+        attachmentInfoService.updateEntitie(data);
+        
+        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
     
@@ -580,6 +614,7 @@ public class AttachmentInfoController {
             param = new AttachmentInfoParam();
         }
         param.setId(null);
+        param.setLikeDegree(null);
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
         OrderVO vo = new OrderVO("category",true);
@@ -602,15 +637,18 @@ public class AttachmentInfoController {
             param = new AttachmentInfoParam();
         }
         param.setId(null);
+        param.setLikeDegree(null);
         if ("undefined".equals(param.getType())) {
             param.setType(null);
         }
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
-        OrderVO vo = new OrderVO("fileName",true);
-        orderVos.add(vo);
-        OrderVO vo2 = new OrderVO("type",true);
+        OrderVO vo1 = new OrderVO("likeDegree",false);
+        orderVos.add(vo1);
+        OrderVO vo2 = new OrderVO("fileName",true);
         orderVos.add(vo2);
+        OrderVO vo3 = new OrderVO("type",true);
+        orderVos.add(vo3);
         
         //设置分页信息
         if(null == param.getCurrentPage()){
@@ -641,10 +679,13 @@ public class AttachmentInfoController {
             param = new AttachmentInfoParam();
         }
         param.setId(null);
+        param.setLikeDegree(null);
         param.setType(AttachmentTypeEnum.IMAGE.getIndex());
         
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
+        OrderVO vo1 = new OrderVO("likeDegree",false);
+        orderVos.add(vo1);
         OrderVO vo = new OrderVO("fileName",true);
         orderVos.add(vo);
         OrderVO vo2 = new OrderVO("type",true);

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
+import com.zhb.forever.framework.dic.LikeDgreeEnum;
 
 @Entity
 @Table(name="attachment_info")
@@ -30,12 +31,14 @@ public class AttachmentInfoData implements Serializable{
     private String contentType;
     private Integer type;
     private Integer deleteFlag;
+    private Integer likeDegree;
     private Calendar createTime;
     private String createUserId;
 
     public AttachmentInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
         this.createTime = Calendar.getInstance();
+        this.likeDegree = LikeDgreeEnum.LIKE.getIndex();
     }
 
     @Id
@@ -129,6 +132,15 @@ public class AttachmentInfoData implements Serializable{
     
     public void setCreateUserId(String createUserId) {
         this.createUserId = createUserId;
+    }
+
+    @Column(name = "LIKE_DEGREE",nullable=false,columnDefinition="int default 1")
+    public Integer getLikeDegree() {
+        return likeDegree;
+    }
+
+    public void setLikeDegree(Integer likeDegree) {
+        this.likeDegree = likeDegree;
     }
 
 }

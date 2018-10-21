@@ -75,7 +75,6 @@ var myVue = new Vue({
             	key: 'thumbnailUrl',
             	width: 100,
             	render: (h, params) => {
-            	    console.log(params.row)
             	    return h('div',  [
             	        h('img', {
             	          props: {
@@ -142,9 +141,44 @@ var myVue = new Vue({
             {
                 title: '状态',
                 key: 'deleteFlagName',
-                minWidth: 100,
+                minWidth: 50,
                 sortable:true
             },
+            {
+                title: '喜爱程度',
+                key: 'likeDegree',
+                minWidth: 150,
+                align: "center",
+                render: (h, params) => {
+                	return h('div', [
+                        h('Button', {
+                            props: {
+                              slot: 'append'
+                            },
+                            class: "left-btn",
+                            on: {
+                              click: () => {
+                                this.myVue.upLikeDegree(params.index,-1);
+                              }
+                            }
+                        }, "-"),
+                        h('span',{
+                          class: "cbcs"
+                        }, params.row.likeDegree),
+                        h('Button', {
+                            props: {
+                              slot: "prepend"
+                            },
+                            class: "right-btn",
+                            on: {
+                              click: () => {
+                                this.myVue.upLikeDegree(params.index,1);
+                              }
+                            }
+                        }, "+")
+                    ]);
+                }
+            } ,
             {
                 title: '操作',
                 key: 'action',
@@ -302,35 +336,71 @@ var myVue = new Vue({
       },
       /*弹出附件详细信息*/
       showinfo:function(data){
-   	   var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
+   	   	  var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
 
-   	   showContent += generatorValue("附件名称",data.row.fileName);
-   	   showContent += generatorValue("附件类型",data.row.type);
-   	   showContent += generatorValue("附件大小",data.row.fileSize);
-   	   showContent += generatorValue("内容类型",data.row.contentType);
-   	   showContent += generatorValue("附件路径",data.row.filePath);
-   	   showContent += generatorValue("创建时间",data.row.createTime);
-   	   showContent += generatorValue("状态",data.row.deleteFlagName);
+   	   	  showContent += generatorValue("附件名称",data.row.fileName);
+   	      showContent += generatorValue("附件类型",data.row.type);
+   	      showContent += generatorValue("附件大小",data.row.fileSize);
+   	      showContent += generatorValue("内容类型",data.row.contentType);
+   	      showContent += generatorValue("附件路径",data.row.filePath);
+   	      showContent += generatorValue("创建时间",data.row.createTime);
+   	      showContent += generatorValue("状态",data.row.deleteFlagName);
    	   
-   	   showContent += '</table>';
+   	      showContent += '</table>';
    	   
-   	   layer.open({
-   	        title: data.row.fileName,
-   	        type: 1,
-   	        //skin: 'layui-layer-rim', //加上边框
-   	        area: ['700px', '700px'], //宽高
-   	        content: showContent, 
-   	        btn: ['确定'],
-   	        success: function(layero, index){
-   	        },
-   	        yes: function(index, layero){
-   	            layer.closeAll();
-   	        }
-   	    });
+   	      layer.open({
+   	           title: data.row.fileName,
+   	           type: 1,
+   	           //skin: 'layui-layer-rim', //加上边框
+   	           area: ['700px', '700px'], //宽高
+   	           content: showContent, 
+   	           btn: ['确定'],
+   	           success: function(layero, index){
+   	           },
+   	           yes: function(index, layero){
+   	               layer.closeAll();
+   	           }
+   	       });
       },
       //下载附件
       downAttachment:function(data){
     	  window.location.href='<%=ctxPath%>/htgl/attachmentinfocontroller/downloadattachmentinfo?id=' + data.row.id;
+      },
+      //修改喜爱程度
+      upLikeDegree: function(index,value) {
+          var likeDegreeNew = this.tableDatas[index].likeDegree + value;
+          if(likeDegreeNew>3||likeDegreeNew<1){
+        	  myVue.$Message.error({
+                  content: "请正确处理喜爱程度",
+                  duration: 3,
+                  closable: true
+              });
+        	  return ;
+          }
+          
+          let param = new URLSearchParams(); 
+          param.append("id",this.tableDatas[index].id); 
+          param.append("likeDegree",likeDegreeNew); 
+          axios.post('<%=ctxPath %>/htgl/attachmentinfocontroller/updateattachmentinfo/api', param)
+          .then(function (response) {
+            if(response.data.flag){
+            	myVue.$Message.success({
+                    content: "修改成功",
+                    duration: 2,
+                    closable: true
+                });
+            	this.myVue.tableDatas[index].likeDegree=likeDegreeNew;
+            	myVue.tableDatas = response.data.data.result;
+            	flushPage(response.data.data);
+				myVue.$forceUpdate();
+            }else{
+        	    
+        	    myVue.$Modal.error({
+                    content: "修改喜爱程度失败",
+                    closable: true
+                });
+            }
+          })
       }
       
     }

@@ -12,6 +12,7 @@ public class AttachmentInfoParam {
     private Integer type;
     private Integer deleteFlag;
     private Calendar createTime;
+    private Integer likeDegree;
     
     private Integer start;
     private Integer pageSize;
@@ -82,6 +83,12 @@ public class AttachmentInfoParam {
     }
     public void setCurrentPage(Integer currentPage) {
         this.currentPage = currentPage;
+    }
+    public Integer getLikeDegree() {
+        return likeDegree;
+    }
+    public void setLikeDegree(Integer likeDegree) {
+        this.likeDegree = likeDegree;
     }
     
 }

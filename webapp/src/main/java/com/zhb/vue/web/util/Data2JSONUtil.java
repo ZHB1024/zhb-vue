@@ -9,6 +9,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.dic.DeleteFlagEnum;
+import com.zhb.forever.framework.dic.LikeDgreeEnum;
 import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.util.ComparatorVOComparator;
 import com.zhb.forever.framework.util.DateTimeUtil;
@@ -446,6 +447,8 @@ public class Data2JSONUtil {
             object.put("filePath", data.getFilePath());
             object.put("fileSize", data.getFileSize());
             object.put("type", AttachmentTypeEnum.getName(data.getType()));
+            object.put("likeDegree", data.getLikeDegree());
+            object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
             object.put("contentType", data.getContentType());
             object.put("deleteFlag", data.getDeleteFlag());
             object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
