@@ -28,83 +28,60 @@ public class CommonServiceImpl implements CommonService{
     @Autowired
     public CommonDao commonDao;
     
-    /**
-     * *新增实体
-     * @param <T>
-     * @param entitie
-     */
+    @Override
     public  <T> Serializable save(T entity) {
         return commonDao.save(entity);
     }
     
-    /**
-     * *新增或修改实体
-     * @param <T>
-     * @param entitie
-     */
-    public  <T> T saveOrUpdate(T entity) {
-        return commonDao.saveOrUpdate(entity);
-    };
-
-    /**
-     * *批量新增实体
-     * @param <T>
-     * @param entitie
-     */
+    @Override
     public  <T> void batchSave(List<T> entitys) {
         commonDao.batchSave(entitys);
     };
     
-    /**
-     * *删除实体
-     * @param <T>
-     * @param entitie
-     */
+    @Override
+    public <T> void updateEntitie(T pojo) {
+        commonDao.updateEntitie(pojo);
+    }
+
+    @Override
+    public <T> void updateEntityById(Class entityName, Serializable id) {
+        commonDao.updateEntityById(entityName,id);
+    }
+
+    @Override
+    public <T> void updateEntitie(String className, Object id) {
+        commonDao.updateEntitie(className,id);
+    };
+    
+    @Override
+    public  <T> T saveOrUpdate(T entity) {
+        return commonDao.saveOrUpdate(entity);
+    };
+
+    @Override
     public  <T> void delete(T entity) {
         commonDao.delete(entity);
     };
     
-    /**
-     * *根据主键删除指定的实体
-     * @param <T>
-     * @param entitie
-     */
+    @Override
     public  <T> void deleteEntityById(Class entityName, Serializable id) {
         commonDao.deleteEntityById(entityName,id);
     };
     
-    /**
-     * *删除全部的实体
-     * 
-     * @param <T>
-     * 
-     * @param entitys
-     */
+    @Override
     public  <T> void deleteAllEntitie(Collection<T> entities) {
         commonDao.deleteAllEntitie(entities);
     };
     
-    /**
-     * *根据实体名称和主键获取实体
-     * @param <T>
-     * @param entityName
-     * @param id
-     * @return
-     */
+    @Override
     public  <T> T get(Class<T> entityClass, Serializable id) {
         return commonDao.get(entityClass, id);
     };
 
-    /**
-     * *根据实体名称和主键获取实体
-     * @param <T>
-     * @param entityName
-     * @param id
-     * @return
-     */
+    @Override
     public  <T> T getEntity(Class entityName, Serializable id) {
         return commonDao.getEntity(entityName, id);
-    };
+    }
 
 }
 

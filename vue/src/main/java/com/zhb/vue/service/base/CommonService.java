@@ -29,6 +29,34 @@ public interface CommonService {
      * @param entitie
      */
       <T> Serializable save(T entity) ;
+      
+      /**
+       * *批量新增实体
+       * @param <T>
+       * @param entitie
+       */
+      <T> void batchSave(List<T> entitys) ;
+      
+      /**
+       ** 更新指定的实体
+       * 
+       * @param <T>
+       * @param pojo
+       */
+      <T> void updateEntitie(T pojo);
+      
+      /**
+       * *根据主键更新实体
+       */
+      <T> void updateEntityById(Class entityName, Serializable id);
+      
+      /**
+       ** 更新指定的实体
+       * 
+       * @param <T>
+       * @param pojo
+       */
+      <T> void updateEntitie(String className, Object id) ;
     
     /**
      * *新增或修改实体
@@ -37,12 +65,6 @@ public interface CommonService {
      */
       <T> T saveOrUpdate(T entity) ;
 
-    /**
-     * *批量新增实体
-     * @param <T>
-     * @param entitie
-     */
-      <T> void batchSave(List<T> entitys) ;
     
     /**
      * *删除实体
