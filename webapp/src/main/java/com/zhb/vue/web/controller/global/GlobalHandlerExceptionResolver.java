@@ -1,4 +1,4 @@
-package com.zhb.vue.web.controller.golbal;
+package com.zhb.vue.web.controller.global;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
