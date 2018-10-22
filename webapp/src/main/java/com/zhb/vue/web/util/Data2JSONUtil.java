@@ -14,6 +14,7 @@ import com.zhb.forever.framework.dic.AttachmentTypeEnum;
 import com.zhb.forever.framework.util.ComparatorVOComparator;
 import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.util.FileUtil;
+import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.ComparatorVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
 import com.zhb.vue.dic.VerificationCodeTypeEnum;
@@ -472,6 +473,34 @@ public class Data2JSONUtil {
             jsonArray.add("/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
         }
         return jsonArray;
+    }
+    
+    //统计附件
+    public static JSONObject statisticAttachment2JSONObject(String titleName,List<Object[]> results) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtil.isBlank(titleName)) {
+            jsonObject.put("titleName", "统计");
+        }else{
+            jsonObject.put("titleName", titleName);
+        }
+        
+        JSONArray names = new JSONArray();
+        JSONArray values = new JSONArray();
+        JSONArray nameValues = new JSONArray();
+        if (null != results) {
+            for (Object[] object : results) {
+                names.add(AttachmentTypeEnum.getName(Integer.valueOf(object[0].toString())));
+                values.add(object[1]);
+                JSONObject json = new JSONObject();
+                json.put("name", AttachmentTypeEnum.getName(Integer.valueOf(object[0].toString())));
+                json.put("value", object[1]);
+                nameValues.add(json);
+            }
+        }
+        jsonObject.put("names", names);
+        jsonObject.put("values", values);
+        jsonObject.put("nameValues", nameValues);
+        return jsonObject;
     }
 
 }

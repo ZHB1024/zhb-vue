@@ -62,5 +62,10 @@ public class AttachmentInfoServiceImpl extends CommonServiceImpl implements Atta
         }
         return null;
     }
+
+    @Override
+    public List<Object[]> statisticAttachment() {
+        return attachmentInfoDao.statisticAttachment();
+    }
     
 }

@@ -52,4 +52,9 @@ public interface AttachmentInfoService extends CommonService{
      * @return
      */
     Page<AttachmentInfoData> getAttachmentInfosPage(AttachmentInfoParam param,List<OrderVO> orderVos);
+    
+    /**
+     * *统计
+     */
+    List<Object[]> statisticAttachment();
 }

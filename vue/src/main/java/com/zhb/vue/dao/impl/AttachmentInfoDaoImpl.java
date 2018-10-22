@@ -211,4 +211,17 @@ public class AttachmentInfoDaoImpl extends CommonDao implements AttachmentInfoDa
         return query.getResultList();
     }
 
+    @Override
+    public List<Object[]> statisticAttachment() {
+        StringBuilder sb =  new StringBuilder();
+        sb.append(" select a.type, count(a.id) ");
+        sb.append("      from attachment_info a ");
+        sb.append("             group by a.type ");
+        sb.append("             order by a.type asc ");
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sb.toString());
+        List<Object[]> results = query.list();
+        return results;
+    }
+
 }

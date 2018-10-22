@@ -4,14 +4,12 @@ import java.util.List;
 
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.AttachmentInfoParam;
-import com.zhb.vue.params.DicInfoParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
-import com.zhb.vue.pojo.DicInfoData;
 
 public interface AttachmentInfoDao {
     
     /**
-     * 新增或修改 附件
+     * *新增或修改 附件
      * @param data
      */
     void saveOrUpdate(AttachmentInfoData data);
@@ -67,5 +65,10 @@ public interface AttachmentInfoDao {
      * @return
      */
     List<AttachmentInfoData> getAttachmentInfosPage(AttachmentInfoParam param,List<OrderVO> orderVos);
+    
+    /**
+     * *统计
+     */
+    List<Object[]> statisticAttachment();
     
 }
