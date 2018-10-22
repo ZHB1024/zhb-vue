@@ -42,14 +42,14 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 */
 @Component
-public class GolbalHandlerExceptionResolver implements HandlerExceptionResolver, Ordered {
+public class GlobalHandlerExceptionResolver implements HandlerExceptionResolver, Ordered {
     
-    private static Logger logger = LoggerFactory.getLogger(GolbalHandlerExceptionResolver.class);
+    private static Logger logger = LoggerFactory.getLogger(GlobalHandlerExceptionResolver.class);
     
     private int order = Ordered.HIGHEST_PRECEDENCE;
     
     @Autowired
-    public GolbalHandlerExceptionResolver() {
+    public GlobalHandlerExceptionResolver() {
     }
 
     @Override
