@@ -33,8 +33,11 @@ String ctxPath = request.getContextPath();
     <!-- 轮播图片 -->
     <link rel="stylesheet" type="text/css" href="<%=ctxPath%>/css/swiper/swiper-3.4.2.min.css" />
 	<script type="text/javascript" src="<%=ctxPath%>/js/swiper/swiper-3.4.2.min.js"></script>
+	
+	<!-- 统计图 -->
+	<script type="text/javascript" src="<%=ctxPath%>/js/echarts/echarts.js"></script>
 
-<link rel="stylesheet" type="text/css" href="/css/my.css">
+	<link rel="stylesheet" type="text/css" href="/css/my.css">
 
 
 <!-- <link rel="stylesheet" type="text/css" href="/css/iview.css">
