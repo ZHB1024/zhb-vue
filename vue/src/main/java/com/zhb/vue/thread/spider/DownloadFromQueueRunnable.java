@@ -41,8 +41,9 @@ public class DownloadFromQueueRunnable implements Runnable {
                 try {
                     Thread.currentThread().sleep(10);
                 } catch (InterruptedException e) {
-                    logger.error("从队列里取url异常");
+                    logger.error("从队列里取url异常...............");
                     e.printStackTrace();
+                    continue;
                 }
             }
             shutdowmFlag = new AtomicInteger(0);

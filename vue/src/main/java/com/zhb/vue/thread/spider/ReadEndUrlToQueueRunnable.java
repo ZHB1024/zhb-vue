@@ -108,8 +108,9 @@ public class ReadEndUrlToQueueRunnable implements Runnable {
                         try {
                             Thread.currentThread().sleep(10);
                         } catch (InterruptedException e) {
+                            logger.error("向队列里添加url异常.............");
                             e.printStackTrace();
-                            logger.error("向队列里添加url异常");
+                            continue;
                         }
                     }
                     logger.info("--向队列里添加成功----第 " + endPage.get() + " 页------第 " + totalCount.incrementAndGet() + " 个");
