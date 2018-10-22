@@ -10,9 +10,10 @@ import com.zhb.vue.dao.IconInfoDao;
 import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
 import com.zhb.vue.service.IconInfoService;
+import com.zhb.vue.service.base.impl.CommonServiceImpl;
 
 @Service
-public class IconInfoServiceImpl implements IconInfoService {
+public class IconInfoServiceImpl  extends CommonServiceImpl implements IconInfoService {
     
     @Autowired
     private IconInfoDao iconInfoDao;

@@ -14,9 +14,10 @@ import com.zhb.vue.dao.UserInfoDao;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.service.base.impl.CommonServiceImpl;
 
 @Service
-public class UserInfoServiceImpl implements UserInfoService {
+public class UserInfoServiceImpl extends CommonServiceImpl  implements UserInfoService {
     
     @Autowired
     private UserInfoDao userInfoDao;

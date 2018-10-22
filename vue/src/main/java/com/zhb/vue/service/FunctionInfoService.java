@@ -9,8 +9,9 @@ import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.service.base.CommonService;
 
-public interface FunctionInfoService {
+public interface FunctionInfoService extends CommonService{
     
     /**
      * *新增或修改功能

@@ -9,22 +9,18 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.VerificationCodeInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.VerificationCodeInfoParam;
 import com.zhb.vue.pojo.VerificationCodeInfoData;
 
 @Repository
-public class VerificationCodeInfoDaoImpl implements VerificationCodeInfoDao {
-
-    @Autowired
-    private SessionFactory sessionFactory;
+public class VerificationCodeInfoDaoImpl extends CommonDao implements VerificationCodeInfoDao {
 
     @Override
     public void saveOrUpdate(VerificationCodeInfoData data) {

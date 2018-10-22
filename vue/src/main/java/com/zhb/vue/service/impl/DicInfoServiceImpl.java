@@ -11,15 +11,14 @@ import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.forever.redis.client.RedisClient;
 import com.zhb.forever.redis.client.RedisClientFactory;
-import com.zhb.vue.Constant;
 import com.zhb.vue.dao.DicInfoDao;
 import com.zhb.vue.params.DicInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
-import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.DicInfoService;
+import com.zhb.vue.service.base.impl.CommonServiceImpl;
 
 @Service
-public class DicInfoServiceImpl implements DicInfoService {
+public class DicInfoServiceImpl extends CommonServiceImpl implements DicInfoService {
     
     @Autowired
     private DicInfoDao dicInfoDao;

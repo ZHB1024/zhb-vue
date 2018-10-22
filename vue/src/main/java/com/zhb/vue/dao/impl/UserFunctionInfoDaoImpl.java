@@ -9,22 +9,18 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.vue.dao.UserFunctionInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.UserFunctionInfoParam;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 
 @Repository
-public class UserFunctionInfoDaoImpl implements UserFunctionInfoDao {
-    
-    @Autowired
-    private SessionFactory sessionFactory;
+public class UserFunctionInfoDaoImpl extends CommonDao implements UserFunctionInfoDao {
     
     @Override
     public void saveOrUpdate(UserFunctionInfoData data) {

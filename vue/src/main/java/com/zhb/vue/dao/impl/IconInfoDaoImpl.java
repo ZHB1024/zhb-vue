@@ -9,23 +9,18 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.IconInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
 
 @Repository
-public class IconInfoDaoImpl implements IconInfoDao {
-    
-    @Autowired
-    private SessionFactory sessionFactory;
-    
+public class IconInfoDaoImpl extends CommonDao implements IconInfoDao {
     
     @Override
     public void saveOrUpdate(IconInfoData data) {

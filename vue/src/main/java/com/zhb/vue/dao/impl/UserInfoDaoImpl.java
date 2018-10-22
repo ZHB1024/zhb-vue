@@ -9,22 +9,18 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.UserInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.UserInfoData;
 
 @Repository
-public class UserInfoDaoImpl implements UserInfoDao {
-    
-    @Autowired
-    private SessionFactory sessionFactory;
+public class UserInfoDaoImpl extends CommonDao implements UserInfoDao {
     
     @Override
     public void saveOrUpdate(UserInfoData data) {

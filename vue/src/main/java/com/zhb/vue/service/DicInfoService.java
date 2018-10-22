@@ -6,8 +6,9 @@ import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.DicInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
+import com.zhb.vue.service.base.CommonService;
 
-public interface DicInfoService {
+public interface DicInfoService extends CommonService{
     
     void saveOrUpdate(DicInfoData data);
     

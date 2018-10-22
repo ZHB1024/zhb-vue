@@ -9,23 +9,18 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.zhb.forever.framework.dic.DeleteFlagEnum;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.FunctionInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.FunctionInfoParam;
 import com.zhb.vue.pojo.FunctionInfoData;
 
 @Repository
-public class FunctionInfoDaoImpl implements FunctionInfoDao {
-    
-    @Autowired
-    private SessionFactory sessionFactory;
+public class FunctionInfoDaoImpl extends CommonDao implements FunctionInfoDao {
     
     
     @Override

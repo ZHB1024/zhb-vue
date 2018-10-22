@@ -20,9 +20,10 @@ import com.zhb.vue.pojo.FunctionInfoData;
 import com.zhb.vue.pojo.UserFunctionInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.FunctionInfoService;
+import com.zhb.vue.service.base.impl.CommonServiceImpl;
 
 @Service
-public class FunctionInfoServiceImpl implements FunctionInfoService {
+public class FunctionInfoServiceImpl  extends CommonServiceImpl implements FunctionInfoService {
     
     @Autowired
     private FunctionInfoDao functionInfoDao;

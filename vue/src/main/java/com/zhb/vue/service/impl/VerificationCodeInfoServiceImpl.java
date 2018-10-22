@@ -13,9 +13,10 @@ import com.zhb.vue.dao.VerificationCodeInfoDao;
 import com.zhb.vue.params.VerificationCodeInfoParam;
 import com.zhb.vue.pojo.VerificationCodeInfoData;
 import com.zhb.vue.service.VerificationCodeInfoService;
+import com.zhb.vue.service.base.impl.CommonServiceImpl;
 
 @Service
-public class VerificationCodeInfoServiceImpl implements VerificationCodeInfoService {
+public class VerificationCodeInfoServiceImpl extends CommonServiceImpl  implements VerificationCodeInfoService {
 
     @Autowired
     private VerificationCodeInfoDao verificationCodeInfoDao;

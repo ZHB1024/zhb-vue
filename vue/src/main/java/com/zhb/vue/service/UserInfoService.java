@@ -5,8 +5,9 @@ import java.util.List;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.UserInfoParam;
 import com.zhb.vue.pojo.UserInfoData;
+import com.zhb.vue.service.base.CommonService;
 
-public interface UserInfoService {
+public interface UserInfoService extends CommonService{
     
     /**
      * *新增或修改用户

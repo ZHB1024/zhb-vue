@@ -5,8 +5,9 @@ import java.util.List;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.params.IconInfoParam;
 import com.zhb.vue.pojo.IconInfoData;
+import com.zhb.vue.service.base.CommonService;
 
-public interface IconInfoService {
+public interface IconInfoService extends CommonService{
     
     /**
      * *新增或修改 图标

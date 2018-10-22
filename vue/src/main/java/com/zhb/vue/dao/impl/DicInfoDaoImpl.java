@@ -8,28 +8,22 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.zhb.forever.framework.dic.DeleteFlagEnum;
-import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.vue.dao.DicInfoDao;
+import com.zhb.vue.dao.base.CommonDao;
 import com.zhb.vue.params.DicInfoParam;
 import com.zhb.vue.pojo.DicInfoData;
 
 @Repository
-public class DicInfoDaoImpl implements DicInfoDao {
+public class DicInfoDaoImpl extends CommonDao implements DicInfoDao {
     
-    @Autowired
-    private SessionFactory sessionFactory;
-
     @Override
     public void saveOrUpdate(DicInfoData data) {
         sessionFactory.getCurrentSession().saveOrUpdate(data);
