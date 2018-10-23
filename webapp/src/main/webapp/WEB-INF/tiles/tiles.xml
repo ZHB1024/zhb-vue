@@ -125,9 +125,14 @@
         <put-attribute name="body" value="/htgl/flushredis/index.jsp" />
     </definition>
     
-    <!-- statistic -->
+    <!-- 统计 -->
 	<definition name="htgl.statistic.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/statistic/statistic_attachment.jsp" />
+    </definition>
+    
+    <!-- MQ -->
+	<definition name="htgl.mq.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/mq/index.jsp" />
     </definition>
     
 <!-- htgl end--> 
