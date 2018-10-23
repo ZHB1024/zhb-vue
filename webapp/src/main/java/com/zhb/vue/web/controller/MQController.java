@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf;
+import com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf.KeyValue;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.mq.client.JmsActiveMQClientFactory;
 import com.zhb.forever.mq.client.JmsActiveMQManager;
@@ -46,18 +48,45 @@ public class MQController {
     @Transactional
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
-        mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
+        /*mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
         
         TextMessage textMessage = mqClient.receiveQueueMessage(mqDestination);
         if (null != textMessage) {
             try {
                 logger.info(textMessage.getText());
+                ajaxData.setData(textMessage.getText());
+                ajaxData.setFlag(true);
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         
-        ajaxData.setFlag(true);
+        KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
+        newsBuilder.setId("123");
+        newsBuilder.setKey("测试");
+        newsBuilder.setValue("测试一下不行呀");
+        //newsBuilder.setCreateTime(Calendar.getInstance().getTimeInMillis());
+        KeyValue news = newsBuilder.build();
+        byte[] newsByte = news.toByteArray();
+        mqClient.sendQueueRemoteMsg("zhb_vue_object", newsByte);
+        
+        return ajaxData;
+    }
+    
+    @RequestMapping(value = "/receivemessage", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData receiveQueueMes(HttpServletRequest request, HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        try {
+            com.google.protobuf.Message mes = mqClient.receiveQueueRemoteMsgByDesNamePath("zhb_vue_object", "com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf$KeyValue");
+            if (null != mes) {
+                KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
+                logger.info("从队列 zhb_vue_object 收到了消息：\t" + news2.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return ajaxData;
     }
 
