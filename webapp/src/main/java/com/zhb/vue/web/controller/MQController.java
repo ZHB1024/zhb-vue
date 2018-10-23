@@ -48,7 +48,7 @@ public class MQController {
     @Transactional
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
-        /*mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
+        mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
         
         TextMessage textMessage = mqClient.receiveQueueMessage(mqDestination);
         if (null != textMessage) {
@@ -59,21 +59,21 @@ public class MQController {
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
         
-        KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
+        /*KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
         newsBuilder.setId("123");
         newsBuilder.setKey("测试");
         newsBuilder.setValue("测试一下不行呀");
         //newsBuilder.setCreateTime(Calendar.getInstance().getTimeInMillis());
         KeyValue news = newsBuilder.build();
         byte[] newsByte = news.toByteArray();
-        mqClient.sendQueueRemoteMsg("zhb_vue_object", newsByte);
+        mqClient.sendQueueRemoteMsg("zhb_vue_object", newsByte);*/
         
         return ajaxData;
     }
     
-    @RequestMapping(value = "/receivemessage", method = RequestMethod.POST)
+    @RequestMapping(value ="/receivemessage", method = RequestMethod.POST)
     @ResponseBody
     @Transactional
     public AjaxData receiveQueueMes(HttpServletRequest request, HttpServletResponse response) {
@@ -83,6 +83,8 @@ public class MQController {
             if (null != mes) {
                 KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
                 logger.info("从队列 zhb_vue_object 收到了消息：\t" + news2.toString());
+                ajaxData.setData(news2.toString());
+                ajaxData.setFlag(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
