@@ -94,5 +94,5 @@
 }
 
 /* 统计 */
-.echart-item{ float: left; width: 500px; height: 300px; margin-right: 50px; }
+.echart-item{ float: left; width: 700px; height: 600px; margin-right: 50px; }
 .echart-item:last-child{ margin-right: 0; }

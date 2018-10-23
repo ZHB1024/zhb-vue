@@ -12,18 +12,22 @@
             <breadcrumb-item>附件统计</breadcrumb-item> 
         </Breadcrumb> 
         <i-content :style="{padding: '24px', minHeight: '428px', background: '#fff'}">
-            <Row>
-                <i-col span="10">
-			        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <!-- <Row>
+                <i-col span="10" >
+			        为 ECharts 准备一个具备大小（宽高）的 DOM
 			        <div id="main" style="width: 700px;height:600px;"></div>
                 </i-col>
-                <i-col span="2">
-                <div style="width: 20px;height:600px;"></div>
+                <i-col span="1" style="margin-right:10px">
+                <div style="width: 10px;height:600px;"></div>
                 </i-col>
-                <i-col span="10">
-			        <div id="main2" style="width: 700px;height:600px;"></div>
+                <i-col span="10" style="margin-right:10px">
+			        <div id="main2" style="width: 600px;height:600px;"></div>
                 </i-col>
-            </Row>
+            </Row> -->
+            <div class="echart-box clearfix">
+                <div id="main" class="echart-item"></div>
+                <div id="main2" class="echart-item"></div>
+            </div>
         </i-content>
     </Layout>
 </div>
@@ -102,79 +106,80 @@ var myVue = new Vue({
     		    mainChart = echarts.init(document.getElementById('main'));
     	        var app = {};
     	        var option = {
-    	            tooltip: {
-    	                trigger: 'axis',
-    	                axisPointer: {
-    	                    type: 'cross',
-    	                    crossStyle: {
-    	                        color: '#999'
-    	                    }
-    	                }
-    	            },
-    	            toolbox: {
-    	            	feature: {
-    	                    dataView: {show: true, readOnly: false},
-    	                    magicType: {show: true, type: ['bar','line']},
-    	                    restore: {show: true},
-    	                    saveAsImage: {show: true}
-    	                }
-    	            },
-    	            color: ['#3398DB'],
-    	            legend: {
-    	                data:myVue.bars.names
-    	            },
-    	            xAxis: [
-    	                {
-    	                    type: 'category',
-    	                    data: myVue.bars.names,
-    	                    axisPointer: {
-    	                        type: 'shadow'
-    	                    }
-    	                }
-    	            ],
-    	            yAxis: [
-    	                {
-    	                    type: 'value',
-    	                    name: '数量',
-    	                    min: 0,
-    	                    max: 50,
-    	                    interval: 10,
-    	                    axisLabel: {
-    	                        formatter: '{value}'
-    	                    }
-    	                }
-    	            ],
-    	            series: [
-    	                {
-    	                    name:myVue.bars.names,
-    	                    type:'bar',
-    	                    data:myVue.bars.values,
-    	                    itemStyle: {
-    	                        normal: {
-    	                        	label: {
-    	                        		show: true, //开启显示
-    	                        		position: 'top', //在上方显示
-    	                        		textStyle: { //数值样式
-    	                        		    color: 'black',
-    	                        		    fontSize: 16
-    	                        		}
-    	                            }
-    	                        }
-    	                    },
-    	                    markLine : {
-    	                        symbol : 'none',
-    	                        itemStyle : {
-    	                          normal : {
-    	                            color:'#1e90ff',
-    	                            label : {
-    	                              show:true
-    	                            }
-    	                          }
-    	                        },
-    	                        data : [{type : 'average', name: '平均值'}]
-    	                      }
-    	                }
-    	            ]
+    	        		title : {
+    	        	        text: myVue.bars.titleName,
+    	        	        x:'center'
+    	        	    },
+    	        	    legend: {
+        	            },
+        	            tooltip: {
+        	                trigger: 'axis',
+        	                axisPointer: {
+        	                    type: 'cross',
+        	                    crossStyle: {
+        	                        color: '#999'
+        	                    }
+        	                }
+        	            },
+        	            toolbox: {
+        	            	feature: {
+        	                    dataView: {show: true, readOnly: false},
+        	                    magicType: {show: true, type: ['bar','line']},
+        	                    restore: {show: true},
+        	                    saveAsImage: {show: true}
+        	                }
+        	            },
+        	            color: ['#3398DB'],
+        	            xAxis: [
+        	                {
+        	                    type: 'category',
+        	                    data: myVue.bars.names,
+        	                    axisPointer: {
+        	                        type: 'shadow'
+        	                    }
+        	                }
+        	            ],
+        	            yAxis: [
+        	                {
+        	                    type: 'value',
+        	                    name: '数量',
+        	                    min: 0,
+        	                    interval: 5,
+        	                    axisLabel: {
+        	                        formatter: '{value}'
+        	                    }
+        	                }
+        	            ],
+        	            series: [
+        	                {
+        	                    type:'bar',
+        	                    data:myVue.bars.values,
+        	                    itemStyle: {
+        	                        normal: {
+        	                        	label: {
+        	                        		show: true, //开启显示
+        	                        		position: 'top', //在上方显示
+        	                        		textStyle: { //数值样式
+        	                        		    color: 'black',
+        	                        		    fontSize: 16
+        	                        		}
+        	                            }
+        	                        }
+        	                    },
+        	                    markLine : {
+        	                        symbol : 'none',
+        	                        itemStyle : {
+        	                          normal : {
+        	                            color:'#1e90ff',
+        	                            label : {
+        	                              show:true
+        	                            }
+        	                          }
+        	                        },
+        	                        data : [{type : 'average', name: '平均值'}]
+        	                      }
+        	                }
+        	            ]
     	        };
     	        if (option && typeof option === "object") {
     	        	// 使用刚指定的配置项和数据显示图表。
@@ -188,42 +193,42 @@ var myVue = new Vue({
 	    		}
     	        main2Chart = echarts.init(document.getElementById('main2'));
     	        var option2 = {
-    	            title : {
-    	                text: myVue.pies.titleName,
-    	                subtext: myVue.pies.titleName,
-    	                x:'center'
-    	            },
-    	            toolbox: {
-    	            	feature: {
-    	                    dataView: {show: true, readOnly: false},
-    	                    saveAsImage: {show: true}
-    	                }
-    	            },
-    	            tooltip : {
-    	                trigger: 'item',
-    	                formatter: "{b} : {c} 个 <br/>   {d}%"
-    	            },
-    	            legend: {
-    	                orient: 'vertical',
-    	                left: 'left',
-    	                data: myVue.pies.names
-    	            },
-    	            series : [
-    	                {
-    	                    name: '加班内容',
-    	                    type: 'pie',
-    	                    radius : '55%',//饼的半径
-    	                    center: ['50%', '60%'],//饼的中心位置
-    	                    data:myVue.pies.nameValues,
-    	                    itemStyle: {
-    	                        emphasis: {
-    	                            shadowBlur: 10,
-    	                            shadowOffsetX: 0,
-    	                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-    	                        }
-    	                    }
-    	                }
-    	            ]
+    	        		title : {
+        	                text: myVue.pies.titleName,
+        	                subtext: '',
+        	                x:'center'
+        	            },
+        	            toolbox: {
+        	            	feature: {
+        	                    dataView: {show: true, readOnly: false},
+        	                    saveAsImage: {show: true}
+        	                }
+        	            },
+        	            tooltip : {
+        	                trigger: 'item',
+        	                formatter: "{b} : {c} 个 <br/>   {d}%"
+        	            },
+        	            legend: {
+        	                orient: 'vertical',
+        	                left: 'left',
+        	                data: myVue.pies.names
+        	            },
+        	            series : [
+        	                {
+        	                    name: '加班内容',
+        	                    type: 'pie',
+        	                    radius : '55%',//饼的半径
+        	                    center: ['50%', '60%'],//饼的中心位置
+        	                    data:myVue.pies.nameValues,
+        	                    itemStyle: {
+        	                        emphasis: {
+        	                            shadowBlur: 10,
+        	                            shadowOffsetX: 0,
+        	                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+        	                        }
+        	                    }
+        	                }
+        	            ]
     	        };
     	        if (option2 && typeof option2 === "object") {
     	        	main2Chart.setOption(option2, true);
