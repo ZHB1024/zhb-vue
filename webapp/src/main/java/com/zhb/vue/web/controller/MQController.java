@@ -1,6 +1,8 @@
 package com.zhb.vue.web.controller;
 
 import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,8 +19,8 @@ import com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf;
 import com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf.KeyValue;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.mq.Constants;
-import com.zhb.forever.mq.client.JmsActiveMQClientFactory;
-import com.zhb.forever.mq.client.JmsActiveMQManager;
+import com.zhb.forever.mq.activemq.ActiveMQClientFactory;
+import com.zhb.forever.mq.activemq.client.ActiveMQClient;
 
 /**
 *@author   zhanghb<a href="mailto:zhb20111503@126.com">zhanghb</a>
@@ -31,9 +33,9 @@ public class MQController {
     
     private Logger logger = LoggerFactory.getLogger(MQController.class);
     
-    private JmsActiveMQManager mqClient = JmsActiveMQClientFactory.getRedisClientBean();
+    private ActiveMQClient activeMqClient = ActiveMQClientFactory.getRedisClientBean();
     
-    private Destination mqDestination = JmsActiveMQClientFactory.getMQDestinationBean();
+    private Destination activeMqDestination = ActiveMQClientFactory.getMQDestinationBean();
     
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
@@ -48,9 +50,9 @@ public class MQController {
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
         
-        /*mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
+        activeMqClient.sendQueueDestinationMsg(activeMqDestination, "hello world");
         
-        TextMessage textMessage = mqClient.receiveQueueMessage(mqDestination);
+        TextMessage textMessage = activeMqClient.receiveQueueMessage(activeMqDestination);
         if (null != textMessage) {
             try {
                 logger.info(textMessage.getText());
@@ -59,16 +61,16 @@ public class MQController {
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
         
-        KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
+        /*KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
         newsBuilder.setId("123");
         newsBuilder.setKey("测试");
         newsBuilder.setValue("测试一下不行呀");
         newsBuilder.setCount(10);
         KeyValue news = newsBuilder.build();
         byte[] newsByte = news.toByteArray();
-        mqClient.sendQueueRemoteMsg(Constants.KEY_VALUE_DESTINATION_NAME, newsByte);
+        activeMqClient.sendQueueRemoteMsg(Constants.ACTIVE_KEY_VALUE_DESTINATION_NAME, newsByte);*/
         
         return ajaxData;
     }
@@ -79,10 +81,10 @@ public class MQController {
     public AjaxData receiveQueueMes(HttpServletRequest request, HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         try {
-            com.google.protobuf.Message mes = mqClient.receiveQueueRemoteMsgByDesNamePath(Constants.KEY_VALUE_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
+            com.google.protobuf.Message mes = activeMqClient.receiveQueueRemoteMsgByDesNamePath(Constants.ACTIVE_KEY_VALUE_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
             if (null != mes) {
                 KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
-                logger.info("从队列 " + Constants.KEY_VALUE_DESTINATION_NAME + " 收到了消息：");
+                logger.info("从队列 " + Constants.ACTIVE_KEY_VALUE_DESTINATION_NAME + " 收到了消息：");
                 logger.info(news2.getId());
                 logger.info(news2.getKey());
                 logger.info(news2.getValue());
