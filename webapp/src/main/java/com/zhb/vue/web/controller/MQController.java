@@ -1,5 +1,7 @@
 package com.zhb.vue.web.controller;
 
+import java.util.concurrent.ExecutionException;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
@@ -8,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +26,7 @@ import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.mq.Constants;
 import com.zhb.forever.mq.activemq.ActiveMQClientFactory;
 import com.zhb.forever.mq.activemq.client.ActiveMQClient;
+import com.zhb.forever.mq.kafka.KafkaFactory;
 
 /**
 *@author   zhanghb<a href="mailto:zhb20111503@126.com">zhanghb</a>
@@ -34,8 +40,9 @@ public class MQController {
     private Logger logger = LoggerFactory.getLogger(MQController.class);
     
     private ActiveMQClient activeMqClient = ActiveMQClientFactory.getRedisClientBean();
-    
     private Destination activeMqDestination = ActiveMQClientFactory.getMQDestinationBean();
+    
+    private KafkaTemplate kafkaProducerTemplate = KafkaFactory.getKafkaProducerTemplateBean();
     
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
@@ -50,7 +57,19 @@ public class MQController {
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
         
-        activeMqClient.sendQueueDestinationMsg(activeMqDestination, "hello world");
+        ListenableFuture<SendResult<String, String>> result = kafkaProducerTemplate.send("defaultTopic", "name", "张会彬");
+        if (null != result) {
+            try {
+                SendResult<String, String> sends = result.get();
+                logger.info(sends.toString());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        /*activeMqClient.sendQueueDestinationMsg(activeMqDestination, "hello world");
         
         TextMessage textMessage = activeMqClient.receiveQueueMessage(activeMqDestination);
         if (null != textMessage) {
@@ -61,7 +80,7 @@ public class MQController {
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         
         /*KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
         newsBuilder.setId("123");
