@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.zhb.forever.framework.proto.ProtobufUtil;
 import com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf;
 import com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf.KeyValue;
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.mq.Constants;
 import com.zhb.forever.mq.client.JmsActiveMQClientFactory;
 import com.zhb.forever.mq.client.JmsActiveMQManager;
 
@@ -63,10 +65,10 @@ public class MQController {
         newsBuilder.setId("123");
         newsBuilder.setKey("测试");
         newsBuilder.setValue("测试一下不行呀");
-        //newsBuilder.setCreateTime(Calendar.getInstance().getTimeInMillis());
+        newsBuilder.setCount(10);
         KeyValue news = newsBuilder.build();
         byte[] newsByte = news.toByteArray();
-        mqClient.sendQueueRemoteMsg("zhb_vue_object", newsByte);
+        mqClient.sendQueueRemoteMsg(Constants.KEY_VALUE_DESTINATION_NAME, newsByte);
         
         return ajaxData;
     }
@@ -77,13 +79,14 @@ public class MQController {
     public AjaxData receiveQueueMes(HttpServletRequest request, HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         try {
-            com.google.protobuf.Message mes = mqClient.receiveQueueRemoteMsgByDesNamePath("zhb_vue_object", "com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf$KeyValue");
+            com.google.protobuf.Message mes = mqClient.receiveQueueRemoteMsgByDesNamePath(Constants.KEY_VALUE_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
             if (null != mes) {
                 KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
-                logger.info("从队列 zhb_vue_object 收到了消息：");
+                logger.info("从队列 " + Constants.KEY_VALUE_DESTINATION_NAME + " 收到了消息：");
                 logger.info(news2.getId());
                 logger.info(news2.getKey());
                 logger.info(news2.getValue());
+                logger.info(news2.getCount()+"");
                 ajaxData.setData(news2.toString());
                 ajaxData.setFlag(true);
             }else {
