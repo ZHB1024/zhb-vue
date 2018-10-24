@@ -57,7 +57,7 @@ public class MQController {
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
         
-        ListenableFuture<SendResult<String, String>> result = kafkaProducerTemplate.send("defaultTopic", "name", "张会彬");
+        /*ListenableFuture<SendResult<String, String>> result = kafkaProducerTemplate.send("defaultTopic", "name", "张会彬");
         if (null != result) {
             try {
                 SendResult<String, String> sends = result.get();
@@ -67,7 +67,7 @@ public class MQController {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         
         /*activeMqClient.sendQueueDestinationMsg(activeMqDestination, "hello world");
         
@@ -82,14 +82,16 @@ public class MQController {
             }
         }*/
         
-        /*KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
+        KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
         newsBuilder.setId("123");
         newsBuilder.setKey("测试");
         newsBuilder.setValue("测试一下不行呀");
         newsBuilder.setCount(10);
         KeyValue news = newsBuilder.build();
         byte[] newsByte = news.toByteArray();
-        activeMqClient.sendQueueRemoteMsg(Constants.ACTIVE_KEY_VALUE_DESTINATION_NAME, newsByte);*/
+        activeMqClient.sendQueueRemoteMsg(Constants.ACTIVE_MQ_KEYVALUE_DESTINATION_NAME, newsByte);
+        ajaxData.setData("发送成功");
+        ajaxData.setFlag(true);
         
         return ajaxData;
     }
@@ -100,10 +102,10 @@ public class MQController {
     public AjaxData receiveQueueMes(HttpServletRequest request, HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         try {
-            com.google.protobuf.Message mes = activeMqClient.receiveQueueRemoteMsgByDesNamePath(Constants.ACTIVE_MQ_DEFAULT_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
+            com.google.protobuf.Message mes = activeMqClient.receiveQueueRemoteMsgByDesNamePath(Constants.ACTIVE_MQ_KEYVALUE_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
             if (null != mes) {
                 KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
-                logger.info("从队列 " + Constants.ACTIVE_MQ_DEFAULT_DESTINATION_NAME + " 收到了消息：");
+                logger.info("从队列 " + Constants.ACTIVE_MQ_KEYVALUE_DESTINATION_NAME + " 收到了消息：");
                 logger.info(news2.getId());
                 logger.info(news2.getKey());
                 logger.info(news2.getValue());
