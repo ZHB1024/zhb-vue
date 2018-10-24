@@ -1,14 +1,11 @@
 package com.zhb.vue.web.controller;
 
 import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +45,8 @@ public class MQController {
     @Transactional
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
-        mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
+        
+        /*mqClient.sendQueueDestinationMsg(mqDestination, "hello world");
         
         TextMessage textMessage = mqClient.receiveQueueMessage(mqDestination);
         if (null != textMessage) {
@@ -59,16 +57,16 @@ public class MQController {
             } catch (JMSException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
         
-        /*KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
+        KeyValueProtobuf.KeyValue.Builder newsBuilder = KeyValueProtobuf.KeyValue.newBuilder(); 
         newsBuilder.setId("123");
         newsBuilder.setKey("测试");
         newsBuilder.setValue("测试一下不行呀");
         //newsBuilder.setCreateTime(Calendar.getInstance().getTimeInMillis());
         KeyValue news = newsBuilder.build();
         byte[] newsByte = news.toByteArray();
-        mqClient.sendQueueRemoteMsg("zhb_vue_object", newsByte);*/
+        mqClient.sendQueueRemoteMsg("zhb_vue_object", newsByte);
         
         return ajaxData;
     }
@@ -82,8 +80,14 @@ public class MQController {
             com.google.protobuf.Message mes = mqClient.receiveQueueRemoteMsgByDesNamePath("zhb_vue_object", "com.zhb.forever.framework.proto.protobuf.KeyValueProtobuf$KeyValue");
             if (null != mes) {
                 KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
-                logger.info("从队列 zhb_vue_object 收到了消息：\t" + news2.toString());
+                logger.info("从队列 zhb_vue_object 收到了消息：");
+                logger.info(news2.getId());
+                logger.info(news2.getKey());
+                logger.info(news2.getValue());
                 ajaxData.setData(news2.toString());
+                ajaxData.setFlag(true);
+            }else {
+                ajaxData.setData("没有收到消息");
                 ajaxData.setFlag(true);
             }
         } catch (Exception e) {

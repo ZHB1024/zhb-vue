@@ -1,6 +1,5 @@
 package com.zhb.vue.web.controller;
 
-import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,24 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.zhb.forever.framework.util.AjaxData;
-import com.zhb.forever.framework.util.DateTimeUtil;
-import com.zhb.forever.framework.util.JsoupUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.vue.thread.spider.DownloadFromQueueRunnable;
-import com.zhb.vue.thread.spider.ReadBeginUrlToQueueRunnable;
 import com.zhb.vue.thread.spider.ReadEndUrlToQueueRunnable;
-import com.zhb.vue.thread.spider.qbl.DownloadQBLFromQueueRunnable;
 import com.zhb.vue.thread.spider.qbl.ReadUrlToQueueRunnable;
-import com.zhb.vue.web.util.JsoupSpiderRunnableUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -45,7 +33,8 @@ public class JsoupSpiderController {
     
     private Logger logger = LoggerFactory.getLogger(JsoupSpiderController.class);
     
-    @RequestMapping(value="/toIndex",method=RequestMethod.GET)
+    
+    @RequestMapping(value="/toindex",method=RequestMethod.GET)
     public String toSpider(HttpServletRequest request,HttpServletResponse response){
         /*Document doc = JsoupUtil.getDocumentByUrl("http://111av.org/html/tupian/siwa/index_2.html");
         if (null != doc) {
@@ -103,9 +92,6 @@ public class JsoupSpiderController {
         String url = PropertyUtil.getSpiderUrl();
         Integer totalPage = PropertyUtil.getSpiderTotalPage();
         
-        ArrayBlockingQueue<JSONObject> resources1 = new ArrayBlockingQueue<JSONObject>(1000000);
-        ArrayBlockingQueue<JSONObject> resources2 = new ArrayBlockingQueue<JSONObject>(1000000);
-
         int totalThread = 100;
         int perPage = totalPage/totalThread;
         
