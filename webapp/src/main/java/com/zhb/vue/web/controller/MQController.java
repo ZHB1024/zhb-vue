@@ -81,10 +81,10 @@ public class MQController {
     public AjaxData receiveQueueMes(HttpServletRequest request, HttpServletResponse response) {
         AjaxData ajaxData = new AjaxData();
         try {
-            com.google.protobuf.Message mes = activeMqClient.receiveQueueRemoteMsgByDesNamePath(Constants.ACTIVE_KEY_VALUE_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
+            com.google.protobuf.Message mes = activeMqClient.receiveQueueRemoteMsgByDesNamePath(Constants.ACTIVE_MQ_DEFAULT_DESTINATION_NAME, ProtobufUtil.KEY_VALUE_PROTOBUF_CLASS_PATH);
             if (null != mes) {
                 KeyValueProtobuf.KeyValue news2 = (KeyValueProtobuf.KeyValue)mes;
-                logger.info("从队列 " + Constants.ACTIVE_KEY_VALUE_DESTINATION_NAME + " 收到了消息：");
+                logger.info("从队列 " + Constants.ACTIVE_MQ_DEFAULT_DESTINATION_NAME + " 收到了消息：");
                 logger.info(news2.getId());
                 logger.info(news2.getKey());
                 logger.info(news2.getValue());
