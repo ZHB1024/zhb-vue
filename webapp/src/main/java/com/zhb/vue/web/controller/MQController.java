@@ -10,11 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +23,6 @@ import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.mq.Constants;
 import com.zhb.forever.mq.activemq.ActiveMQClientFactory;
 import com.zhb.forever.mq.activemq.client.ActiveMQClient;
-import com.zhb.forever.mq.kafka.KafkaFactory;
 
 /**
 *@author   zhanghb<a href="mailto:zhb20111503@126.com">zhanghb</a>
@@ -42,7 +38,7 @@ public class MQController {
     private ActiveMQClient activeMqClient = ActiveMQClientFactory.getRedisClientBean();
     private Destination activeMqDestination = ActiveMQClientFactory.getMQDestinationBean();
     
-    private KafkaTemplate kafkaProducerTemplate = KafkaFactory.getKafkaProducerTemplateBean();
+    //private KafkaTemplate kafkaProducerTemplate = KafkaFactory.getKafkaProducerTemplateBean();
     
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
@@ -56,18 +52,6 @@ public class MQController {
     @Transactional
     public AjaxData sendMessage(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
-        
-        ListenableFuture<SendResult<String, String>> result = kafkaProducerTemplate.send("defaultTopic", "name", "张会彬");
-        if (null != result) {
-            try {
-                SendResult<String, String> sends = result.get();
-                logger.info(sends.toString());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
         
         /*activeMqClient.sendQueueDestinationMsg(activeMqDestination, "hello world");
         
