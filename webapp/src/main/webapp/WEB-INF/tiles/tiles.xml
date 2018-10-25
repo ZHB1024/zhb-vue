@@ -135,6 +135,13 @@
         <put-attribute name="body" value="/htgl/mq/index.jsp" />
     </definition>
     
+    <!-- search -->
+	<definition name="htgl.search.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/search/index.jsp" />
+    </definition>
+    
+    
+    
 <!-- htgl end--> 
     
 </tiles-definitions>
