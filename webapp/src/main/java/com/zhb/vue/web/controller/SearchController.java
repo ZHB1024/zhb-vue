@@ -31,7 +31,7 @@ public class SearchController {
     
     private Logger logger = LoggerFactory.getLogger(SearchController.class);
     
-    //private SolrClient solrClient = SearchFactory.getSolrClientBean();
+    private SolrClient solrClient = SearchFactory.getSolrClientBean();
     
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
@@ -48,24 +48,24 @@ public class SearchController {
         List<KeyValueVO> news = new ArrayList<>();
         for(int i=1;i<=50;i++) {
             KeyValueVO vo = new KeyValueVO();
-            vo.setId(i+"");
-            vo.setKey(i+"--");
-            vo.setValue(i+"****");
+            vo.setId(i+"你好");
+            vo.setKey(i+"我不错");
+            vo.setValue(i+"天气晴朗");
             news.add(vo);
         }
-        if (null != news && news.size() > 0) {
+        /*if (null != news && news.size() > 0) {
             for (KeyValueVO newsInfo : news) {
-                //solrClient.addNews(newsInfo.getId(), newsInfo.getKey(), newsInfo.getValue());
+                solrClient.addNews(newsInfo.getId(), newsInfo.getKey(), newsInfo.getValue());
             }
-        }
+        }*/
         
-        /*List<NewsIndexVO> vos = solrClient.getNews("0", "id", 0, 50);
+        List<NewsIndexVO> vos = solrClient.getNews("天气", "id", 0, 50);
         if (null != vos) {
             logger.info("总共：" + vos.size());
             for (NewsIndexVO newsIndexVO : vos) {
                 logger.info(newsIndexVO.getId() + "," + newsIndexVO.getTitle() + "," + newsIndexVO.getContent());
             }
-        }*/
+        }
         
         ajaxData.setFlag(true);
         ajaxData.setData("成功");

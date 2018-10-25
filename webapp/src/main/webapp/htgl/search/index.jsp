@@ -34,7 +34,7 @@ var myVue = new Vue({
     methods: {
         handleSubmit:function() {
         	let param = new URLSearchParams(); 
-     	  	axios.post('<%=ctxPath %>/htgl/mqcontroller/sendmessage', param)
+     	  	axios.post('<%=ctxPath %>/htgl/searchController/solrsearch/api', param)
      		  	.then(function (response) {
      			  	if(response.data.flag){
      			  		myVue.$Message.success({
@@ -53,7 +53,7 @@ var myVue = new Vue({
         },
         handleSubmit2:function() {
         	let param = new URLSearchParams(); 
-     	  	axios.post('<%=ctxPath %>/htgl/mqcontroller/receivemessage', param)
+     	  	axios.post('<%=ctxPath %>/htgl/searchController/solrsearch/api', param)
      		  	.then(function (response) {
      			  	if(response.data.flag){
      			  		myVue.$Message.success({
