@@ -59,7 +59,7 @@ public class SearchController {
             }
         }*/
         
-        List<NewsIndexVO> vos = solrClient.getNews("天气", "id", 0, 50);
+        List<NewsIndexVO> vos = solrClient.getNews("天气", "title", 0, 50);
         if (null != vos) {
             logger.info("总共：" + vos.size());
             for (NewsIndexVO newsIndexVO : vos) {
