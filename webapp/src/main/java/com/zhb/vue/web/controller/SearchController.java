@@ -21,7 +21,6 @@ import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.search.SearchFactory;
 import com.zhb.forever.search.solr.SolrClient;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
-import com.zhb.forever.search.solr.vo.NewsIndexVO;
 import com.zhb.vue.service.AttachmentInfoService;
 
 /**
