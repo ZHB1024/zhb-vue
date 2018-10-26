@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.search.SearchFactory;
 import com.zhb.forever.search.solr.SolrClient;
+import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.forever.search.solr.vo.NewsIndexVO;
+import com.zhb.vue.service.AttachmentInfoService;
 
 /**
 *@author   zhanghb<a href="mailto:zhb20111503@126.com">zhanghb</a>
@@ -59,11 +63,18 @@ public class SearchController {
             }
         }*/
         
-        List<NewsIndexVO> vos = solrClient.getNews("天气", "title", 0, 50);
+        /*List<NewsIndexVO> vos = solrClient.getNews("天气", "title", 0, 50);
         if (null != vos) {
             logger.info("总共：" + vos.size());
             for (NewsIndexVO newsIndexVO : vos) {
                 logger.info(newsIndexVO.getId() + "," + newsIndexVO.getTitle() + "," + newsIndexVO.getContent());
+            }
+        }*/
+        
+        List<AttachmentInfoSolrData> datas = solrClient.getAttachments("商丘", "createTime", 0, 50);
+        if (null != datas) {
+            for (AttachmentInfoSolrData data : datas) {
+                logger.info(data.getId() + "," + data.getFileName() + "," + DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss") + "," + data.getFilePath());
             }
         }
         

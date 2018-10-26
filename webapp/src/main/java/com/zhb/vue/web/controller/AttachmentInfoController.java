@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,11 +43,15 @@ import com.zhb.forever.framework.util.UploadUtil;
 import com.zhb.forever.framework.vo.ImageVO;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.framework.vo.OrderVO;
+import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
 import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.thread.AttachmentInfo2SolrIndexThread;
+import com.zhb.vue.thread.runnable.UpdateAttachmentSolrIndexRunnable;
+import com.zhb.vue.util.Data2SolrIndexUtil;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.FlushSessionUtil;
@@ -128,7 +134,7 @@ public class AttachmentInfoController {
         return ajaxData;
     }
     
-    //修改
+    //修改偏爱程度
     @RequestMapping(value = "/updateattachmentinfo/api")
     @ResponseBody
     @Transactional
@@ -289,7 +295,13 @@ public class AttachmentInfoController {
         fileInfoData.setContentType(contentType);
         fileInfoData.setType(AttachmentTypeEnum.geTypeEnum(fileName).getIndex());
         fileInfoData.setCreateUserId(WebAppUtil.getUserId(request));
+        fileInfoData.setLikeDegree(LikeDgreeEnum.UN_LIKE.getIndex());
         attachmentInfoService.saveOrUpdate(fileInfoData);
+        
+        List<AttachmentInfoData> datas = new ArrayList<>();
+        datas.add(fileInfoData);
+        AttachmentInfo2SolrIndexThread.createAttachmentSolrIndex(datas);
+        
         ajaxData.setFlag(true);
         return ajaxData;
     }
