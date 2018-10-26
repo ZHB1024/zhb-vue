@@ -13,6 +13,7 @@ public class AttachmentInfoParam {
     private Integer deleteFlag;
     private Calendar createTime;
     private Integer likeDegree;
+    private String createUserId;
     
     private Integer start;
     private Integer pageSize;
@@ -89,6 +90,12 @@ public class AttachmentInfoParam {
     }
     public void setLikeDegree(Integer likeDegree) {
         this.likeDegree = likeDegree;
+    }
+    public String getCreateUserId() {
+        return createUserId;
+    }
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
     }
     
 }

@@ -17,7 +17,23 @@ import com.zhb.vue.util.Data2SolrIndexUtil;
 
 public class AttachmentInfo2SolrIndexThread {
 
-    public static boolean createAttachmentSolrIndex(List<AttachmentInfoData> fileInfoDatas) {
+    public static boolean createAttachmentSolrIndex(AttachmentInfoData fileInfoData) {
+        boolean flag = true;
+        try {
+            List<AttachmentInfoSolrData> datas = Data2SolrIndexUtil.AttachmentInfoData2SolrIndex(fileInfoData);
+            if (null != datas) {
+                ExecutorService es = Executors.newFixedThreadPool(1);
+                es.execute(new UpdateAttachmentSolrIndexRunnable("addAttachmentSolrIndex-thread", datas));
+                es.shutdown();
+            }
+        }catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        }
+        return flag;
+    }
+    
+    public static boolean createAttachmentSolrIndexs(List<AttachmentInfoData> fileInfoDatas) {
         boolean flag = true;
         try {
             List<AttachmentInfoSolrData> datas = Data2SolrIndexUtil.AttachmentInfoDatas2SolrIndex(fileInfoDatas);

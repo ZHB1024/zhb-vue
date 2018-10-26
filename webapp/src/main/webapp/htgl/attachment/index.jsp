@@ -390,7 +390,7 @@ var myVue = new Vue({
           var likeDegreeNew = this.tableDatas[index].likeDegree + value;
           if(likeDegreeNew>3||likeDegreeNew<1){
         	  myVue.$Message.error({
-                  content: "请正确处理喜爱程度",
+                  content: "不在喜爱程度范围内，请刷新页面再进行操作",
                   duration: 3,
                   closable: true
               });
@@ -408,7 +408,8 @@ var myVue = new Vue({
                     duration: 2,
                     closable: true
                 });
-            	myVue.tableDatas = response.data.data.result;
+            	myVue.tableDatas[index].likeDegree = response.data.data.likeDegree;
+            	myVue.tableDatas[index].likeDegreeName = response.data.data.likeDegreeName;
             	flushPage(response.data.data);
 				myVue.$forceUpdate();
             }else{

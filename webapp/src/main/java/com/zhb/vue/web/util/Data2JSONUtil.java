@@ -17,6 +17,7 @@ import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.ComparatorVO;
 import com.zhb.forever.framework.vo.UserInfoVO;
+import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.dic.VerificationCodeTypeEnum;
 import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.DicInfoData;
@@ -454,6 +455,53 @@ public class Data2JSONUtil {
             object.put("contentType", data.getContentType());
             object.put("deleteFlag", data.getDeleteFlag());
             object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
+            object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+            object.put("attachmentUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+            object.put("originalUrl", "/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=" + data.getId());
+            object.put("thumbnailUrl", "/htgl/attachmentinfocontroller/getthumbnailattachmentinfo?id=" + data.getId());
+            jsonArray.add(object);
+        }
+        return jsonArray;
+    }
+    
+    
+    //solrIndexData2JSONObject
+    public static JSONObject attachmentInfoSolrIndexData2JSONObject(AttachmentInfoSolrData data) {
+        if (null == data ) {
+            return null;
+        }
+        JSONObject object = new JSONObject();
+        object.put("id", data.getId());
+        object.put("fileName", data.getFileName());
+        object.put("filePath", data.getFilePath());
+        object.put("type", AttachmentTypeEnum.getName(data.getType()));
+        object.put("likeDegree", data.getLikeDegree());
+        object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
+        object.put("deleteFlag", DeleteFlagEnum.UDEL.getIndex());
+        object.put("deleteFlagName", DeleteFlagEnum.UDEL.getName());
+        object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
+        object.put("attachmentUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
+        object.put("originalUrl", "/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=" + data.getId());
+        object.put("thumbnailUrl", "/htgl/attachmentinfocontroller/getthumbnailattachmentinfo?id=" + data.getId());
+        return object;
+    }
+    
+    //solrIndexDatas2JSONArray
+    public static JSONArray attachmentInfoSolrIndexDatas2JSONObject(List<AttachmentInfoSolrData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        for (AttachmentInfoSolrData data : datas) {
+            JSONObject object = new JSONObject();
+            object.put("id", data.getId());
+            object.put("fileName", data.getFileName());
+            object.put("filePath", data.getFilePath());
+            object.put("type", AttachmentTypeEnum.getName(data.getType()));
+            object.put("likeDegree", data.getLikeDegree());
+            object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
+            object.put("deleteFlag", DeleteFlagEnum.UDEL.getIndex());
+            object.put("deleteFlagName", DeleteFlagEnum.UDEL.getName());
             object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
             object.put("attachmentUrl", "/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
             object.put("originalUrl", "/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=" + data.getId());

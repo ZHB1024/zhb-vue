@@ -67,7 +67,7 @@ public class InitController {
         
         List<AttachmentInfoData> infoDatas = attachmentInfoService.getAttachmentInfos(new AttachmentInfoParam(), orderVos);
         if (null != infoDatas && infoDatas.size() > 0) {
-            AttachmentInfo2SolrIndexThread.createAttachmentSolrIndex(infoDatas);
+            AttachmentInfo2SolrIndexThread.createAttachmentSolrIndexs(infoDatas);
         }
         
         ajaxData.setFlag(true);

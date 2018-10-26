@@ -8,12 +8,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +42,17 @@ import com.zhb.forever.framework.util.UploadUtil;
 import com.zhb.forever.framework.vo.ImageVO;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.framework.vo.OrderVO;
+import com.zhb.forever.search.SearchFactory;
+import com.zhb.forever.search.solr.SolrClient;
+import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;
+import com.zhb.vue.params.param2SolrIndexParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.thread.solr.AttachmentInfo2SolrIndexThread;
-import com.zhb.vue.util.Data2SolrIndexUtil;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.FlushSessionUtil;
@@ -66,6 +68,8 @@ public class AttachmentInfoController {
     private AttachmentInfoService attachmentInfoService;
     @Autowired
     private UserInfoService userInfoService;
+    
+    private SolrClient solrClient = SearchFactory.getSolrClientBean();
     
     //toindex
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
@@ -114,6 +118,10 @@ public class AttachmentInfoController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
+        
+        /*AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);*/
+        
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
@@ -159,13 +167,31 @@ public class AttachmentInfoController {
         
         if (null == param.getLikeDegree()) {
             param.setLikeDegree(LikeDgreeEnum.LIKE.getIndex());
+        }else {
+            if (LikeDgreeEnum.LIKE.getIndex() > 3 || LikeDgreeEnum.LIKE.getIndex() < 1) {
+                ajaxData.setFlag(false);
+                ajaxData.addMessage("不在喜爱程度范围内，请刷新页面再进行操作");
+                return ajaxData;
+            }
         }
         
         data.setLikeDegree(param.getLikeDegree());
         
         attachmentInfoService.updateEntitie(data);
         
-        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        AttachmentInfo2SolrIndexThread.createAttachmentSolrIndex(data);
+        
+        /*param.setId(null);
+        param.setLikeDegree(null);
+        AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);*/
+        
+        //ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        ajaxData.setFlag(true);
+        JSONObject object = new JSONObject();
+        object.put("likeDegree", data.getLikeDegree());
+        object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
+        ajaxData.setData(object);
         return ajaxData;
     }
     
@@ -211,7 +237,8 @@ public class AttachmentInfoController {
         ids.add(data.getId());
         AttachmentInfo2SolrIndexThread.deleteAttachmentSolrIndex(ids);
         
-        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);
         return ajaxData;
     }
     
@@ -301,9 +328,7 @@ public class AttachmentInfoController {
         fileInfoData.setLikeDegree(LikeDgreeEnum.UN_LIKE.getIndex());
         attachmentInfoService.saveOrUpdate(fileInfoData);
         
-        List<AttachmentInfoData> datas = new ArrayList<>();
-        datas.add(fileInfoData);
-        AttachmentInfo2SolrIndexThread.createAttachmentSolrIndex(datas);
+        AttachmentInfo2SolrIndexThread.createAttachmentSolrIndex(fileInfoData);
         
         ajaxData.setFlag(true);
         return ajaxData;
@@ -675,6 +700,39 @@ public class AttachmentInfoController {
         JSONObject jsonObject = new JSONObject();
         if (null != page) {
             JSONArray jsonArray = Data2JSONUtil.attachmentInfoDatas2JSONArray(page.getList());
+            jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), jsonArray);
+        }else{
+            jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());
+        }
+        ajaxData.setFlag(true);
+        ajaxData.setData(jsonObject);
+        return ajaxData;
+    }
+    
+    //共用查询附件索引,分页
+    private AjaxData searchAttachmentInfoSolrIndex2AjaxDataPage(AttachmentInfoSolrIndexParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new AttachmentInfoSolrIndexParam();
+        }
+        //排序字段
+        param.addSort("likeDegree",SolrQuery.ORDER.desc);
+        param.addSort("fileName",SolrQuery.ORDER.asc);
+        param.addSort("type",SolrQuery.ORDER.asc);
+        
+        //设置分页信息
+        if(null == param.getCurrentPage()){
+            param.setCurrentPage(1);
+        }
+        if(null == param.getPageSize()){
+            param.setPageSize(PageUtil.PAGE_SIZE);
+        }
+        param.setStart(param.getPageSize()*(param.getCurrentPage()-1));
+        
+        Page<AttachmentInfoSolrData> page = solrClient.searchAttachmentsForPage(param);
+        JSONObject jsonObject = new JSONObject();
+        if (null != page) {
+            JSONArray jsonArray = Data2JSONUtil.attachmentInfoSolrIndexDatas2JSONObject(page.getList());
             jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), jsonArray);
         }else{
             jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());
