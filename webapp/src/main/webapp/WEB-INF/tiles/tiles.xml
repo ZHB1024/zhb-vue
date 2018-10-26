@@ -46,6 +46,11 @@
         <put-attribute name="body" value="/htgl/index.jsp" />
     </definition>
     
+    <!-- init -->
+    <definition name="htgl.init.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/init/index.jsp" />
+    </definition>
+    
     <!-- user info -->
 	<definition name="htgl.user.index" extends="htgl.main.layout">
         <put-attribute name="body" value="/htgl/user/index.jsp" />

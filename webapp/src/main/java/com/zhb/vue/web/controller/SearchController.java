@@ -71,15 +71,18 @@ public class SearchController {
             }
         }*/
         
-        List<AttachmentInfoSolrData> datas = solrClient.getAttachments("商丘", "createTime", 0, 50);
-        if (null != datas) {
+        List<AttachmentInfoSolrData> datas = solrClient.getAttachments("zip", "createTime", 0, 50);
+        if (null != datas && datas.size() > 0) {
             for (AttachmentInfoSolrData data : datas) {
                 logger.info(data.getId() + "," + data.getFileName() + "," + DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss") + "," + data.getFilePath());
             }
+            ajaxData.setFlag(true);
+            ajaxData.setData("成功");
+        }else {
+            ajaxData.setFlag(true);
+            ajaxData.setData("没有查到结果");
         }
         
-        ajaxData.setFlag(true);
-        ajaxData.setData("成功");
         return ajaxData;
     }
 

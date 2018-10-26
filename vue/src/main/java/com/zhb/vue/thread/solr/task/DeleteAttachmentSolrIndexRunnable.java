@@ -18,28 +18,41 @@ public class DeleteAttachmentSolrIndexRunnable implements Runnable {
     private Logger logger = LoggerFactory.getLogger(DeleteAttachmentSolrIndexRunnable.class);
     
     private String name;
+    private boolean deleteAll = false;
     private List<String> ids;
     
     private SolrClient solrClient = null;
 
 
-    public DeleteAttachmentSolrIndexRunnable(String name,List<String> ids) {
+    public DeleteAttachmentSolrIndexRunnable(String name,List<String> ids,boolean deleteAll) {
         this.name = name;
         this.solrClient = SearchFactory.getSolrClientBean();
         this.ids = ids;
+        this.deleteAll = deleteAll;
     }
 
     @Override
     public void run() {
-        if (null != ids && ids.size() > 0) {
+        if (deleteAll) {
             try {
-                solrClient.deleteAttachmentsByIds(ids);
-                logger.info("删除附件索引线程" + name + " 删除了" + ids.size() + "个索引");
+                solrClient.deleteAllAttachments();
+                logger.info("删除附件索引线程" + name + " 删除了所有附件索引");
             } catch (Exception e) {
-                logger.error("删除附件索引线程" + name + "异常.........");
+                logger.error("删除所有附件索引线程" + name + "异常.........");
                 e.printStackTrace();
             }
+        }else {
+            if (null != ids && ids.size() > 0) {
+                try {
+                    solrClient.deleteAttachmentsByIds(ids);
+                    logger.info("删除附件索引线程" + name + " 删除了" + ids.size() + "个索引");
+                } catch (Exception e) {
+                    logger.error("删除附件索引线程" + name + "异常.........");
+                    e.printStackTrace();
+                }
+            }
         }
+        
     }
 
 }

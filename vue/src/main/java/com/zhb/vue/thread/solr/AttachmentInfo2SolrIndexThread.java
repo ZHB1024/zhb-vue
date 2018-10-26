@@ -38,9 +38,22 @@ public class AttachmentInfo2SolrIndexThread {
         try {
             if (null != ids && ids.size() > 0) {
                 ExecutorService es = Executors.newFixedThreadPool(1);
-                es.execute(new DeleteAttachmentSolrIndexRunnable("deleteAttachmentSolrIndex-thread", ids));
+                es.execute(new DeleteAttachmentSolrIndexRunnable("deleteAttachmentSolrIndex-thread", ids,false));
                 es.shutdown();
             }
+        }catch (Exception e) {
+            flag = false;
+            e.printStackTrace();
+        }
+        return flag;
+    }
+    
+    public static boolean deleteAllAttachmentSolrIndex() {
+        boolean flag = true;
+        try {
+            ExecutorService es = Executors.newFixedThreadPool(1);
+            es.execute(new DeleteAttachmentSolrIndexRunnable("deleteAllAttachmentSolrIndex-thread", null,true));
+            es.shutdown();
         }catch (Exception e) {
             flag = false;
             e.printStackTrace();
