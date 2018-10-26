@@ -19,12 +19,9 @@ public class Data2SolrIndexUtil {
         if (null != infoDatas) {
             solrIndex = new ArrayList<>();
             for (AttachmentInfoData infoData : infoDatas) {
-                AttachmentInfoSolrData data = new AttachmentInfoSolrData();
-                data.setId(infoData.getId());
-                data.setFileName(infoData.getFileName());
+                AttachmentInfoSolrData data = new AttachmentInfoSolrData(infoData.getId(),infoData.getFileName(),infoData.getType());
                 data.setFilePath(infoData.getFilePath());
                 data.setThumbnailPath(infoData.getThumbnailPath());
-                data.setType(infoData.getType());
                 data.setCreateUserId(infoData.getCreateUserId());
                 data.setCreateTime(infoData.getCreateTime().getTime());
                 data.setLikeDegree(infoData.getLikeDegree());
@@ -39,12 +36,9 @@ public class Data2SolrIndexUtil {
         List<AttachmentInfoSolrData> solrIndex = null;
         if (null != infoData) {
             solrIndex = new ArrayList<>();
-            AttachmentInfoSolrData data = new AttachmentInfoSolrData();
-            data.setId(infoData.getId());
-            data.setFileName(infoData.getFileName());
+            AttachmentInfoSolrData data = new AttachmentInfoSolrData(infoData.getId(),infoData.getFileName(),infoData.getType());
             data.setFilePath(infoData.getFilePath());
             data.setThumbnailPath(infoData.getThumbnailPath());
-            data.setType(infoData.getType());
             data.setCreateUserId(infoData.getCreateUserId());
             data.setCreateTime(infoData.getCreateTime().getTime());
             data.setLikeDegree(infoData.getLikeDegree());

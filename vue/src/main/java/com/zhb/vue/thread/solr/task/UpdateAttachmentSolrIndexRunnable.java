@@ -1,4 +1,4 @@
-package com.zhb.vue.thread.runnable;
+package com.zhb.vue.thread.solr.task;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 
 /**
 *@author   zhanghb<a href="mailto:zhb20111503@126.com">zhanghb</a>
-*@createDate 2018年10月26日上午9:21:40
+*@createDate 2018年10月26日上午10:51:02
 */
 
 public class UpdateAttachmentSolrIndexRunnable implements Runnable {
-    
+
     private Logger logger = LoggerFactory.getLogger(UpdateAttachmentSolrIndexRunnable.class);
     
     private String name;

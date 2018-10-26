@@ -49,8 +49,7 @@ import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
 import com.zhb.vue.service.UserInfoService;
-import com.zhb.vue.thread.AttachmentInfo2SolrIndexThread;
-import com.zhb.vue.thread.runnable.UpdateAttachmentSolrIndexRunnable;
+import com.zhb.vue.thread.solr.AttachmentInfo2SolrIndexThread;
 import com.zhb.vue.util.Data2SolrIndexUtil;
 import com.zhb.vue.util.Data2VO;
 import com.zhb.vue.web.util.Data2JSONUtil;
@@ -207,6 +206,10 @@ public class AttachmentInfoController {
         }
         
         attachmentInfoService.delete(data);
+        
+        List<String> ids = new ArrayList<>();
+        ids.add(data.getId());
+        AttachmentInfo2SolrIndexThread.deleteAttachmentSolrIndex(ids);
         
         ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
