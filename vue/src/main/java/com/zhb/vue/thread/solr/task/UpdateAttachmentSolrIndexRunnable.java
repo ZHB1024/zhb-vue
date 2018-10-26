@@ -1,5 +1,6 @@
 package com.zhb.vue.thread.solr.task;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,8 +34,13 @@ public class UpdateAttachmentSolrIndexRunnable implements Runnable {
     public void run() {
         if (null != datas && datas.size() > 0) {
             try {
+                Long now = Calendar.getInstance().getTimeInMillis();
+                
                 solrClient.addAttachments(datas);
-                logger.info("添加附件索引线程" + name + " 添加了" + datas.size() + "个索引");
+                
+                Long end = Calendar.getInstance().getTimeInMillis();
+                Long time = (end - now)/1000;//单位秒
+                logger.info("添加附件索引线程" + name + " 添加了" + datas.size() + "个索引" + ",用时：" + time + " 秒");
             } catch (Exception e) {
                 logger.error("添加附件索引线程" + name + "异常.........");
                 e.printStackTrace();

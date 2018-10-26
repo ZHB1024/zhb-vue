@@ -68,7 +68,6 @@ public class InitController {
         List<AttachmentInfoData> infoDatas = attachmentInfoService.getAttachmentInfos(new AttachmentInfoParam(), orderVos);
         if (null != infoDatas && infoDatas.size() > 0) {
             AttachmentInfo2SolrIndexThread.createAttachmentSolrIndex(infoDatas);
-            logger.info("init total：" + infoDatas.size() + " 个附件索引");
         }
         
         ajaxData.setFlag(true);
