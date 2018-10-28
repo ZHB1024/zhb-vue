@@ -133,18 +133,6 @@ var myVue = new Vue({
                 minWidth: 100
             },
             {
-                title: '创建时间',
-                key: 'createTime',
-                minWidth: 100,
-                sortable:true
-            },
-            {
-                title: '状态',
-                key: 'deleteFlagName',
-                minWidth: 50,
-                sortable:true
-            },
-            {
                 title: '喜爱程度',
                 key: 'likeDegree',
                 minWidth: 150,
@@ -197,7 +185,13 @@ var myVue = new Vue({
                         }, "+")
                     ]);
                 }
-            } ,
+            },
+            {
+                title: '创建时间',
+                key: 'createTime',
+                minWidth: 100,
+                sortable:true
+            },
             {
                 title: '操作',
                 key: 'action',
@@ -218,7 +212,7 @@ var myVue = new Vue({
                         }, '删除')
                     ]);
                 }
-            } 
+            }
         ]
     },
     created: function () {
