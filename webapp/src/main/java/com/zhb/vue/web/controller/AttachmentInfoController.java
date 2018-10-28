@@ -751,7 +751,7 @@ public class AttachmentInfoController {
         }
         param.setId(null);
         param.setLikeDegree(null);
-        param.setType(AttachmentTypeEnum.IMAGE.getIndex());
+        param.setType(AttachmentTypeEnum.YELLOW.getIndex());
         
         //排序字段
         List<OrderVO> orderVos = new ArrayList<>();
