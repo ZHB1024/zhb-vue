@@ -45,7 +45,7 @@ public class StatisticController {
         if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
             return "login.index";
         }
-        return "htgl.statistic.index";
+        return "htgl.statistic.attachment";
     }
     
     //统计附件

@@ -131,8 +131,8 @@
     </definition>
     
     <!-- 统计 -->
-	<definition name="htgl.statistic.index" extends="htgl.main.layout">
-        <put-attribute name="body" value="/htgl/statistic/statistic_attachment.jsp" />
+	<definition name="htgl.statistic.attachment" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/statistic/attachment_index.jsp" />
     </definition>
     
     <!-- MQ -->
