@@ -18,7 +18,7 @@ li {list-style-type:none;}
         <i-content :style="{padding: '24px', minHeight: '428px', background: '#fff'}">
           <i-form inline ref="formInline" method="post" action="" >
           		<form-item prop="fileName">
-                  		<i-input type="text" clearable name="fileName" v-model="formParm.fileName" :maxlength="15" placeholder="请输入附件名称"></i-input>
+                  		<i-input type="text" clearable name="fileName" v-model="formParm.fileName" placeholder="请输入附件名称"></i-input>
                 </form-item >
                 	
         		<form-item prop="type">
