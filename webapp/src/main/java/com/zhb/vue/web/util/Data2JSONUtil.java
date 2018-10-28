@@ -474,9 +474,9 @@ public class Data2JSONUtil {
         object.put("id", data.getId());
         object.put("fileName", data.getFileName());
         object.put("filePath", data.getFilePath());
-        object.put("type", AttachmentTypeEnum.getName(data.getType()));
+        object.put("type", AttachmentTypeEnum.getName(Integer.valueOf(data.getType())));
         object.put("likeDegree", data.getLikeDegree());
-        object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
+        object.put("likeDegreeName", LikeDgreeEnum.getName(Integer.valueOf(data.getLikeDegree())));
         object.put("deleteFlag", DeleteFlagEnum.UDEL.getIndex());
         object.put("deleteFlagName", DeleteFlagEnum.UDEL.getName());
         object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));
@@ -497,9 +497,9 @@ public class Data2JSONUtil {
             object.put("id", data.getId());
             object.put("fileName", data.getFileName());
             object.put("filePath", data.getFilePath());
-            object.put("type", AttachmentTypeEnum.getName(data.getType()));
+            object.put("type", AttachmentTypeEnum.getName(Integer.valueOf(data.getType())));
             object.put("likeDegree", data.getLikeDegree());
-            object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
+            object.put("likeDegreeName", LikeDgreeEnum.getName(Integer.valueOf(data.getLikeDegree())));
             object.put("deleteFlag", DeleteFlagEnum.UDEL.getIndex());
             object.put("deleteFlagName", DeleteFlagEnum.UDEL.getName());
             object.put("createTime", DateTimeUtil.getDateTime(data.getCreateTime(), "yyyy-MM-dd HH:mm:ss"));

@@ -119,10 +119,10 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         
-        /*AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
-        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);*/
+        AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);
         
-        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        //ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
     
@@ -237,8 +237,9 @@ public class AttachmentInfoController {
         ids.add(data.getId());
         AttachmentInfo2SolrIndexThread.deleteAttachmentSolrIndex(ids);
         
-        AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
-        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);
+        /*AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);*/
+        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
     
