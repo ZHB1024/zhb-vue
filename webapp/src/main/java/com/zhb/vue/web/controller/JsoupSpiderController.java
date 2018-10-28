@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.PropertyUtil;
-import com.zhb.vue.thread.spider.DownloadFromQueueRunnable;
-import com.zhb.vue.thread.spider.ReadEndUrlToQueueRunnable;
+import com.zhb.vue.thread.spider.mtsqom.DownloadFromQueueRunnable;
+import com.zhb.vue.thread.spider.mtsqom.ReadEndUrlToQueueRunnable;
 import com.zhb.vue.thread.spider.qbl.ReadUrlToQueueRunnable;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -62,21 +62,24 @@ public class JsoupSpiderController {
     public AjaxData spiderYellow(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
         String userId = WebAppUtil.getUserId(request);
-        String url = PropertyUtil.getSpiderUrl();
+        String url = "http://www.mtl018.com/forum-50-";
         String urlTarget = PropertyUtil.getSpiderUrlTarget();
-        Integer totalPage = PropertyUtil.getSpiderTotalPage();
-        ArrayBlockingQueue<JSONObject> resources = new ArrayBlockingQueue<JSONObject>(100000);
 
-        AtomicInteger beginPage = new AtomicInteger(0);
-        AtomicInteger endPage = new AtomicInteger(totalPage);
-        AtomicInteger totalCount = new AtomicInteger(0);
-        ExecutorService es = Executors.newFixedThreadPool(3);
-        es.execute(new ReadEndUrlToQueueRunnable(url,urlTarget,beginPage,endPage,totalCount,resources));
-        //es.execute(new ReadBeginUrlToQueueRunnable(url,urlTarget,beginPage,endPage,totalCount,resources));
+        int beginPage = 1;
+        int endPage = 10;
+        int totalThread = 10;
+        int per = endPage/totalThread;
+        ExecutorService es1 = Executors.newFixedThreadPool(totalThread);
+        for(int i=0;i<endPage;i++) {
+            es1.execute(new ReadEndUrlToQueueRunnable(i+"","queue-"+i,url,beginPage+(i*per),beginPage+(i*per)+per-1));
+        }
+        es1.shutdown();
         
-        es.execute(new DownloadFromQueueRunnable(resources,userId));
-        
-        es.shutdown();
+        ExecutorService es2 = Executors.newFixedThreadPool(totalThread);
+        for(int i=0;i<endPage;i++) {
+            es2.execute(new DownloadFromQueueRunnable(i+"","queue-"+i,userId));
+        }
+        es2.shutdown();
         
         ajaxData.setFlag(true);
         return ajaxData;
