@@ -1,5 +1,6 @@
 package com.zhb.vue.web.controller;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +22,12 @@ import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.DateTimeUtil;
+import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.search.SearchFactory;
+import com.zhb.forever.search.elastic.ElasticSearchClient;
+import com.zhb.forever.search.elastic.vo.ElasticSearchIndexData;
 import com.zhb.forever.search.solr.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
@@ -46,6 +49,8 @@ public class SearchController {
     private Logger logger = LoggerFactory.getLogger(SearchController.class);
     
     private SolrClient solrClient = SearchFactory.getSolrClientBean();
+    
+    private ElasticSearchClient esClient = SearchFactory.getElasticSearchClientBean();
     
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
@@ -84,6 +89,54 @@ public class SearchController {
         }
         
         return ajaxData;*/
+    }
+    
+    /*elastic search*/
+    @RequestMapping(value = "/elasticsearch/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData elasticSearch(HttpServletRequest request, HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        List<ElasticSearchIndexData> datas = new ArrayList<ElasticSearchIndexData>();
+        for(int i=0;i<100;i++){
+            ElasticSearchIndexData data = new ElasticSearchIndexData();
+            data.setId(RandomUtil.getRandomUUID());
+            data.setName(RandomUtil.randomName(i));
+            data.setAge(RandomUtil.randomAge());
+            data.setSex(RandomUtil.randomSex());
+            datas.add(data);
+        }
+        
+        try {
+            esClient.getConnect();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        
+        //esClient.initIndex("zhb-vue","user",datas);
+        
+        try {
+            Page<ElasticSearchIndexData> page = esClient.query("zhb-vue","user", "马云", 0, 100);
+            if (null != page) {
+                List<ElasticSearchIndexData> results = page.getList();
+                if (null !=results) {
+                    for (ElasticSearchIndexData elasticSearchIndexData : results) {
+                        logger.info(elasticSearchIndexData.getName()+ "-" + elasticSearchIndexData.getAge()+ "-"  + elasticSearchIndexData.getSex());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        esClient.closeConnect();
+        
+        return ajaxData;
     }
     
     //共用查询附件索引,分页

@@ -248,7 +248,7 @@ var myVue = new Vue({
         },
         elasticSearch:function() {
         	let param = new URLSearchParams(); 
-     	  	axios.post('<%=ctxPath %>/htgl/searchController/solrsearch/api', param)
+     	  	axios.post('<%=ctxPath %>/htgl/searchController/elasticsearch/api', param)
      		  	.then(function (response) {
      			  	if(response.data.flag){
      			  		myVue.$Message.success({
