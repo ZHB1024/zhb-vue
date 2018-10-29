@@ -66,18 +66,23 @@ public class JsoupSpiderController {
         String urlTarget = PropertyUtil.getSpiderUrlTarget();
 
         int beginPage = 1;
-        int endPage = 10;
-        int totalThread = 10;
+        int endPage = 92;
+        int totalThread = 5;
         int per = endPage/totalThread;
         ExecutorService es1 = Executors.newFixedThreadPool(totalThread);
-        for(int i=0;i<endPage;i++) {
-            es1.execute(new ReadEndUrlToQueueRunnable(i+"","queue-"+i,url,beginPage+(i*per),beginPage+(i*per)+per-1));
+        for(int i=0;i<totalThread;i++) {
+            if(i != totalThread-1) {
+                es1.execute(new ReadEndUrlToQueueRunnable(i+"","queue-"+(i%totalThread),url,beginPage+(i*per),beginPage+(i*per)+per-1));
+            }else {
+                es1.execute(new ReadEndUrlToQueueRunnable(i+"","queue-"+(i%totalThread),url,beginPage+(i*per),endPage));
+            }
+            
         }
         es1.shutdown();
         
-        ExecutorService es2 = Executors.newFixedThreadPool(totalThread);
-        for(int i=0;i<endPage;i++) {
-            es2.execute(new DownloadFromQueueRunnable(i+"","queue-"+i,userId));
+        ExecutorService es2 = Executors.newFixedThreadPool(totalThread*2);
+        for(int i=0;i<totalThread*2;i++) {
+            es2.execute(new DownloadFromQueueRunnable(i+totalThread+"","queue-"+(i%totalThread),userId));
         }
         es2.shutdown();
         

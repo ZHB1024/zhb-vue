@@ -47,23 +47,25 @@ public class DownloadFromQueueRunnable implements Runnable {
 
     @Override
     public void run() {
-        logger.info("DownloadThread"+ name + "***************开始");
+        logger.info("DownloadThread"+ name + "***********开始");
         while(true) {
             TextMessage textMessage = null;
             while(null == (textMessage= activeMqClient.receiveQueueMessage(queueName))){
                 int flag = shutdowmFlag.incrementAndGet();
-                if (flag > 5000) {
-                    logger.info("DownloadThread"+ name + "***************结束");
+                if (flag > 1000) {
+                    logger.info("DownloadThread"+ name + "********结束");
+                    return;
                 }
-                logger.info("队列等待添加********" + shutdowmFlag.get());
+                logger.info("队列等待添加***************" + shutdowmFlag.get());
                 try {
                     Thread.currentThread().sleep(10);
                 } catch (InterruptedException e) {
-                    logger.error("从队列里取url异常********");
+                    logger.error("从队列里取url异常*******************");
                     e.printStackTrace();
                     continue;
                 }
             }
+            shutdowmFlag = new AtomicInteger(0);
             String target = null;
             try {
                 target = textMessage.getText();
@@ -74,10 +76,9 @@ public class DownloadFromQueueRunnable implements Runnable {
             }
             if (StringUtil.isNotBlank(target)) {
                 String[] arrays = target.split(",-");
-                
-                shutdowmFlag = new AtomicInteger(0);
-                
-                downloadImage(arrays[0],arrays[1]);
+                if (null != arrays && arrays.length==2) {
+                    downloadImage(arrays[0],arrays[1]);
+                }
             }
             
         }
@@ -91,7 +92,7 @@ public class DownloadFromQueueRunnable implements Runnable {
         try {
             DownloadUtil.downLoadFromUrl(imagUrl, fileName, uploadPath);
         } catch (IOException e) {
-            logger.error("从网络地址下载图片失败.*******");
+            logger.error("从网络地址下载图片失败.**************");
             e.printStackTrace();
             return;
         }
@@ -117,7 +118,7 @@ public class DownloadFromQueueRunnable implements Runnable {
         fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
         fileInfoData.setCreateUserId(userId);
         //attachmentInfoService.saveOrUpdate(fileInfoData);
-        logger.info("线程-"+ name + "下载成功*******第 " + totalCount.incrementAndGet() + " 个");
+        logger.info("线程-"+ name + "下载成功****************第 " + totalCount.incrementAndGet() + " 个");
     }
 
 }

@@ -99,7 +99,7 @@ public class ReadEndUrlToQueueRunnable implements Runnable {
                     target.append(".jpg");
                     target.append(",-" + element.attr("abs:file"));
                     activeMqClient.sendQueueDestinationNameMsg(queueName, target.toString());
-                    logger.info("--向队列里添加成功----第 " + beginPage + " 页------第 " + totalCount.incrementAndGet() + " 个");
+                    logger.info("向队列里添加成功--------------------------------------第 " + beginPage + " 页");
                 }
             }
         }
