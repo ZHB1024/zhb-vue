@@ -62,11 +62,11 @@ public class JsoupSpiderController {
     public AjaxData spiderYellow(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
         String userId = WebAppUtil.getUserId(request);
-        String url = "http://www.mtl018.com/forum-50-";
+        String url = "http://mtl20.pw/forum-54-";
         String urlTarget = PropertyUtil.getSpiderUrlTarget();
 
         int beginPage = 1;
-        int endPage = 92;
+        int endPage = 43;
         int totalThread = 5;
         int per = endPage/totalThread;
         ExecutorService es1 = Executors.newFixedThreadPool(totalThread);
@@ -84,6 +84,7 @@ public class JsoupSpiderController {
         for(int i=0;i<totalThread*2;i++) {
             es2.execute(new DownloadFromQueueRunnable(i+totalThread+"","queue-"+(i%totalThread),userId));
         }
+        
         es2.shutdown();
         
         ajaxData.setFlag(true);

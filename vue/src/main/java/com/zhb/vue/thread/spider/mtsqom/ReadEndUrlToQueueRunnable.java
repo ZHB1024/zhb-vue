@@ -96,7 +96,7 @@ public class ReadEndUrlToQueueRunnable implements Runnable {
                     i++;
                     StringBuilder target = new StringBuilder(name);
                     target.append("-"+i);
-                    target.append(".jpg");
+                    target.append(".gif");
                     target.append(",-" + element.attr("abs:file"));
                     activeMqClient.sendQueueDestinationNameMsg(queueName, target.toString());
                     logger.info("向队列里添加成功--------------------------------------第 " + beginPage + " 页");

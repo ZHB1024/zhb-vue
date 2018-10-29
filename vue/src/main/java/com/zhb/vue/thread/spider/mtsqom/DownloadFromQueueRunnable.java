@@ -52,7 +52,7 @@ public class DownloadFromQueueRunnable implements Runnable {
             TextMessage textMessage = null;
             while(null == (textMessage= activeMqClient.receiveQueueMessage(queueName))){
                 int flag = shutdowmFlag.incrementAndGet();
-                if (flag > 1000) {
+                if (flag > 50) {
                     logger.info("DownloadThread"+ name + "********结束");
                     return;
                 }
@@ -102,7 +102,7 @@ public class DownloadFromQueueRunnable implements Runnable {
         Long fileSize = file.length();
         if (fileSize > Constants.SMALL_IMAGE_SIZE) {
             try {
-                thumbnailPath = UploadUtil.uploadThumbmail(new FileInputStream(file), fileName, "jpg", fileSize);
+                thumbnailPath = UploadUtil.uploadThumbmail(new FileInputStream(file), fileName, "gif", fileSize);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 thumbnailPath = filePath;
