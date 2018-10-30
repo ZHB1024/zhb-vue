@@ -38,7 +38,7 @@ public class AttachmentInfoData implements Serializable{
     public AttachmentInfoData() {
         this.deleteFlag = DeleteFlagEnum.UDEL.getIndex();
         this.createTime = Calendar.getInstance();
-        this.likeDegree = LikeDgreeEnum.LIKE.getIndex();
+        this.likeDegree = LikeDgreeEnum.UN_LIKE.getIndex();
     }
 
     @Id
