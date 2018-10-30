@@ -33,6 +33,7 @@ import com.zhb.forever.framework.dic.LikeDgreeEnum;
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.framework.util.DetectFaceUtil;
 import com.zhb.forever.framework.util.DownloadUtil;
 import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.ImageUtil;
@@ -535,6 +536,13 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         
+        UserInfoData userInfoData = userInfoService.getUserInfoById(userId);
+        if (null == userInfoData) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("非法访问");
+            return ajaxData;
+        }
+        
        // 转型为MultipartHttpRequest：
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         // 获得文件
@@ -567,14 +575,19 @@ public class AttachmentInfoController {
         }
 
         decodedBytes = ImageUtil.getCropPhotoBytes(imageVO,new ByteArrayInputStream(decodedBytes) );
-
-        UserInfoData userInfoData = userInfoService.getUserInfoById(userId);
-        if (null == userInfoData) {
+        
+        int num = DetectFaceUtil.getPersonNum(decodedBytes);
+        if (0 == num) {
             ajaxData.setFlag(false);
-            ajaxData.addMessage("非法访问");
+            ajaxData.addMessage("图片必须包含人脸，占比不能太小");
             return ajaxData;
         }
-        
+        if (num > 1) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("图片不能有多个人脸，只能包含一个人脸");
+            return ajaxData;
+        }
+
         //文件保存路径
         String filePath = PropertyUtil.getUploadPath();
         

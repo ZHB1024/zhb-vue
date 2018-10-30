@@ -62,7 +62,7 @@ public class FunctionInfoServiceTest extends BaseTest {
     public void getMaxOrderTest() {
         FunctionInfoParam param = new FunctionInfoParam();
         int max = functionInfoService.getMaxOrder(param);
-        System.out.println(max);
+        logger.info(max+"");
     }
     
     @Test
@@ -75,10 +75,9 @@ public class FunctionInfoServiceTest extends BaseTest {
         List<FunctionInfoData> datas  = functionInfoService.getFunctions(param,null);
         if (null != datas && datas.size() > 0) {
             for (FunctionInfoData functionInfoData : datas) {
-                System.out.println(functionInfoData.getName()+ "---" + functionInfoData.getPath())  ;
+                logger.info(functionInfoData.getName()+ "---" + functionInfoData.getPath())  ;
             }
         }else {
-            System.out.println("结果是空-------");
             logger.info("结果是空-------");
         }
     }
