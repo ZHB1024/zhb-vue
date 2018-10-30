@@ -117,7 +117,7 @@ public class DownloadFromQueueRunnable implements Runnable {
         fileInfoData.setContentType("image/jpeg");
         fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
         fileInfoData.setCreateUserId(userId);
-        //attachmentInfoService.saveOrUpdate(fileInfoData);
+        attachmentInfoService.saveOrUpdate(fileInfoData);
         logger.info("线程-"+ name + "下载成功****************第 " + totalCount.incrementAndGet() + " 个");
     }
 
