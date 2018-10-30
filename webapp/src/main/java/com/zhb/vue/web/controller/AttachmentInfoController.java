@@ -120,10 +120,10 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         
-        AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
-        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);
+        /*AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);*/
         
-        //ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
     

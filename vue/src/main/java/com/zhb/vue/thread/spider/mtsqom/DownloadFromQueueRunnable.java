@@ -52,7 +52,7 @@ public class DownloadFromQueueRunnable implements Runnable {
             TextMessage textMessage = null;
             while(null == (textMessage= activeMqClient.receiveQueueMessage(queueName))){
                 int flag = shutdowmFlag.incrementAndGet();
-                if (flag > 50) {
+                if (flag > 10) {
                     logger.info("DownloadThread"+ name + "********结束");
                     return;
                 }
@@ -100,21 +100,21 @@ public class DownloadFromQueueRunnable implements Runnable {
         String filePath = uploadPath + File.separator + fileName;
         File file = new File(filePath);
         Long fileSize = file.length();
-        if (fileSize > Constants.SMALL_IMAGE_SIZE) {
+        /*if (fileSize > Constants.SMALL_IMAGE_SIZE) {
             try {
                 thumbnailPath = UploadUtil.uploadThumbmail(new FileInputStream(file), fileName, "gif", fileSize);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 thumbnailPath = filePath;
             }
-        }
+        }*/
         
         AttachmentInfoData fileInfoData = new AttachmentInfoData();
         fileInfoData.setFileName(fileName);
         fileInfoData.setFilePath(filePath);
-        fileInfoData.setThumbnailPath(thumbnailPath);
+        fileInfoData.setThumbnailPath(filePath);
         fileInfoData.setFileSize(String.valueOf(fileSize));
-        fileInfoData.setContentType("image/jpeg");
+        fileInfoData.setContentType("image/gif");
         fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
         fileInfoData.setCreateUserId(userId);
         attachmentInfoService.saveOrUpdate(fileInfoData);
