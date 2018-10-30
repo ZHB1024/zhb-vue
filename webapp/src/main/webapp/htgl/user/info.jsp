@@ -141,11 +141,11 @@ var myVue =  new Vue({
 function generatorLayerContent(img) {
 	var sb ='';
 	sb += '<div class="box">';
-    sb +=   '<img id="new_me_image" src="' + img + '">';
+    sb +=   '<img id="new_me_image" src="' + img + '" width="800px" height="800px"/>';
     sb += '</div>';
-    sb += '<div align="center" style="margin-top:20px;margin-bottom:20px;" > ';
-    sb +=      '<input type="button" id="cut_upload" value="上传"  style="width:100px;height:50px;" />';
-    sb +=      '<input type="button" id="cut_cancel" value="取消" style="width:100px;height:50px;" />';
+    sb += '<div align="center" style="margin-top:10px;margin-bottom:5px;" > ';
+    sb +=      '<input type="button" id="cut_upload" value="上传"  style="width:80px;height:30px;" />';
+    sb +=      '<input type="button" id="cut_cancel" value="取消" style="width:80px;height:30px;" />';
     sb += '</div>';
     
     sb += '<script type="text/javascript">';
@@ -216,8 +216,8 @@ function popup(title,content) {
     layer.open({
         title: title,
         type: 1,
-        skin: 'layui-layer-rim', //加上边框
-        area: ['70%', '90%'], //宽高
+        //skin: 'layui-layer-rim', //加上边框
+        area: ['900px', '950px'], //宽高
         content: content,
         //btn: ['确定','取消'],
         success: function(layero, index){
