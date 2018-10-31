@@ -13,12 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.util.AjaxData;
+import com.zhb.forever.framework.util.JsoupUtil;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.vue.thread.spider.mtsqom.DownloadFromQueueRunnable;
 import com.zhb.vue.thread.spider.mtsqom.ReadEndUrlToQueueRunnable;
 import com.zhb.vue.thread.spider.qbl.ReadUrlToQueueRunnable;
+import com.zhb.vue.thread.spider.yx.SpiderYXRunnable;
 import com.zhb.vue.web.util.WebAppUtil;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -125,6 +130,22 @@ public class JsoupSpiderController {
         
         ajaxData.setFlag(true);
 
+        return ajaxData;
+    }
+    
+    //https://gaokao.chsi.com.cn/sch/search--ss-on,searchType-1,option-qg,start-20.dhtml
+    @RequestMapping(value="/spideryx",method=RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData spiderYx(HttpServletRequest request,HttpServletResponse response){
+        AjaxData ajaxData = new AjaxData();
+        String baseUrl = "https://gaokao.chsi.com.cn/sch/search--ss-on,searchType-1,option-qg,start-";
+        
+        ExecutorService es = Executors.newFixedThreadPool(1);
+        es.execute(new SpiderYXRunnable(1, 137, 20, baseUrl,WebAppUtil.getUserId(request)));
+        es.shutdown();
+        
+        ajaxData.setFlag(true);
         return ajaxData;
     }
 

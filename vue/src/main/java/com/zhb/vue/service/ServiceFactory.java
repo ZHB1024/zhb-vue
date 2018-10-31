@@ -30,5 +30,10 @@ public class ServiceFactory {
         DicInfoService dicInfoService = wac.getBean("dicInfoServiceImpl", DicInfoService.class);
         return dicInfoService;
     }
+    
+    public static YXInfoService getYXInfoService() {
+        YXInfoService yxInfoService = wac.getBean("YXInfoServiceImpl", YXInfoService.class);
+        return yxInfoService;
+    }
 
 }
