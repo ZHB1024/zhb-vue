@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.vue.service.AttachmentInfoService;
+import com.zhb.vue.service.DicInfoService;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
@@ -36,7 +37,7 @@ public class StatisticController {
     @Autowired
     private AttachmentInfoService attachmentInfoService;
     @Autowired
-    private UserInfoService userInfoService;
+    private DicInfoService dicInfoService;
     
     //toindex
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
@@ -56,6 +57,29 @@ public class StatisticController {
         AjaxData ajaxData = new AjaxData();
         List<Object[]> results = attachmentInfoService.statisticAttachment();
         JSONObject jsonObject = Data2JSONUtil.statisticAttachment2JSONObject("附件类别统计汇总", results);
+        ajaxData.setFlag(true);
+        ajaxData.setData(jsonObject);
+        return ajaxData;
+    }
+    
+    //toindex
+    @RequestMapping(value = "/todicindex",method = RequestMethod.GET)
+    @Transactional
+    public String toDicIndex(HttpServletRequest request,HttpServletResponse response) {
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            return "login.index";
+        }
+        return "htgl.statistic.dic";
+    }
+    
+    //统计字典项
+    @RequestMapping("/statisticdic/api")
+    @ResponseBody
+    @Transactional
+    public AjaxData statisticDic(HttpServletRequest request,HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        List<Object[]> results = dicInfoService.statisticDic();
+        JSONObject jsonObject = Data2JSONUtil.statisticDic2JSONObject("字典项统计汇总", results);
         ajaxData.setFlag(true);
         ajaxData.setData(jsonObject);
         return ajaxData;

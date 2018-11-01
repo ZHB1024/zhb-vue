@@ -20,5 +20,10 @@ public interface DicInfoDao {
     List<String> getDicCategory();
     
     List<String> getDicTypeByCategory(DicInfoParam param);
+    
+    /**
+     * *统计
+     */
+    List<Object[]> statisticDic();
 
 }

@@ -9,9 +9,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.zhb.forever.framework.util.StringUtil;
@@ -225,6 +223,19 @@ public class DicInfoDaoImpl extends CommonDao implements DicInfoDao {
         Query<String> query = session.createQuery(criteriaQuery);
         
         return query.list();
+    }
+
+    @Override
+    public List<Object[]> statisticDic() {
+        StringBuilder sb =  new StringBuilder();
+        sb.append(" select a.category, count(a.id) ");
+        sb.append("      from dic_info a ");
+        sb.append("             group by a.category ");
+        sb.append("             order by a.category asc ");
+        
+        Query query = sessionFactory.getCurrentSession().createSQLQuery(sb.toString());
+        List<Object[]> results = query.list();
+        return results;
     }
 
 

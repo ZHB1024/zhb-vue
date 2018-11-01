@@ -550,5 +550,33 @@ public class Data2JSONUtil {
         jsonObject.put("nameValues", nameValues);
         return jsonObject;
     }
+    
+    //统计字典项
+    public static JSONObject statisticDic2JSONObject(String titleName,List<Object[]> results) {
+        JSONObject jsonObject = new JSONObject();
+        if (StringUtil.isBlank(titleName)) {
+            jsonObject.put("titleName", "统计");
+        }else{
+            jsonObject.put("titleName", titleName);
+        }
+        
+        JSONArray names = new JSONArray();
+        JSONArray values = new JSONArray();
+        JSONArray nameValues = new JSONArray();
+        if (null != results) {
+            for (Object[] object : results) {
+                names.add(object[0].toString());
+                values.add(object[1]);
+                JSONObject json = new JSONObject();
+                json.put("name", object[0].toString());
+                json.put("value", object[1]);
+                nameValues.add(json);
+            }
+        }
+        jsonObject.put("names", names);
+        jsonObject.put("values", values);
+        jsonObject.put("nameValues", nameValues);
+        return jsonObject;
+    }
 
 }

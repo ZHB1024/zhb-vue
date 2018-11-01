@@ -82,5 +82,10 @@ public class DicInfoServiceImpl extends CommonServiceImpl implements DicInfoServ
     public List<String> getDicTypeByCategory(DicInfoParam param) {
         return dicInfoDao.getDicTypeByCategory(param);
     }
+
+    @Override
+    public List<Object[]> statisticDic() {
+        return dicInfoDao.statisticDic();
+    }
     
 }
