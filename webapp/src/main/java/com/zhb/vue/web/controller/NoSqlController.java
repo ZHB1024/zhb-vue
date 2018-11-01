@@ -56,11 +56,6 @@ public class NoSqlController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
-        UserModel user = new UserModel();
-        user.setId("123");
-        user.setName("zhb-张会彬");
-        user.setSex("男");
-        mongoDBClient.save(user);
         
         List<UserModel> users = mongoDBClient.findByProp("sex", "男", UserModel.class);
         if (null != users) {
