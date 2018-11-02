@@ -155,17 +155,6 @@ public class SearchController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
-        List<Document> documents = new ArrayList<Document>();
-        Document document = LuceneUtil.createDocument();
-        LuceneUtil.addStringFieldToDocument(document, "id", "123", Field.Store.YES);
-        LuceneUtil.addStringFieldToDocument(document, "title", "hello", Field.Store.YES);
-        LuceneUtil.addStringFieldToDocument(document, "content", "world", Field.Store.YES);
-        documents.add(document);
-        try {
-            luceneClient.initLuceneIndex(documents);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         
         try {
             Page<DocumentVo> page = luceneClient.luceneSearch("hello", 0, 10);
