@@ -32,6 +32,7 @@ li {list-style-type:none;}
                 <form-item>
                     	<i-button type="primary" @click="solrSearch()" > solrSearch </i-button>
                     	<i-button type="primary" @click="elasticSearch()" > elasticSearch </i-button>
+                    	<i-button type="primary" @click="luceneSearch()" > luceneSearch </i-button>
                 </form-item>
         	</i-form>
 			<i-table border :columns="columns1" :data="tableDatas"></i-table> 
@@ -249,6 +250,25 @@ var myVue = new Vue({
         elasticSearch:function() {
         	let param = new URLSearchParams(); 
      	  	axios.post('<%=ctxPath %>/htgl/searchController/elasticsearch/api', param)
+     		  	.then(function (response) {
+     			  	if(response.data.flag){
+     			  		myVue.$Message.success({
+                            content: response.data.data,
+                            duration: 3,
+                            closable: true
+                        });
+                   }else{
+                 	  myVue.$Message.error({
+                           content: response.data.errorMessages,
+                           duration: 3,
+                           closable: true
+                       });
+                   }
+     		  })
+        },
+        luceneSearch:function() {
+        	let param = new URLSearchParams(); 
+     	  	axios.post('<%=ctxPath %>/htgl/searchController/lucenesearch/api', param)
      		  	.then(function (response) {
      			  	if(response.data.flag){
      			  		myVue.$Message.success({

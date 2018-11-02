@@ -1,5 +1,6 @@
 package com.zhb.vue.web.controller;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,19 +24,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.zhb.forever.framework.page.Page;
 import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
-import com.zhb.forever.framework.util.DateTimeUtil;
 import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
-import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.search.SearchFactory;
 import com.zhb.forever.search.elastic.ElasticSearchClient;
 import com.zhb.forever.search.elastic.vo.ElasticSearchIndexData;
+import com.zhb.forever.search.lucene.LuceneClient;
+import com.zhb.forever.search.lucene.LuceneUtil;
+import com.zhb.forever.search.lucene.vo.DocumentVo;
 import com.zhb.forever.search.solr.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.params.param2SolrIndexParam;
-import com.zhb.vue.service.AttachmentInfoService;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -51,6 +54,8 @@ public class SearchController {
     private SolrClient solrClient = SearchFactory.getSolrClientBean();
     
     private ElasticSearchClient esClient = SearchFactory.getElasticSearchClientBean();
+    
+    private LuceneClient luceneClient = SearchFactory.getLuceneClientBean();
     
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
     @Transactional
@@ -139,6 +144,48 @@ public class SearchController {
         return ajaxData;
     }
     
+    /*lucene search*/
+    @RequestMapping(value = "/lucenesearch/api",method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public AjaxData initLuceneIndex(HttpServletRequest request, HttpServletResponse response) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        List<Document> documents = new ArrayList<Document>();
+        Document document = LuceneUtil.createDocument();
+        LuceneUtil.addStringFieldToDocument(document, "id", "123", Field.Store.YES);
+        LuceneUtil.addStringFieldToDocument(document, "title", "hello", Field.Store.YES);
+        LuceneUtil.addStringFieldToDocument(document, "content", "world", Field.Store.YES);
+        documents.add(document);
+        try {
+            luceneClient.initLuceneIndex(documents);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        try {
+            Page<DocumentVo> page = luceneClient.luceneSearch("hello", 0, 10);
+            if (null != page) {
+                List<DocumentVo> vos = page.getList();
+                if (null != vos && vos.size() > 0) {
+                    for (DocumentVo documentVo : vos) {
+                        logger.info(documentVo.getId() + "--" + documentVo.getContent());
+                    }
+                    ajaxData.setFlag(true);
+                    ajaxData.setData("查询成功");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return ajaxData;
+    }
+
     //共用查询附件索引,分页
     private AjaxData searchAttachmentInfoSolrIndex2AjaxDataPage(AttachmentInfoSolrIndexParam param) {
         AjaxData ajaxData = new AjaxData();
