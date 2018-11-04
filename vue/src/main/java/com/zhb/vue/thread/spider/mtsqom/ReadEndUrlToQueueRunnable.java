@@ -40,7 +40,8 @@ public class ReadEndUrlToQueueRunnable implements Runnable {
         logger.info("ReadUrlThread-" + name + "--------------------------开始-------");
         String targetUrl = "";
         while(endPage >= beginPage) {
-            targetUrl = url + beginPage + ".html";
+            //targetUrl = url + beginPage + ".html";
+            targetUrl = url + beginPage;
             addChildPageImagePath(targetUrl);
             beginPage++;
         }
@@ -96,7 +97,7 @@ public class ReadEndUrlToQueueRunnable implements Runnable {
                     i++;
                     StringBuilder target = new StringBuilder(name);
                     target.append("-"+i);
-                    target.append(".gif");
+                    target.append(".jpg");
                     target.append(",-" + element.attr("abs:file"));
                     activeMqClient.sendQueueDestinationNameMsg(queueName, target.toString());
                     logger.info("向队列里添加成功--------------------------------------第 " + beginPage + " 页");

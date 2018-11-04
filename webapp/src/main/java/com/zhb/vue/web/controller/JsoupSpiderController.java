@@ -67,19 +67,19 @@ public class JsoupSpiderController {
     public AjaxData spiderYellow(HttpServletRequest request,HttpServletResponse response){
         AjaxData ajaxData = new AjaxData();
         String userId = WebAppUtil.getUserId(request);
-        String url = "http://mtl20.pw/forum-54-";
+        String url = "http://www.mtl018.com/forum.php?mod=forumdisplay&fid=237&page=";
         String urlTarget = PropertyUtil.getSpiderUrlTarget();
 
         int beginPage = 1;
-        int endPage = 43;
-        int totalThread = 5;
+        int endPage = 511;
+        int totalThread = 10;
         int per = endPage/totalThread;
         ExecutorService es1 = Executors.newFixedThreadPool(totalThread);
         for(int i=0;i<totalThread;i++) {
             if(i != totalThread-1) {
-                es1.execute(new ReadEndUrlToQueueRunnable(i+"","queue-"+(i%totalThread),url,beginPage+(i*per),beginPage+(i*per)+per-1));
+                es1.execute(new ReadEndUrlToQueueRunnable(i+"","queueA-"+(i%totalThread),url,beginPage+(i*per),beginPage+(i*per)+per-1));
             }else {
-                es1.execute(new ReadEndUrlToQueueRunnable(i+"","queue-"+(i%totalThread),url,beginPage+(i*per),endPage));
+                es1.execute(new ReadEndUrlToQueueRunnable(i+"","queueA-"+(i%totalThread),url,beginPage+(i*per),endPage));
             }
             
         }
@@ -87,7 +87,7 @@ public class JsoupSpiderController {
         
         ExecutorService es2 = Executors.newFixedThreadPool(totalThread*2);
         for(int i=0;i<totalThread*2;i++) {
-            es2.execute(new DownloadFromQueueRunnable(i+totalThread+"","queue-"+(i%totalThread),userId));
+            es2.execute(new DownloadFromQueueRunnable(i+totalThread+"","queueA-"+(i%totalThread),userId));
         }
         
         es2.shutdown();

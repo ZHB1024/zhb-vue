@@ -69,7 +69,6 @@ public class DownloadFromQueueRunnable implements Runnable {
             String target = null;
             try {
                 target = textMessage.getText();
-                System.out.println("");
             } catch (JMSException e) {
                 e.printStackTrace();
                 continue;
@@ -100,21 +99,21 @@ public class DownloadFromQueueRunnable implements Runnable {
         String filePath = uploadPath + File.separator + fileName;
         File file = new File(filePath);
         Long fileSize = file.length();
-        /*if (fileSize > Constants.SMALL_IMAGE_SIZE) {
+        if (fileSize > Constants.SMALL_IMAGE_SIZE) {
             try {
-                thumbnailPath = UploadUtil.uploadThumbmail(new FileInputStream(file), fileName, "gif", fileSize);
+                thumbnailPath = UploadUtil.uploadThumbmail(new FileInputStream(file), fileName, "jpg", fileSize);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 thumbnailPath = filePath;
             }
-        }*/
+        }
         
         AttachmentInfoData fileInfoData = new AttachmentInfoData();
         fileInfoData.setFileName(fileName);
         fileInfoData.setFilePath(filePath);
         fileInfoData.setThumbnailPath(filePath);
         fileInfoData.setFileSize(String.valueOf(fileSize));
-        fileInfoData.setContentType("image/gif");
+        fileInfoData.setContentType("image/jpg");
         fileInfoData.setType(AttachmentTypeEnum.YELLOW.getIndex());
         fileInfoData.setCreateUserId(userId);
         attachmentInfoService.saveOrUpdate(fileInfoData);

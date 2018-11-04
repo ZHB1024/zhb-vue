@@ -48,7 +48,6 @@ import com.zhb.forever.search.solr.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;
-import com.zhb.vue.params.param2SolrIndexParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
@@ -352,6 +351,11 @@ public class AttachmentInfoController {
         if (null == data ){
             return;
         }
+        File file = new File(data.getFilePath());
+        if (!file.exists()) {
+            attachmentInfoService.delete(data);
+            return;
+        }
         try {
             DownloadUtil.processBeforeDownload(request, response, data.getContentType(), data.getFileName());
         } catch (IOException e1) {
@@ -405,6 +409,12 @@ public class AttachmentInfoController {
             e1.printStackTrace();
         }
         
+        File file = new File(data.getFilePath());
+        if (!file.exists()) {
+            attachmentInfoService.delete(data);
+            return ;
+        }
+        
         //加水印 下载
         DownloadUtil.downloadAttachmentWithWaterPrint(request, response, data.getFilePath(), data.getContentType().contains("gif"));
         
@@ -453,7 +463,14 @@ public class AttachmentInfoController {
             e1.printStackTrace();
         }
         
-        DownloadUtil.downloadAttachment(request, response, data.getThumbnailPath());
+        File file = new File(data.getThumbnailPath());
+        if (!file.exists()) {
+            DownloadUtil.downloadAttachment(request, response, data.getFilePath());
+        }else {
+            DownloadUtil.downloadAttachment(request, response, data.getThumbnailPath());
+        }
+        
+        
     }
     
     //上传头像 获取layer
