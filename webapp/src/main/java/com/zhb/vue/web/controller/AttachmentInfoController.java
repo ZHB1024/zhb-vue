@@ -678,6 +678,52 @@ public class AttachmentInfoController {
         return ajaxData;
     }
     
+    //读取附件内容
+    @RequestMapping(value = "/readfile")
+    @Transactional
+    @ResponseBody
+    public AjaxData readFile(HttpServletRequest request,HttpServletResponse response,String id) {
+        AjaxData ajaxData = new AjaxData();
+        if (StringUtil.isBlank(WebAppUtil.getUserId(request))) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("请先登录");
+            return ajaxData;
+        }
+        
+        if(StringUtil.isBlank(id)) {
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("文件不存在");
+            return ajaxData;
+        }
+        
+        AttachmentInfoData data = attachmentInfoService.getAttachmentInfoById(id);
+        if (null == data ){
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("文件不存在");
+            return ajaxData;
+        }
+        File file = new File(data.getFilePath());
+        if (!file.exists()) {
+            attachmentInfoService.delete(data);
+            ajaxData.setFlag(false);
+            ajaxData.addMessage("文件不存在");
+            return ajaxData;
+        }
+        
+        try {
+            String result = FileUtil.readFileAsString(data.getFilePath());
+            ajaxData.setFlag(true);
+            ajaxData.setData(result);
+            return ajaxData;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        ajaxData.setFlag(false);
+        ajaxData.addMessage("读取失败");
+        return ajaxData;
+    }
+    
     //共用查询,不分页
     private AjaxData searchAttachmentInfo2AjaxData(AttachmentInfoParam param,HttpServletRequest request) {
         AjaxData ajaxData = new AjaxData();
