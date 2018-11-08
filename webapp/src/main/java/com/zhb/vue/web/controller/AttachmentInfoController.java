@@ -37,6 +37,7 @@ import com.zhb.forever.framework.util.DetectFaceUtil;
 import com.zhb.forever.framework.util.DownloadUtil;
 import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.ImageUtil;
+import com.zhb.forever.framework.util.File2HtmlConvert;
 import com.zhb.forever.framework.util.PropertyUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.framework.util.UploadUtil;
@@ -540,7 +541,7 @@ public class AttachmentInfoController {
     }
     
     //上传头像
-    @RequestMapping("/uploadHeadPhoto/api")
+    @RequestMapping("/uploadheadphoto/api")
     @ResponseBody
     @Transactional
     public AjaxData uploadHeadPhoto(HttpServletRequest request, HttpServletResponse response) {
@@ -712,6 +713,9 @@ public class AttachmentInfoController {
         
         try {
             String result = FileUtil.readFileAsString(data.getFilePath());
+            byte[] bytes = FileUtil.readFileAsBytes(new File(data.getFilePath()));
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            result = File2HtmlConvert.xls2Html(bais, "xls", "utf-8");
             ajaxData.setFlag(true);
             ajaxData.setData(result);
             return ajaxData;

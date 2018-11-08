@@ -349,7 +349,7 @@ var myVue = new Vue({
       },
       /*弹出附件详细信息*/
       showinfo:function(data){
-   	   	  var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
+   	   	  /* var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
 
    	   	  showContent += generatorValue("附件名称",data.row.fileName);
    	      showContent += generatorValue("附件类型",data.row.type);
@@ -359,9 +359,38 @@ var myVue = new Vue({
    	      showContent += generatorValue("创建时间",data.row.createTime);
    	      showContent += generatorValue("状态",data.row.deleteFlagName);
    	   
-   	      showContent += '</table>';
+   	      showContent += '</table>'; */
+   	      
+   	   var showContent = '';
+   	   let param = new URLSearchParams(); 
+ 	   param.append("id",data.row.id); 
+ 	   axios.post('<%=ctxPath %>/htgl/attachmentinfocontroller/readfile', param)
+ 		  .then(function (response) {
+ 			  if(response.data.flag){
+ 				 showContent = response.data.data;
+ 				layer.open({
+ 	   	           title: data.row.fileName,
+ 	   	           type: 1,
+ 	   	           //skin: 'layui-layer-rim', //加上边框
+ 	   	           area: ['700px', '700px'], //宽高
+ 	   	           content: showContent, 
+ 	   	           btn: ['确定'],
+ 	   	           success: function(layero, index){
+ 	   	           },
+ 	   	           yes: function(index, layero){
+ 	   	               layer.closeAll();
+ 	   	           }
+ 	   	       });
+               }else{
+             	  myVue.$Message.error({
+                       content: response.data.errorMessages,
+                       duration: 3,
+                       closable: true
+                   });
+               }
+ 		  })
    	   
-   	      layer.open({
+   	      /* layer.open({
    	           title: data.row.fileName,
    	           type: 1,
    	           //skin: 'layui-layer-rim', //加上边框
@@ -373,7 +402,7 @@ var myVue = new Vue({
    	           yes: function(index, layero){
    	               layer.closeAll();
    	           }
-   	       });
+   	       }); */
       },
       //下载附件
       downAttachment:function(data){
