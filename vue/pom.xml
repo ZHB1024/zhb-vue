@@ -18,13 +18,6 @@
   
   <dependencies>
   
-  <!-- zhb-redis -->
-		<dependency>
-			<groupId>com.zhb.forever</groupId>
-			<artifactId>zhb-redis</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
   <!-- zhb-mq -->
 		<dependency>
 			<groupId>com.zhb.forever</groupId>

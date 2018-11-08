@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
-import com.zhb.forever.mongodb.client.MongoDBClient;
-import com.zhb.forever.mongodb.client.MongoDBClientFactory;
-import com.zhb.forever.mongodb.collection.UserModel;
+import com.zhb.forever.nosql.mongodb.client.MongoDBClient;
+import com.zhb.forever.nosql.mongodb.client.MongoDBClientFactory;
+import com.zhb.forever.nosql.mongodb.collection.UserModel;
 import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.web.util.WebAppUtil;
 

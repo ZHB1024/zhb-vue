@@ -13,13 +13,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.zhb.forever.framework.serialize.impl.ListTranscoder;
-import com.zhb.forever.framework.serialize.impl.ObjectTranscoder;
 import com.zhb.forever.framework.util.CheckAgentUtil;
 import com.zhb.forever.framework.util.IPUtil;
 import com.zhb.forever.framework.util.StringUtil;
-import com.zhb.forever.redis.client.RedisClient;
-import com.zhb.forever.redis.client.RedisClientFactory;
+import com.zhb.forever.nosql.redis.client.RedisClient;
+import com.zhb.forever.nosql.redis.client.RedisClientFactory;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.web.util.WebAppUtil;

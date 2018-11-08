@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.zhb.forever.redis.client.RedisClient;
-import com.zhb.forever.redis.client.RedisClientFactory;
+import com.zhb.forever.nosql.redis.client.RedisClient;
+import com.zhb.forever.nosql.redis.client.RedisClientFactory;
 import com.zhb.vue.Constant;
 import com.zhb.vue.pojo.UserInfoData;
 

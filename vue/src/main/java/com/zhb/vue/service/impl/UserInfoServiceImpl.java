@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.zhb.forever.framework.serialize.impl.ListTranscoder;
 import com.zhb.forever.framework.vo.OrderVO;
-import com.zhb.forever.redis.client.RedisClient;
-import com.zhb.forever.redis.client.RedisClientFactory;
+import com.zhb.forever.nosql.redis.client.RedisClient;
+import com.zhb.forever.nosql.redis.client.RedisClientFactory;
 import com.zhb.vue.Constant;
 import com.zhb.vue.dao.UserInfoDao;
 import com.zhb.vue.params.UserInfoParam;
