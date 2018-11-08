@@ -220,13 +220,27 @@ var myVue = new Vue({
         	                    radius : '55%',//饼的半径
         	                    center: ['50%', '60%'],//饼的中心位置
         	                    data:myVue.pies.nameValues,
-        	                    itemStyle: {
+        	                    label: {
+        	                        normal: {
+        	                            show: true,
+        	                            //position: 'inside',
+        	                            formatter: '{b}: {c} 个  {d}%'/* ,
+        	                            textStyle : {                   
+            	                            align : 'center',
+            	                            baseline : 'middle',
+            	                            fontFamily : '微软雅黑',
+            	                            fontSize : 15,
+            	                            fontWeight : 'bolder'
+            	                         } */
+        	                        }
+        	                    }
+        	                    /* itemStyle: {
         	                        emphasis: {
         	                            shadowBlur: 10,
         	                            shadowOffsetX: 0,
         	                            shadowColor: 'rgba(0, 0, 0, 0.5)'
         	                        }
-        	                    }
+        	                    } */
         	                }
         	            ]
     	        };
