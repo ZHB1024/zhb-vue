@@ -12,18 +12,12 @@
             <breadcrumb-item>附件统计</breadcrumb-item> 
         </Breadcrumb> 
         <i-content :style="{padding: '24px', minHeight: '428px', background: '#fff'}">
-            <!-- <Row>
-                <i-col span="10" >
-			        为 ECharts 准备一个具备大小（宽高）的 DOM
-			        <div id="main" style="width: 700px;height:600px;"></div>
-                </i-col>
-                <i-col span="1" style="margin-right:10px">
-                <div style="width: 10px;height:600px;"></div>
-                </i-col>
-                <i-col span="10" style="margin-right:10px">
-			        <div id="main2" style="width: 600px;height:600px;"></div>
-                </i-col>
-            </Row> -->
+        	<i-form inline ref="formInline" method="post" action="" >
+                <form-item>
+                    	<i-button type="primary" @click="startFlush()" > 自动周期性刷新 </i-button>
+                    	<i-button type="primary" @click="endFlush()" > 停止刷新 </i-button>
+                </form-item>
+        	</i-form>
             <div class="echart-box clearfix">
                 <div id="main" class="echart-item"></div>
                 <div id="main2" class="echart-item"></div>
@@ -46,47 +40,61 @@ var myVue = new Vue({
     		names:[],
     		values:[],
 	        nameValues:[]
-	  	}
+	  	},
+	  	funshId:''
     },
     created: function () {
     },
+    mounted:function () {
+    	 let param = new URLSearchParams(); 
+	     axios.all([
+   	    			axios.post('<%=ctxPath %>/htgl/statisticController/statisticattachment/api', param)
+   	  		]).then(axios.spread(function (statisticAttachmentResp) {
+   		  			if(statisticAttachmentResp.data.flag){
+   			  			myVue.bars.titleName = statisticAttachmentResp.data.data.titleName;
+   			  			myVue.bars.names = statisticAttachmentResp.data.data.names;
+   			  			myVue.bars.values = statisticAttachmentResp.data.data.values;
+   			  			
+   			  			myVue.pies.titleName = statisticAttachmentResp.data.data.titleName;
+   			  			myVue.pies.names = statisticAttachmentResp.data.data.names;
+			  			myVue.pies.values = statisticAttachmentResp.data.data.values;
+			  			myVue.pies.nameValues = statisticAttachmentResp.data.data.nameValues;
+   			  			
+   			  			
+   			  			myVue.$options.methods.initMainEchart();
+   			  			myVue.$options.methods.initMain2Echart();
+   		  			}
+   	  		}));
+    },
     methods:{
-    	 search:function (name) {
+    	 search:function () {
     		 let param = new URLSearchParams(); 
-      	     param.append("organizationId",myVue.formParm.organizationId); 
-      	     if(undefined ==  myVue.formParm.employeeId){
-      	    	myVue.formParm.employeeId = '';
-      	     }
-      	     param.append("employeeId",myVue.formParm.employeeId); 
-      	     
-      	     if(!myVue.formParm.workdate[0]){
-       	    	myVue.$Message.warning({
-                    content: "请选择日期段",
-                    duration: 3,
-                    closable: true
-                });
-       	    	return;
-       	     }
-      	     param.append("workdate",myVue.formParm.workdate); 
-      	     param.append("status",myVue.formParm.status); 
-      	     //等待动画
-			 myVue.$Spin.show();
-     	     axios.all([
-        	    axios.post('<%=ctxPath %>/jb/check/statistics/empworkhours/api', param),
-        	    axios.post('<%=ctxPath %>/jb/check/statistics/contentworkhours/api', param)
-        	  ]).then(axios.spread(function (empworkhoursResp,contentworkhoursResp) {
-        		  //结束动画
-        		  if(empworkhoursResp.data.flag){
-        			  myVue.empworkhours = empworkhoursResp.data.data;
-        			  myVue.$options.methods.initMainEchart();
-        		  }
-        		  if(contentworkhoursResp.data.flag){
-        			  myVue.contentworkhours = contentworkhoursResp.data.data;
-        			  myVue.$options.methods.initMain2Echart();
-        		  }
-        		  console.log("结束动画。。。。");
-        		  myVue.$Spin.hide();
-        	  }));
+    	     axios.all([
+       	    			axios.post('<%=ctxPath %>/htgl/statisticController/statisticattachment/api', param)
+       	  		]).then(axios.spread(function (statisticAttachmentResp) {
+       		  			if(statisticAttachmentResp.data.flag){
+       			  			myVue.bars.titleName = statisticAttachmentResp.data.data.titleName;
+       			  			myVue.bars.names = statisticAttachmentResp.data.data.names;
+       			  			myVue.bars.values = statisticAttachmentResp.data.data.values;
+       			  			
+       			  			myVue.pies.titleName = statisticAttachmentResp.data.data.titleName;
+       			  			myVue.pies.names = statisticAttachmentResp.data.data.names;
+    			  			myVue.pies.values = statisticAttachmentResp.data.data.values;
+    			  			myVue.pies.nameValues = statisticAttachmentResp.data.data.nameValues;
+       			  			
+       			  			myVue.$options.methods.initMainEchart();
+       			  			myVue.$options.methods.initMain2Echart();
+       		  			}
+       	  		}));
+    	 },
+    	 startFlush:function(){
+    		 myVue.funshId=window.setInterval(myVue.$options.methods.refreshStatistic, 3000);
+    	 },
+    	 endFlush:function(){
+    		 window.clearInterval(myVue.funshId); 
+    	 },
+    	 refreshStatistic:function() {
+    		 myVue.$options.methods.search();
     	 },
     	 //已有统计则销毁
     	 disposeChart:function(){
@@ -248,27 +256,7 @@ var myVue = new Vue({
     	        	main2Chart.setOption(option2, true);
     	        }
     	 }
-    },
-    mounted:function () {
-    	 let param = new URLSearchParams(); 
-	     axios.all([
-   	    			axios.post('<%=ctxPath %>/htgl/statisticController/statisticattachment/api', param)
-   	  		]).then(axios.spread(function (statisticAttachmentResp) {
-   		  			if(statisticAttachmentResp.data.flag){
-   			  			myVue.bars.titleName = statisticAttachmentResp.data.data.titleName;
-   			  			myVue.bars.names = statisticAttachmentResp.data.data.names;
-   			  			myVue.bars.values = statisticAttachmentResp.data.data.values;
-   			  			
-   			  			myVue.pies.titleName = statisticAttachmentResp.data.data.titleName;
-   			  			myVue.pies.names = statisticAttachmentResp.data.data.names;
-			  			myVue.pies.values = statisticAttachmentResp.data.data.values;
-			  			myVue.pies.nameValues = statisticAttachmentResp.data.data.nameValues;
-   			  			
-   			  			
-   			  			myVue.$options.methods.initMainEchart();
-   			  			myVue.$options.methods.initMain2Echart();
-   		  			}
-   	  		}));
     }
 });
+
 </script>
