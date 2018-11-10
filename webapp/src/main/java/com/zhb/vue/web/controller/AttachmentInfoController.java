@@ -2,6 +2,7 @@ package com.zhb.vue.web.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
@@ -35,6 +38,7 @@ import com.zhb.forever.framework.page.PageUtil;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.DetectFaceUtil;
 import com.zhb.forever.framework.util.DownloadUtil;
+import com.zhb.forever.framework.util.EncodeUtil;
 import com.zhb.forever.framework.util.FileUtil;
 import com.zhb.forever.framework.util.ImageUtil;
 import com.zhb.forever.framework.util.File2HtmlConvert;
@@ -49,6 +53,7 @@ import com.zhb.forever.search.solr.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;
+import com.zhb.vue.params.Param2SolrIndexParam;
 import com.zhb.vue.pojo.AttachmentInfoData;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.AttachmentInfoService;
@@ -120,10 +125,10 @@ public class AttachmentInfoController {
             return ajaxData;
         }
         
-        /*AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
-        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);*/
+        AttachmentInfoSolrIndexParam params = Param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);
         
-        ajaxData = searchAttachmentInfo2AjaxDataPage(param);
+        //ajaxData = searchAttachmentInfo2AjaxDataPage(param);
         return ajaxData;
     }
     
@@ -138,7 +143,12 @@ public class AttachmentInfoController {
             ajaxData.addMessage("请先登录");
             return ajaxData;
         }
-        ajaxData = scanAttachmentInfo2AjaxDataPage(param);
+        param.setType(AttachmentTypeEnum.YELLOW.getIndex());
+        AttachmentInfoSolrIndexParam params = Param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        ajaxData = scanAttachmentInfoSolrIndex2AjaxDataPage(params);
+        
+        //ajaxData = scanAttachmentInfo2AjaxDataPage(param);
+        
         return ajaxData;
     }
     
@@ -680,7 +690,7 @@ public class AttachmentInfoController {
     }
     
     //读取附件内容
-    @RequestMapping(value = "/readfile")
+    @RequestMapping(value = "/readfile/api")
     @Transactional
     @ResponseBody
     public AjaxData readFile(HttpServletRequest request,HttpServletResponse response,String id) {
@@ -712,14 +722,25 @@ public class AttachmentInfoController {
         }
         
         try {
-            String result = FileUtil.readFileAsString(data.getFilePath());
-            byte[] bytes = FileUtil.readFileAsBytes(new File(data.getFilePath()));
-            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-            result = File2HtmlConvert.xls2Html(bais, "xls", "utf-8");
+            String result = "";
+            String fileName = data.getFileName();
+            if (fileName.contains("docx")) {
+                result = File2HtmlConvert.docx2Html(new FileInputStream(file), EncodeUtil.getUtf8(), PropertyUtil.getTempDownloadPath());
+            }else if (fileName.contains("doc")) {
+                result = File2HtmlConvert.doc2Html(new FileInputStream(file), EncodeUtil.getUtf8(), PropertyUtil.getTempDownloadPath());
+            }else if (fileName.contains("xlsx")) {
+                byte[] bytes = FileUtil.readFileAsBytes(file);
+                ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                result = File2HtmlConvert.xls2Html(bais, "xlsx", EncodeUtil.getUtf8());
+            }else if (fileName.contains("xls")) {
+                byte[] bytes = FileUtil.readFileAsBytes(file);
+                ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+                result = File2HtmlConvert.xls2Html(bais, "xls", EncodeUtil.getUtf8());
+            }
             ajaxData.setFlag(true);
             ajaxData.setData(result);
             return ajaxData;
-        } catch (IOException e) {
+        } catch (IOException | TransformerException | ParserConfigurationException e) {
             e.printStackTrace();
         }
         
@@ -855,6 +876,39 @@ public class AttachmentInfoController {
         JSONObject jsonObject = new JSONObject();
         if (null != page) {
             JSONArray jsonArray = Data2JSONUtil.imageDatas2JSONArray(page.getList());
+            jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), jsonArray);
+        }else{
+            jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());
+        }
+        ajaxData.setFlag(true);
+        ajaxData.setData(jsonObject);
+        return ajaxData;
+    }
+    
+    //浏览索引图片，分页
+    private AjaxData scanAttachmentInfoSolrIndex2AjaxDataPage(AttachmentInfoSolrIndexParam param) {
+        AjaxData ajaxData = new AjaxData();
+        if (null == param) {
+            param = new AttachmentInfoSolrIndexParam();
+        }
+        //排序字段
+        param.addSort("likeDegree",SolrQuery.ORDER.desc);
+        param.addSort("fileName",SolrQuery.ORDER.asc);
+        param.addSort("type",SolrQuery.ORDER.asc);
+        
+        //设置分页信息
+        if(null == param.getCurrentPage()){
+            param.setCurrentPage(1);
+        }
+        if(null == param.getPageSize()){
+            param.setPageSize(PageUtil.PAGE_SIZE);
+        }
+        param.setStart(param.getPageSize()*(param.getCurrentPage()-1));
+        
+        Page<AttachmentInfoSolrData> page = solrClient.searchAttachmentsForPage(param);
+        JSONObject jsonObject = new JSONObject();
+        if (null != page) {
+            JSONArray jsonArray = Data2JSONUtil.scanImageSolrIndex2JSONArray(page.getList());
             jsonObject = PageUtil.pageInfo2JSON(page.getTotalCount(), page.getPageCount(), page.getCurrrentPage(), jsonArray);
         }else{
             jsonObject = PageUtil.pageInfo2JSON(0,param.getPageSize(),1,new JSONArray());

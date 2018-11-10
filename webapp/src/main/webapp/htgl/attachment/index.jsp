@@ -129,7 +129,7 @@ var myVue = new Vue({
             },
             {
                 title: '附件类型',
-                key: 'type',
+                key: 'typeName',
                 minWidth: 100
             },
             {
@@ -331,25 +331,55 @@ var myVue = new Vue({
       /*0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）*/
       /*弹出原图*/
       showOriginal:function(data){
-   	   var showContent = '<div align="center"><img src="' + data.row.originalUrl  +'" width="850px" height="800px"/>';
-   	   showContent += '</div>';
-   	   layer.open({
-   	        title: data.row.fileName,
-   	        type: 1,
-   	        //skin: 'layui-layer-rim', //加上边框
-   	        area: ['900px', '900px'], //宽高
-   	        content: showContent, 
-   	        btn: ['确定'],
-   	        success: function(layero, index){
-   	        },
-   	        yes: function(index, layero){
-   	            layer.closeAll();
-   	        }
-   	    });
+    	  if(data.row.type!=1 && data.row.type!=9){
+    		  let param = new URLSearchParams(); 
+    		  param.append("id",data.row.id); 
+        	  axios.post('<%=ctxPath %>/htgl/attachmentinfocontroller/readfile/api', param)
+        		  .then(function (response) {
+        			  if(response.data.flag){
+        				  var showContent = response.data.data;
+        				  layer.open({
+        					   title: data.row.fileName,
+        	 	   	           type: 1,
+        	 	   	           //skin: 'layui-layer-rim', //加上边框
+        	 	   	           area: ['60%', '80%'], //宽高
+        	 	   	           content: showContent, 
+        	 	   	           btn: ['确定'],
+        	 	   	           success: function(layero, index){
+        	 	   	           },
+        	 	   	           yes: function(index, layero){
+        	 	   	               layer.closeAll();
+        	 	   	           }
+         	 	   	       });
+        			  }else{
+        				  myVue.$Message.error({
+        					   content: response.data.errorMessages,
+      	                       duration: 3,
+      	                       closable: true
+        				  });
+        			  }
+        		  })
+    	  }else{
+    		  var showContent = '<div align="center"><img src="' + data.row.originalUrl  +'" width="850px" height="800px"/>';
+    	   	   showContent += '</div>';
+    	   	   layer.open({
+    	   	        title: data.row.fileName,
+    	   	        type: 1,
+    	   	        //skin: 'layui-layer-rim', //加上边框
+    	   	        area: ['900px', '900px'], //宽高
+    	   	        content: showContent, 
+    	   	        btn: ['确定'],
+    	   	        success: function(layero, index){
+    	   	        },
+    	   	        yes: function(index, layero){
+    	   	            layer.closeAll();
+    	   	        }
+    	   	    });
+    	  }
       },
       /*弹出附件详细信息*/
       showinfo:function(data){
-   	   	  /* var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
+   	   	  var showContent = '<table align="center" style="border-collapse:separate; border-spacing:10px;">';
 
    	   	  showContent += generatorValue("附件名称",data.row.fileName);
    	      showContent += generatorValue("附件类型",data.row.type);
@@ -359,38 +389,9 @@ var myVue = new Vue({
    	      showContent += generatorValue("创建时间",data.row.createTime);
    	      showContent += generatorValue("状态",data.row.deleteFlagName);
    	   
-   	      showContent += '</table>'; */
-   	      
-   	   var showContent = '';
-   	   let param = new URLSearchParams(); 
- 	   param.append("id",data.row.id); 
- 	   axios.post('<%=ctxPath %>/htgl/attachmentinfocontroller/readfile', param)
- 		  .then(function (response) {
- 			  if(response.data.flag){
- 				 showContent = response.data.data;
- 				layer.open({
- 	   	           title: data.row.fileName,
- 	   	           type: 1,
- 	   	           //skin: 'layui-layer-rim', //加上边框
- 	   	           area: ['700px', '700px'], //宽高
- 	   	           content: showContent, 
- 	   	           btn: ['确定'],
- 	   	           success: function(layero, index){
- 	   	           },
- 	   	           yes: function(index, layero){
- 	   	               layer.closeAll();
- 	   	           }
- 	   	       });
-               }else{
-             	  myVue.$Message.error({
-                       content: response.data.errorMessages,
-                       duration: 3,
-                       closable: true
-                   });
-               }
- 		  })
+   	      showContent += '</table>';
    	   
-   	      /* layer.open({
+   	      layer.open({
    	           title: data.row.fileName,
    	           type: 1,
    	           //skin: 'layui-layer-rim', //加上边框
@@ -402,7 +403,7 @@ var myVue = new Vue({
    	           yes: function(index, layero){
    	               layer.closeAll();
    	           }
-   	       }); */
+   	       });
       },
       //下载附件
       downAttachment:function(data){

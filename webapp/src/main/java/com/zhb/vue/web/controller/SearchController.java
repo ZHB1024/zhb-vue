@@ -36,7 +36,7 @@ import com.zhb.forever.search.solr.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;
-import com.zhb.vue.params.param2SolrIndexParam;
+import com.zhb.vue.params.Param2SolrIndexParam;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -75,7 +75,7 @@ public class SearchController {
             return ajaxData;
         }
         
-        AttachmentInfoSolrIndexParam params = param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
+        AttachmentInfoSolrIndexParam params = Param2SolrIndexParam.attachmentParam2SolrIndexParam(param);
         ajaxData = searchAttachmentInfoSolrIndex2AjaxDataPage(params);
         
         return ajaxData;

@@ -427,7 +427,8 @@ public class Data2JSONUtil {
         object.put("fileName", data.getFileName());
         object.put("filePath", data.getFilePath());
         object.put("fileSize", FileUtil.getFileSizeKB(Double.valueOf(data.getFileSize()), 2) + "KB");
-        object.put("type", AttachmentTypeEnum.getName(data.getType()));
+        object.put("type", data.getType());
+        object.put("typeName", AttachmentTypeEnum.getName(data.getType()));
         object.put("contentType", data.getContentType());
         object.put("deleteFlag", data.getDeleteFlag());
         object.put("deleteFlagName", DeleteFlagEnum.getName(data.getDeleteFlag()));
@@ -449,7 +450,8 @@ public class Data2JSONUtil {
             object.put("fileName", data.getFileName());
             object.put("filePath", data.getFilePath());
             object.put("fileSize", FileUtil.getFileSizeKB(Double.valueOf(data.getFileSize()), 2) + "KB");
-            object.put("type", AttachmentTypeEnum.getName(data.getType()));
+            object.put("type", data.getType());
+            object.put("typeName", AttachmentTypeEnum.getName(data.getType()));
             object.put("likeDegree", data.getLikeDegree());
             object.put("likeDegreeName", LikeDgreeEnum.getName(data.getLikeDegree()));
             object.put("contentType", data.getContentType());
@@ -474,7 +476,8 @@ public class Data2JSONUtil {
         object.put("id", data.getId());
         object.put("fileName", data.getFileName());
         object.put("filePath", data.getFilePath());
-        object.put("type", AttachmentTypeEnum.getName(Integer.valueOf(data.getType())));
+        object.put("type", data.getType());
+        object.put("typeName", AttachmentTypeEnum.getName(Integer.valueOf(data.getType())));
         object.put("likeDegree", data.getLikeDegree());
         object.put("likeDegreeName", LikeDgreeEnum.getName(Integer.valueOf(data.getLikeDegree())));
         object.put("deleteFlag", DeleteFlagEnum.UDEL.getIndex());
@@ -497,7 +500,8 @@ public class Data2JSONUtil {
             object.put("id", data.getId());
             object.put("fileName", data.getFileName());
             object.put("filePath", data.getFilePath());
-            object.put("type", AttachmentTypeEnum.getName(Integer.valueOf(data.getType())));
+            object.put("type", data.getType());
+            object.put("typeName", AttachmentTypeEnum.getName(Integer.valueOf(data.getType())));
             object.put("likeDegree", data.getLikeDegree());
             object.put("likeDegreeName", LikeDgreeEnum.getName(Integer.valueOf(data.getLikeDegree())));
             object.put("deleteFlag", DeleteFlagEnum.UDEL.getIndex());
@@ -507,6 +511,18 @@ public class Data2JSONUtil {
             object.put("originalUrl", "/htgl/attachmentinfocontroller/getoriginalattachmentinfo?id=" + data.getId());
             object.put("thumbnailUrl", "/htgl/attachmentinfocontroller/getthumbnailattachmentinfo?id=" + data.getId());
             jsonArray.add(object);
+        }
+        return jsonArray;
+    }
+    
+    //浏览图片,solrIndex
+    public static JSONArray scanImageSolrIndex2JSONArray(List<AttachmentInfoSolrData> datas) {
+        if (null == datas || datas.size() == 0) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray();
+        for (AttachmentInfoSolrData data : datas) {
+            jsonArray.add("/htgl/attachmentinfocontroller/downloadattachmentinfo?id=" + data.getId());
         }
         return jsonArray;
     }

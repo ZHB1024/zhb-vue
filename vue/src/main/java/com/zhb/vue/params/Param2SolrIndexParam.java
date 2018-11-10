@@ -8,7 +8,7 @@ import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 *@createDate 2018年10月26日下午2:30:46
 */
 
-public class param2SolrIndexParam {
+public class Param2SolrIndexParam {
     
     public static AttachmentInfoSolrIndexParam attachmentParam2SolrIndexParam(AttachmentInfoParam infoParam) {
         if (null == infoParam) {
