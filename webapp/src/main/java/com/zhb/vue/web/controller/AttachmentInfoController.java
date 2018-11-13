@@ -1,11 +1,13 @@
 package com.zhb.vue.web.controller;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -736,6 +738,8 @@ public class AttachmentInfoController {
                 byte[] bytes = FileUtil.readFileAsBytes(file);
                 ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
                 result = File2HtmlConvert.xls2Html(bais, "xls", EncodeUtil.getUtf8());
+            }else if(fileName.contains("txt")) {
+                result = File2HtmlConvert.readTxtString(file);
             }
             ajaxData.setFlag(true);
             ajaxData.setData(result);
