@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.poi.hslf.extractor.PowerPointExtractor;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -739,7 +740,11 @@ public class AttachmentInfoController {
                 ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
                 result = File2HtmlConvert.xls2Html(bais, "xls", EncodeUtil.getUtf8());
             }else if(fileName.contains("txt")) {
-                result = File2HtmlConvert.readTxtString(file);
+                result = File2HtmlConvert.readTxt2Html(file);
+            }else if (fileName.contains("ppt")) {
+                result = File2HtmlConvert.readPPT2String(file);
+            }else if (fileName.contains("pdf")) {
+                result = File2HtmlConvert.readPDF2String(file);
             }
             ajaxData.setFlag(true);
             ajaxData.setData(result);
