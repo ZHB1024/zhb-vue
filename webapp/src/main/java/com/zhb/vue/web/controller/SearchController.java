@@ -1,6 +1,5 @@
 package com.zhb.vue.web.controller;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +24,11 @@ import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.RandomUtil;
 import com.zhb.forever.framework.util.StringUtil;
 import com.zhb.forever.search.SearchFactory;
-import com.zhb.forever.search.elastic.ElasticSearchClient;
+import com.zhb.forever.search.elastic.client.ElasticSearchClient;
 import com.zhb.forever.search.elastic.vo.ElasticSearchIndexData;
-import com.zhb.forever.search.lucene.LuceneClient;
-import com.zhb.forever.search.lucene.LuceneUtil;
+import com.zhb.forever.search.lucene.client.LuceneClient;
 import com.zhb.forever.search.lucene.vo.DocumentVo;
-import com.zhb.forever.search.solr.SolrClient;
+import com.zhb.forever.search.solr.client.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;

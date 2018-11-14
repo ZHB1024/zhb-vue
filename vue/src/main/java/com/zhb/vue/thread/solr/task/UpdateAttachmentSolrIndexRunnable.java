@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zhb.forever.search.SearchFactory;
-import com.zhb.forever.search.solr.SolrClient;
+import com.zhb.forever.search.solr.client.SolrClient;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 
 /**

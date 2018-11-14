@@ -1,13 +1,11 @@
 package com.zhb.vue.web.controller;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.poi.hslf.extractor.PowerPointExtractor;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +49,7 @@ import com.zhb.forever.framework.vo.ImageVO;
 import com.zhb.forever.framework.vo.KeyValueVO;
 import com.zhb.forever.framework.vo.OrderVO;
 import com.zhb.forever.search.SearchFactory;
-import com.zhb.forever.search.solr.SolrClient;
+import com.zhb.forever.search.solr.client.SolrClient;
 import com.zhb.forever.search.solr.param.AttachmentInfoSolrIndexParam;
 import com.zhb.forever.search.solr.vo.AttachmentInfoSolrData;
 import com.zhb.vue.params.AttachmentInfoParam;

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.zhb.forever.search.SearchFactory;
-import com.zhb.forever.search.solr.SolrClient;
+import com.zhb.forever.search.solr.client.SolrClient;
 
 /**
 *@author   zhanghb<a href="mailto:zhb20111503@126.com">zhanghb</a>
