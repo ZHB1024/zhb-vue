@@ -1,12 +1,18 @@
 package com.zhb.vue.params;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class UserInfoParam {
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class UserInfoParam implements Serializable{
     
     private String id;
+    @NotNull(message = "用户名不能为空")
     private String userName;
     private String realName;
+    @NotNull(message = "密码不能为空")
     private String password;
     private String salt;
     private String sex;
@@ -17,6 +23,7 @@ public class UserInfoParam {
     private String nation;
     private String byyx;//毕业院校
     private String mobilePhone;
+    @NotNull(message = "邮箱不能为空")
     private String email;
     private String lobId;
     private Calendar createTime;

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,6 +30,7 @@ import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.FunctionInfoService;
 import com.zhb.vue.service.UserInfoService;
 import com.zhb.vue.util.Data2VO;
+import com.zhb.vue.web.controller.base.BaseController;
 import com.zhb.vue.web.util.CheckUtil;
 import com.zhb.vue.web.util.Data2JSONUtil;
 import com.zhb.vue.web.util.FlushSessionUtil;
@@ -36,9 +39,7 @@ import com.zhb.vue.web.util.WebAppUtil;
 
 @Controller
 @RequestMapping("/htgl/userinfocontroller")
-public class UserInfoController {
-    
-    private static Logger logger = LoggerFactory.getLogger(UserInfoController.class);
+public class UserInfoController extends BaseController{
     
     @Autowired
     private UserInfoService userInfoService;
@@ -127,7 +128,10 @@ public class UserInfoController {
     @RequestMapping(value="/adduserinfo/api",method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public AjaxData addUserInfo(HttpServletRequest request,HttpServletResponse response,UserInfoParam param,String confirmPassword) {
+    public AjaxData addUserInfo(HttpServletRequest request,HttpServletResponse response,@Validated UserInfoParam param, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return errors(bindingResult);
+        }
         AjaxData ajaxData = new AjaxData();
         UserInfoVO vo = WebAppUtil.getLoginInfoVO(request).getUserInfoVO();
         if (null == vo) {
@@ -146,12 +150,12 @@ public class UserInfoController {
             return ajaxData;
         }
         
-        if (StringUtil.isBlank(param.getPassword())|| StringUtil.isBlank(confirmPassword)) {
+        if (StringUtil.isBlank(param.getPassword())|| StringUtil.isBlank(param.getConfirmPassword())) {
             ajaxData.setFlag(false);
             ajaxData.addMessage("请输入密码或确认密码");
             return ajaxData;
         }
-        if (!param.getPassword().equals(confirmPassword)) {
+        if (!param.getPassword().equals(param.getConfirmPassword())) {
             ajaxData.setFlag(false);
             ajaxData.addMessage("密码与确认密码必须相同");
             return ajaxData;

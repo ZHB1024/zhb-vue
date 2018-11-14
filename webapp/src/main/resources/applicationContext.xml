@@ -20,11 +20,11 @@
     <context:annotation-config />
     
     <!-- AOP -->
-	<aop:aspectj-autoproxy />
+	<aop:aspectj-autoproxy proxy-target-class="true" />
 	<bean class="com.zhb.vue.aspect.FlushUserInfoDataAspect" />
 	<bean class="com.zhb.vue.aspect.FlushFunctionInfoDataAspect" />
 
-<!-- 自动扫描service dao 排除controller -->
+<!-- 自动扫描service dao 排除controller,注册带有@Service、@repository、@Component等注解的类成为spring的bean -->
     <context:component-scan base-package="com.zhb.vue.service,com.zhb.vue.dao">
         <context:exclude-filter type="annotation"
                                 expression="org.springframework.stereotype.Controller" />

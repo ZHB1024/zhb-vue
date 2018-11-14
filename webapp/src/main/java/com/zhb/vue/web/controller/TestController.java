@@ -1,7 +1,5 @@
 package com.zhb.vue.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,11 +18,12 @@ import com.zhb.forever.nosql.redis.client.RedisClient;
 import com.zhb.forever.nosql.redis.client.RedisClientFactory;
 import com.zhb.vue.pojo.UserInfoData;
 import com.zhb.vue.service.UserInfoService;
+import com.zhb.vue.web.controller.base.BaseController;
 import com.zhb.vue.web.util.WebAppUtil;
 
 @Controller
 @RequestMapping("/htgl/testcontroller")
-public class TestController {
+public class TestController extends BaseController{
     
     private Logger logger = LoggerFactory.getLogger(TestController.class);
     
@@ -115,6 +114,8 @@ public class TestController {
         String ip = IPUtil.getIp(request);
         logger.info(ip);
     }
+    
+    
 
 
 
