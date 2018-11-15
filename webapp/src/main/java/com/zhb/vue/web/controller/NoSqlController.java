@@ -57,7 +57,13 @@ public class NoSqlController {
             return ajaxData;
         }
         
-        List<UserModel> users = mongoDBClient.findByProp("sex", "男", UserModel.class);
+        /*UserModel userModels = new UserModel();
+        userModels.setId("1234567");
+        userModels.setName("王凌霄");
+        userModels.setSex("女");
+        mongoDBClient.save(userModels);*/
+        
+        List<UserModel> users = mongoDBClient.findByProp("sex", "女", UserModel.class);
         if (null != users) {
             for (UserModel userModel : users) {
                 logger.info(userModel.getId() + "--" + userModel.getName() + "--" + userModel.getSex());

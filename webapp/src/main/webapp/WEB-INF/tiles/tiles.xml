@@ -153,6 +153,11 @@
         <put-attribute name="body" value="/htgl/nosql/index.jsp" />
     </definition>
     
+    <!-- captcha -->
+	<definition name="htgl.captcha.index" extends="htgl.main.layout">
+        <put-attribute name="body" value="/htgl/captcha/index.jsp" />
+    </definition>
+    
     
     
 <!-- htgl end--> 
