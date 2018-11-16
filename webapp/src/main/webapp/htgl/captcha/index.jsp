@@ -38,7 +38,7 @@ margin-left:30px;
                         
                         <i-col span="15">
                           <p style="margin-top:50px;margin-left: 50px;">
-                          	<img :src="captchaInfo.imageUrl" width="150" height="100"/>
+                          	<img :src="captchaInfo.imageUrl" width="200" height="100"/>
                           </p>
                         </i-col>
                       </Row>
