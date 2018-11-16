@@ -38,7 +38,7 @@ margin-left:30px;
                         
                         <i-col span="15">
                           <p style="margin-top:50px;margin-left: 50px;">
-                          	<img :src="captchaInfo.imageUrl" width="200" height="100"/>
+                          	<img :src="captchaInfo.imageUrl"  @click="flushImage" width="100" height="50"/>
                           </p>
                         </i-col>
                       </Row>
@@ -55,7 +55,8 @@ var myVue =  new Vue({
 	  el: '#app_content',
 	  data:{
 		  captchaInfo:{
-			  imageUrl:'<%=ctxPath %>/htgl/captchaimagecontroller/getcaptchaimage/api',
+			  imageUrlConstant:'<%=ctxPath %>/htgl/captchaimagecontroller/getcaptchaimage/api',
+			  imageUrl:'',
 			  captcha:''
 		  },
 		  ruleValidate: {
@@ -65,6 +66,7 @@ var myVue =  new Vue({
 	      } 
 	  },
 	  created: function () {
+		  this.captchaInfo.imageUrl = this.captchaInfo.imageUrlConstant;
 		  <%-- axios.all([
 	    	    axios.get('<%=ctxPath %>/htgl/userinfocontroller/getselfinfo/api')
 	    	  ]).then(axios.spread(function (userInfoResp) {
@@ -73,7 +75,7 @@ var myVue =  new Vue({
 	    	  })); --%>
 	 },
 	  methods:{
-		  handleSubmit:function (name) {
+		  	handleSubmit:function (name) {
 			   myVue.$refs[name].validate((valid) => {
 				   if (valid){
 					    let param = new URLSearchParams(); 
@@ -97,6 +99,11 @@ var myVue =  new Vue({
 				   }
 	            })
 	                
+	        },
+	        flushImage:function(){
+	        	var now = new Date()
+	        	myVue.captchaInfo.imageUrl = myVue.captchaInfo.imageUrlConstant + "?" +now.getTime();
+	            this.$forceUpdate();
 	        }
 	  }
 });

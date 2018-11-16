@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zhb.forever.captcha.client.CaptchaClient;
-import com.zhb.forever.captcha.client.CaptchaClientFactory;
+import com.zhb.forever.captcha.jcaptcha.client.JCaptchaClient;
+import com.zhb.forever.captcha.CaptchaClientFactory;
 import com.zhb.forever.framework.util.AjaxData;
 import com.zhb.forever.framework.util.StringUtil;
-import com.zhb.vue.params.AttachmentInfoParam;
 import com.zhb.vue.web.controller.base.BaseController;
 import com.zhb.vue.web.util.WebAppUtil;
 
@@ -26,7 +25,7 @@ import com.zhb.vue.web.util.WebAppUtil;
 @RequestMapping("/htgl/captchaimagecontroller")
 public class CaptchaImageController extends BaseController {
     
-    private CaptchaClient captchaClient = CaptchaClientFactory.getCaptchaClientBean();
+    private JCaptchaClient jcaptchaClient = CaptchaClientFactory.getJCaptchaClientBean();
     
     //toindex
     @RequestMapping(value = "/toindex",method = RequestMethod.GET)
@@ -47,7 +46,7 @@ public class CaptchaImageController extends BaseController {
         }
         
         String tokenId = request.getSession().getId();
-        captchaClient.generateCaptchaImage(tokenId, request, response);
+        jcaptchaClient.generateCaptchaImage(tokenId, request, response);
     }
     
     //验证-验证码
@@ -63,7 +62,7 @@ public class CaptchaImageController extends BaseController {
         }
         
         String tokenId = request.getSession().getId();
-        ajaxData = captchaClient.validateCaptchaImage(captcha, tokenId);
+        ajaxData = jcaptchaClient.validateCaptchaImage(captcha, tokenId);
         return ajaxData;
     }
 
